@@ -1,62 +1,82 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { Image, getImage } from 'astro:assets';
-import { proyectos, categorias, portada } from '../../data/proyectos';
+import { Image } from 'astro:assets';
+import { proyectos, filtros, portada, ciudad } from '../../data/proyectos';
 
-const counts = Object.fromEntries(categorias.map((c) => [c, proyectos.filter((p) => p.categoria === c).length]));
-const previews = await Promise.all(
-  proyectos.map((p) => getImage({ src: portada(p), width: 640, format: 'avif', quality: 70 })),
-);
+const conteo = (cat: string | null) => (cat ? proyectos.filter((p) => p.categoria === cat).length : proyectos.length);
+const fmt = new Intl.NumberFormat('es-ES');
 ---
-<Base title="Proyectos" description="Proyectos de arquitectura e interiorismo de NAN Arquitectos: clínicas, hostelería, comercio, oficinas y vivienda en Pontevedra.">
-  <section class="head wrap">
-    <h1 data-reveal="text"><span>Proyectos</span></h1>
-    <div class="controls" data-reveal="text">
-      <div class="filters" role="group" aria-label="Filtrar por tipo">
-        <button class="filter is-active" data-filter="all" aria-pressed="true">Todos <sup>{proyectos.length}</sup></button>
-        {categorias.filter((c) => counts[c]).map((c) => (
-          <button class="filter" data-filter={c} aria-pressed="false">{c} <sup>{counts[c]}</sup></button>
-        ))}
-      </div>
-      <div class="views" role="group" aria-label="Vista">
-        <button class="view is-active" data-view="grid" aria-pressed="true">Galería</button>
-        <button class="view" data-view="index" aria-pressed="false">Índice</button>
-      </div>
-    </div>
+<Base title="Proyectos" current="proyectos" description="Proyectos de NAN Arquitectos: clínicas, hostelería, comercios, oficinas y viviendas en Pontevedra y Galicia.">
+  <section class="intro pad grid12">
+    <h1 class="title">Proyectos<sup class="num" data-total>{proyectos.length}</sup></h1>
+    <p class="intro-text">Clínicas, restaurantes, comercios, oficinas y viviendas en Galicia. Obra construida, fotografiada en uso.</p>
   </section>
 
-  <section class="wrap" aria-label="Listado de proyectos">
-    <ul class="grid" data-grid>
+  <div class="bar" role="toolbar" aria-label="Filtros y vista">
+    <div class="filters" role="group" aria-label="Filtrar por tipo">
+      {filtros.filter((f) => conteo(f.cat)).map((f, i) => (
+        <button class:list={['chip', { 'is-on': i === 0 }]} data-filter={f.cat ?? 'all'} aria-pressed={i === 0 ? 'true' : 'false'}>
+          <span>{f.label}</span><span class="count num">{conteo(f.cat)}</span>
+        </button>
+      ))}
+    </div>
+    <div class="views" role="group" aria-label="Vista">
+      <button class="chip-view is-on" data-view="grid" aria-pressed="true">Retícula</button>
+      <button class="chip-view" data-view="index" aria-pressed="false">Índice</button>
+    </div>
+  </div>
+
+  <section class="list pad" aria-label="Listado de proyectos">
+    <ul class="grid grid12" data-grid>
       {proyectos.map((p, i) => (
         <li class="card" data-cat={p.categoria}>
           <a href={`/proyectos/${p.slug}/`}>
-            <div class="frame" data-reveal="img" style={`view-transition-name: p-${p.slug}`}>
-              <Image src={portada(p)} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 33vw" format="avif" quality={72} loading={i < 3 ? 'eager' : 'lazy'} />
+            <div class="frame" data-reveal="img" style={`aspect-ratio:4 / 3;view-transition-name:p-${p.slug}`}>
+              <Image src={portada(p)} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 33vw" format="avif" quality={72} loading={i < 3 ? 'eager' : 'lazy'} />
             </div>
-            <h2>{p.nombre}</h2>
-            <p class="label">{p.categoria} · {p.anio}</p>
+            <span class="serif cap">{p.nombre}</span>
+            <span class="small mut">{p.categoria} · {ciudad(p)} · {p.anio}</span>
           </a>
         </li>
       ))}
     </ul>
 
-    <ol class="index" data-index hidden>
-      <li class="index-row index-head label" aria-hidden="true">
-        <span>Proyecto</span><span>Tipo</span><span>Lugar</span><span>Año</span>
-      </li>
-      {proyectos.map((p, i) => (
-        <li class="index-row" data-cat={p.categoria}>
-          <a href={`/proyectos/${p.slug}/`} data-preview={previews[i].src}>
-            <span class="index-name">{p.nombre}</span>
-            <span>{p.categoria}</span>
-            <span>{p.lugar.split(',').pop()?.trim()}</span>
-            <span class="num">{p.anio}</span>
-          </a>
-        </li>
-      ))}
-    </ol>
-    <div class="preview" data-preview-box aria-hidden="true"><img src={previews[0].src} alt="" loading="lazy" /></div>
+    <div class="index grid12" data-index hidden>
+      <div class="table">
+        <div class="row head small mut" role="presentation">
+          <span>Nº</span>
+          <button data-sort="nombre">Proyecto <i data-arrow="nombre"></i></button>
+          <span>Tipo</span><span>Lugar</span>
+          <button data-sort="anio">Año <i data-arrow="anio"></i></button>
+          <button data-sort="m2" class="right">m² <i data-arrow="m2"></i></button>
+        </div>
+        <ol class="rows" data-rows>
+          {proyectos.map((p, i) => (
+            <li data-cat={p.categoria} data-nombre={p.nombre} data-anio={p.anio} data-m2={p.m2} data-i={i}>
+              <a href={`/proyectos/${p.slug}/`} class="row" data-hover={i}>
+                <span class="nr mut num"><i class="mark"></i><span data-nr>{String(i + 1).padStart(2, '0')}</span></span>
+                <span class="serif rname">{p.nombre}</span>
+                <span class="d">{p.categoria}</span>
+                <span class="d">{ciudad(p)}</span>
+                <span class="num yr">{p.anio}</span>
+                <span class="num right d">{fmt.format(p.m2)}</span>
+                <span class="m small mut">{p.categoria} · {ciudad(p)} · {fmt.format(p.m2)} m²</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <aside class="preview" aria-hidden="true">
+        <div class="frame preview-img">
+          {proyectos.map((p, i) => (
+            <Image src={portada(p)} alt="" widths={[480, 800]} sizes="25vw" format="avif" quality={70} class:list={{ 'is-on': i === 0 }} data-prev={i} loading="lazy" />
+          ))}
+        </div>
+        <span class="small mut" data-prev-cap>{proyectos[0].nombre} · {ciudad(proyectos[0])}</span>
+      </aside>
+    </div>
   </section>
+  <script type="application/json" data-caps set:html={JSON.stringify(proyectos.map((p) => `${p.nombre} · ${ciudad(p)}`))} />
 </Base>
 
 <script>
@@ -66,28 +86,43 @@ const previews = await Promise.all(
 
   const grid = document.querySelector<HTMLElement>('[data-grid]')!;
   const index = document.querySelector<HTMLElement>('[data-index]')!;
+  const rowsEl = document.querySelector<HTMLElement>('[data-rows]')!;
   const cards = Array.from(grid.querySelectorAll<HTMLElement>('.card'));
-  const rows = Array.from(index.querySelectorAll<HTMLElement>('.index-row[data-cat]'));
+  const rows = () => Array.from(rowsEl.querySelectorAll<HTMLElement>('li'));
+  const total = document.querySelector('[data-total]')!;
+  const caps: string[] = JSON.parse(document.querySelector('[data-caps]')!.textContent!);
+  let filter = 'all';
 
-  function press(group: string, btn: HTMLElement) {
-    document.querySelectorAll<HTMLElement>(group).forEach((b) => {
-      b.classList.toggle('is-active', b === btn);
+  function press(sel: string, btn: HTMLElement) {
+    document.querySelectorAll<HTMLElement>(sel).forEach((b) => {
+      b.classList.toggle('is-on', b === btn);
       b.setAttribute('aria-pressed', String(b === btn));
     });
+  }
+  function renumber() {
+    let n = 0;
+    rows().forEach((r) => {
+      if (!r.classList.contains('is-hidden')) r.querySelector('[data-nr]')!.textContent = String(++n).padStart(2, '0');
+    });
+    total.textContent = String(n);
   }
 
   document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) =>
     btn.addEventListener('click', () => {
-      const f = btn.dataset.filter!;
+      filter = btn.dataset.filter!;
       press('[data-filter]', btn);
       const state = Flip.getState(cards);
-      cards.forEach((c) => c.classList.toggle('is-hidden', f !== 'all' && c.dataset.cat !== f));
-      rows.forEach((r) => r.classList.toggle('is-hidden', f !== 'all' && r.dataset.cat !== f));
-      if (!reduced) {
+      const match = (el: HTMLElement) => filter === 'all' || el.dataset.cat === filter;
+      cards.forEach((c) => c.classList.toggle('is-hidden', !match(c)));
+      rows().forEach((r) => r.classList.toggle('is-hidden', !match(r)));
+      renumber();
+      const first = rows().find((r) => !r.classList.contains('is-hidden'));
+      if (first) highlight(Number(first.dataset.i));
+      if (!reduced && !grid.hidden) {
         Flip.from(state, {
-          duration: 0.9, ease, absolute: true, scale: true,
-          onEnter: (els) => gsap.fromTo(els, { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.8, ease }),
-          onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.94, duration: 0.4 }),
+          duration: 0.9, ease, absolute: true,
+          onEnter: (els) => gsap.fromTo(els, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8, ease }),
+          onLeave: (els) => gsap.to(els, { opacity: 0, duration: 0.3 }),
         });
       }
     }),
@@ -99,77 +134,113 @@ const previews = await Promise.all(
       const isIndex = btn.dataset.view === 'index';
       grid.hidden = isIndex;
       index.hidden = !isIndex;
-      if (!reduced) gsap.from(isIndex ? rows : cards, { opacity: 0, y: 20, duration: 0.9, stagger: 0.05, ease });
+      if (!reduced) gsap.from(isIndex ? rows() : cards, { opacity: 0, y: 16, duration: 0.8, stagger: 0.04, ease });
     }),
   );
 
-  /* Índice: la foto del proyecto sigue al cursor */
-  const box = document.querySelector<HTMLElement>('[data-preview-box]')!;
-  const img = box.querySelector('img')!;
-  if (window.matchMedia('(hover: hover)').matches) {
-    const xTo = gsap.quickTo(box, 'x', { duration: 0.6, ease: 'power3' });
-    const yTo = gsap.quickTo(box, 'y', { duration: 0.6, ease: 'power3' });
-    index.addEventListener('mousemove', (e) => { xTo(e.clientX + 24); yTo(e.clientY - 120); });
-    index.querySelectorAll<HTMLAnchorElement>('a[data-preview]').forEach((a) => {
-      a.addEventListener('mouseenter', () => { img.src = a.dataset.preview!; box.classList.add('is-on'); });
-      a.addEventListener('mouseleave', () => box.classList.remove('is-on'));
-    });
+  /* Orden de la tabla */
+  let sortKey = '';
+  let dir = 1;
+  document.querySelectorAll<HTMLButtonElement>('[data-sort]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.sort!;
+      dir = sortKey === key ? -dir : key === 'nombre' ? 1 : -1;
+      sortKey = key;
+      const val = (r: HTMLElement) => (key === 'nombre' ? r.dataset.nombre! : Number(r.dataset[key]));
+      const sorted = rows().sort((a, b) => (val(a) > val(b) ? 1 : val(a) < val(b) ? -1 : 0) * dir);
+      const state = reduced ? null : Flip.getState(sorted);
+      sorted.forEach((r) => rowsEl.appendChild(r));
+      document.querySelectorAll<HTMLElement>('[data-arrow]').forEach((a) => (a.textContent = a.dataset.arrow === key ? (dir === 1 ? '↑' : '↓') : ''));
+      renumber();
+      if (state) Flip.from(state, { duration: 0.6, ease });
+    }),
+  );
+
+  /* Vista previa fija: la obra de la fila señalada */
+  const prevImgs = Array.from(document.querySelectorAll<HTMLElement>('[data-prev]'));
+  const prevCap = document.querySelector('[data-prev-cap]')!;
+  function highlight(i: number) {
+    prevImgs.forEach((im) => im.classList.toggle('is-on', Number(im.dataset.prev) === i));
+    rows().forEach((r) => r.classList.toggle('is-marked', Number(r.dataset.i) === i));
+    prevCap.textContent = caps[i];
   }
+  rowsEl.querySelectorAll<HTMLElement>('[data-hover]').forEach((a) => {
+    const i = Number(a.dataset.hover);
+    a.addEventListener('mouseenter', () => highlight(i));
+    a.addEventListener('focus', () => highlight(i));
+  });
+  highlight(0);
 </script>
 
 <style>
-  .head { padding-top: calc(var(--header-h) + clamp(3rem, 8vw, 7rem)); padding-bottom: clamp(2rem, 4vw, 3.5rem); }
-  h1 { font-size: clamp(3.5rem, 11vw, 6rem); letter-spacing: -0.035em; }
-  .controls { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.5rem; margin-top: clamp(2rem, 5vw, 4rem); padding-top: 1.25rem; border-top: 1px solid var(--line); }
-  .filters, .views { display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; }
-  .filter, .view {
-    background: none; border: 0; padding: 0.25rem 0; cursor: pointer;
-    font-size: 0.9375rem; color: var(--stone);
-    transition: color 0.4s var(--ease-out);
-  }
-  .filter sup { font-size: 0.65em; margin-left: 0.15em; font-variant-numeric: tabular-nums; }
-  .filter:hover, .view:hover, .is-active { color: var(--ink); }
-  .filter.is-active, .view.is-active { box-shadow: 0 1px 0 currentColor; }
+  .intro { padding-top: 120px; row-gap: 16px; align-items: end; }
+  .title { grid-column: 1 / span 7; font-size: clamp(56px, 8.4vw, 120px); line-height: 1; letter-spacing: -0.02em; }
+  .title sup { font-family: var(--sans); font-size: 14px; letter-spacing: 0; vertical-align: top; margin-left: 8px; color: var(--mut); }
+  .intro-text { grid-column: 9 / span 4; }
 
-  .grid {
-    list-style: none; margin: 0; padding: 0 0 clamp(6rem, 12vw, 10rem);
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: clamp(3rem, 6vw, 5rem) clamp(1rem, 2vw, 2rem);
+  .bar {
+    margin: 88px var(--pad) 0; padding: 6px 0;
+    border-block: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px;
+    font-size: 14px;
   }
-  .card.is-hidden, .index-row.is-hidden { display: none; }
-  .card:nth-child(3n + 2) { margin-top: clamp(0rem, 6vw, 6rem); }
-  .card .frame { aspect-ratio: 4 / 5; }
-  .card .frame :global(img) { transition: transform 1.2s var(--ease-out); }
-  .card a:hover .frame :global(img) { transform: scale(1.035); }
-  .card h2 { font-size: clamp(1.4rem, 2vw, 1.75rem); margin: 1rem 0 0.35rem; }
+  .filters { display: flex; gap: 32px; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+  .views { display: flex; gap: 20px; }
+  .chip, .chip-view { padding: 12px 0; white-space: nowrap; color: var(--mut); transition: color 0.3s; }
+  .chip { display: flex; gap: 6px; align-items: baseline; }
+  .chip .count { font-size: 11px; color: var(--mut); }
+  .chip:hover, .chip-view:hover, .chip-view.is-on { color: var(--ink); }
+  .chip.is-on { color: var(--ink); text-decoration: underline; text-decoration-color: var(--yellow); text-decoration-thickness: 2px; text-underline-offset: 6px; }
 
-  .index { list-style: none; margin: 0; padding: 0 0 clamp(6rem, 12vw, 10rem); }
-  .index-row a, .index-head { display: grid; grid-template-columns: 2.2fr 1fr 1fr 0.4fr; gap: 1rem; align-items: baseline; }
-  .index-head { padding-bottom: 0.75rem; }
-  .index-row a { padding-block: 1.25rem; border-top: 1px solid var(--line); color: var(--ink-2); transition: color 0.4s var(--ease-out), padding 0.6s var(--ease-out); }
-  .index-row:last-child a { border-bottom: 1px solid var(--line); }
-  .index-name { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2.5rem); color: var(--ink); line-height: 1.1; }
-  .num { font-variant-numeric: tabular-nums; text-align: right; }
-  .index:hover .index-row a { color: var(--stone); }
-  .index:hover .index-row a:hover { color: var(--ink); padding-left: 1rem; }
+  .list { padding-top: 56px; padding-bottom: var(--sec); }
+  .grid { list-style: none; margin: 0; padding: 0; row-gap: 88px; align-items: start; }
+  .card { grid-column: span 4; }
+  .card.is-hidden, .rows li.is-hidden { display: none; }
+  .card a { display: flex; flex-direction: column; gap: 2px; }
+  .card a:hover { color: var(--ink); }
+  .card .frame { margin-bottom: 12px; }
+  .cap { font-size: clamp(19px, 1.55vw, 22px); line-height: 1.25; }
 
-  .preview {
-    position: fixed; left: 0; top: 0; z-index: 40; pointer-events: none;
-    width: 18rem; aspect-ratio: 4 / 5; overflow: hidden;
-    clip-path: inset(50% 50% 50% 50%); transition: clip-path 0.6s var(--ease-out);
-  }
-  .preview.is-on { clip-path: inset(0 0 0 0); }
-  .preview img { width: 100%; height: 100%; object-fit: cover; }
+  .table { grid-column: 1 / span 8; }
+  .row { display: grid; grid-template-columns: 56px minmax(0, 1fr) 130px 160px 64px 72px; gap: 16px; align-items: baseline; }
+  .head { font-size: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .head button { text-align: left; color: inherit; }
+  .head button:hover { color: var(--ink); }
+  .head i { font-style: normal; }
+  .right { text-align: right !important; justify-self: end; }
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .rows .row { padding: 18px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .rows .row:hover { color: var(--ink); }
+  .nr { display: flex; align-items: center; gap: 8px; }
+  .mark { width: 7px; height: 7px; background: transparent; display: block; transition: background-color 0.25s; }
+  .is-marked .mark { background: var(--yellow); }
+  .rname { font-size: 22px; line-height: 1.2; }
+  .m { display: none; }
+
+  .preview { grid-column: 10 / span 3; position: sticky; top: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .preview-img { aspect-ratio: 4 / 5; }
+  .preview-img :global(img) { opacity: 0; transition: opacity 0.35s ease; }
+  .preview-img :global(img.is-on) { opacity: 1; }
 
   @media (max-width: 1100px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-    .card:nth-child(3n + 2) { margin-top: 0; }
-    .card:nth-child(2n) { margin-top: clamp(0rem, 8vw, 5rem); }
+    .card { grid-column: span 6; }
+    .table { grid-column: 1 / span 12; }
+    .preview { display: none; }
   }
   @media (max-width: 760px) {
-    .grid { grid-template-columns: 1fr; }
-    .card:nth-child(2n) { margin-top: 0; }
-    .index-row a, .index-head { grid-template-columns: 1fr auto; }
-    .index-row a span:nth-child(2), .index-row a span:nth-child(3), .index-head span:nth-child(2), .index-head span:nth-child(3) { display: none; }
+    .intro { padding-top: 48px; }
+    .title, .intro-text { grid-column: 1 / -1; }
+    .bar { margin-top: 40px; }
+    .filters { gap: 20px; }
+    .list { padding-top: 32px; }
+    .grid { row-gap: 48px; }
+    .card { grid-column: 1 / -1; }
+    .table { grid-column: 1 / -1; }
+    .head { display: none; }
+    .rows .row { grid-template-columns: 1fr auto; gap: 2px 12px; padding: 16px 0; }
+    .nr, .d { display: none; }
+    .rname { font-size: 20px; }
+    .yr { font-size: 13px; }
+    .m { display: block; grid-column: 1 / -1; }
   }
 </style>

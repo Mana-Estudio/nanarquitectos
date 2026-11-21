@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;family=Instrument+Sans:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#F5F3EF;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}a:hover{opacity:.7}button{font:inherit;color:inherit}</style>
+</helmet>
+<div style="--bg:{{ c.bg }};--ink:{{ c.ink }};--mut:{{ c.mut }};--line:{{ c.line }};position:relative;background:var(--bg,#F5F3EF);color:var(--ink,#1A1A18);font-family:'Instrument Sans',sans-serif;font-size:{{ v.body }};line-height:1.6">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;height:{{ v.headH }};padding:0 {{ v.pad }}">
+    <a href="Home.dc.html" style="display:flex;align-items:center;gap:10px">
+      <span style="width:11px;height:11px;background:#E8BE2E;display:block"></span>
+      <span style="font-weight:500;font-size:14px;letter-spacing:.16em">NAN</span>
+      <span style="font-size:14px;letter-spacing:.02em;color:var(--mut,#6F6D68)">Arquitectos</span>
+    </a>
+    <sc-if value="{{ d }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;gap:40px;font-size:14px">
+        <a href="Proyectos.dc.html" style="text-decoration:underline;text-decoration-color:#E8BE2E;text-decoration-thickness:2px;text-underline-offset:6px">Proyectos</a>
+        <a href="Home.dc.html">Estudio</a>
+        <a href="Home.dc.html">Servicios</a>
+        <a href="Home.dc.html">Contacto</a>
+      </nav>
+      <div style="display:flex;gap:12px;font-size:13px;color:var(--mut,#6F6D68)"><span style="color:var(--ink,#1A1A18)">ES</span><span>GL</span></div>
+    </sc-if>
+    <sc-if value="{{ m }}">
+      <span style="padding:12px 0;font-size:14px">Menú</span>
+    </sc-if>
+  </header>
+
+  <section style="position:relative;height:{{ v.heroH }}">
+    <image-slot style="position:absolute;inset:0;width:100%;height:100%" id="lerez-hero" shape="rect" placeholder="Hero a sangre · Clínica Lérez · recepción"></image-slot>
+  </section>
+
+  <section style="padding:{{ v.titleTop }} {{ v.pad }} 0;display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};row-gap:40px;align-items:start">
+    <div style="grid-column:{{ L.title }};display:flex;flex-direction:column;gap:20px">
+      <a href="Proyectos.dc.html" style="font-size:13px;color:var(--mut,#6F6D68)">Proyectos / Clínicas</a>
+      <h1 style="margin:0;font-family:Newsreader,serif;font-weight:300;font-size:{{ v.display }};line-height:1;letter-spacing:-.02em;text-wrap:balance">Clínica Dental Lérez</h1>
+    </div>
+    <div style="grid-column:{{ L.ficha }};display:flex;flex-direction:column;padding-top:{{ v.fichaTop }}">
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding-bottom:20px;border-bottom:1px solid var(--line,rgba(26,26,24,.14))">
+        <div><div style="font-size:12px;color:var(--mut,#6F6D68)">Lugar</div><div style="font-family:Newsreader,serif;font-size:{{ v.key }};line-height:1.2">Pontevedra</div></div>
+        <div><div style="font-size:12px;color:var(--mut,#6F6D68)">Año</div><div style="font-family:Newsreader,serif;font-size:{{ v.key }};line-height:1.2">2025</div></div>
+        <div><div style="font-size:12px;color:var(--mut,#6F6D68)">Superficie</div><div style="font-family:Newsreader,serif;font-size:{{ v.key }};line-height:1.2">320 m²</div></div>
+      </div>
+      <sc-for list="{{ ficha }}" as="f" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:11px 0;border-bottom:1px solid var(--line,rgba(26,26,24,.14));font-size:13px">
+          <span style="color:var(--mut,#6F6D68)">{{ f.k }}</span><span>{{ f.v }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="padding:{{ v.textTop }} {{ v.pad }} 0;display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }}">
+    <div style="grid-column:{{ L.text }};display:flex;flex-direction:column;gap:24px">
+      <p style="margin:0;font-family:Newsreader,serif;font-weight:300;font-size:{{ v.lead }};line-height:1.35;text-wrap:pretty">Una clínica dental en el centro de Pontevedra que se aleja de la imagen hospitalaria: madera de roble, luz tamizada y recorridos claros para que la visita empiece con calma.</p>
+      <p style="margin:0;text-wrap:pretty">El local, un bajo comercial de planta profunda con una sola fachada, obligaba a llevar la luz hacia el interior. Una celosía de listones de roble separa la recepción de la zona clínica y deja pasar la luz sin perder privacidad. Los cuatro gabinetes se ordenan a lo largo de un corredor curvo que evita la sensación de pasillo.</p>
+      <p style="margin:0;text-wrap:pretty">La paleta se reduce a tres materiales: roble natural, microcemento en tono arena y acero lacado en blanco. Las instalaciones quedan ocultas en un falso techo continuo, de modo que en los gabinetes sólo se perciben la luz y el equipamiento.</p>
+    </div>
+  </section>
+
+  <section style="padding:{{ v.galTop }} {{ v.pad }} 0;display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};row-gap:{{ v.galGap }};align-items:end">
+    <sc-for list="{{ gallery }}" as="g" hint-placeholder-count="5">
+      <figure style="grid-column:{{ g.col }};margin:{{ g.mt }} 0 0;display:flex;flex-direction:column;gap:12px">
+        <div style="position:relative;overflow:hidden;aspect-ratio:{{ g.ar }}">
+          <image-slot style="position:absolute;inset:0;width:100%;height:100%" id="{{ g.slot }}" shape="rect" placeholder="{{ g.ph }}"></image-slot>
+        </div>
+        <figcaption style="font-size:13px;color:var(--mut,#6F6D68)">{{ g.cap }}</figcaption>
+      </figure>
+    </sc-for>
+    <sc-if value="{{ d }}" hint-placeholder-val="{{ true }}">
+      <p style="grid-column:10 / span 3;margin:0 0 40px;font-family:Newsreader,serif;font-weight:300;font-size:22px;line-height:1.4;text-wrap:pretty">Mobiliario a medida en DM lacado y encimeras de Krion. Cada gabinete recibe luz natural a través de la celosía.</p>
+    </sc-if>
+  </section>
+
+  <section style="position:relative;margin-top:{{ v.galGap }};aspect-ratio:{{ v.bleedAr }}">
+    <image-slot style="position:absolute;inset:0;width:100%;height:100%" id="lerez-g6" shape="rect" placeholder="A sangre · fachada a la calle, de noche"></image-slot>
+  </section>
+  <div style="padding:12px {{ v.pad }} 0;font-size:13px;color:var(--mut,#6F6D68)">06 — Fachada</div>
+
+  <section style="margin:{{ v.nextTop }} {{ v.pad }} 0;padding:28px 0 {{ v.nextBot }};border-top:1px solid var(--line,rgba(26,26,24,.14));display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};row-gap:28px;align-items:start">
+    <div style="grid-column:{{ L.nextText }};display:flex;flex-direction:column;gap:16px;min-height:{{ v.nextMin }}">
+      <span style="font-size:13px;color:var(--mut,#6F6D68)">Siguiente proyecto</span>
+      <a href="Proyecto.dc.html" style="font-family:Newsreader,serif;font-weight:300;font-size:{{ v.h2 }};line-height:1.05;letter-spacing:-.01em">Restaurante Ribeira</a>
+      <span style="font-size:13px;color:var(--mut,#6F6D68)">Restaurante · Combarro · 2024 · 180 m²</span>
+      <div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:12px 32px;font-size:14px;padding-top:24px">
+        <a href="Proyecto.dc.html">Ver proyecto →</a>
+        <a href="Proyectos.dc.html" style="color:var(--mut,#6F6D68)">Todos los proyectos</a>
+      </div>
+    </div>
+    <a href="Proyecto.dc.html" style="grid-column:{{ L.nextImg }};position:relative;overflow:hidden;aspect-ratio:3 / 2;display:block">
+      <image-slot style="position:absolute;inset:0;width:100%;height:100%" id="p-ribeira" shape="rect" placeholder="Ribeira · barra"></image-slot>
+    </a>
+  </section>
+
+  <footer style="padding:28px {{ v.pad }} 40px;border-top:1px solid var(--line,rgba(26,26,24,.14));display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-size:13px;color:var(--mut,#6F6D68)">
+    <span>© 2026 NAN Arquitectos · Pontevedra, Galicia</span>
+    <div style="display:flex;flex-wrap:wrap;gap:12px 24px"><a href="Home.dc.html">Instagram</a><a href="Home.dc.html">LinkedIn</a><a href="Home.dc.html">Aviso legal</a><a href="Home.dc.html">Privacidad</a></div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const m = !!this.props.mobile;
+    const dark = !!this.props.dark;
+    const c = dark
+      ? { bg: '#151513', ink: '#ECE9E3', mut: '#A3A19B', line: 'rgba(236,233,227,.16)' }
+      : { bg: '#F5F3EF', ink: '#1A1A18', mut: '#6F6D68', line: 'rgba(26,26,24,.14)' };
+    const v = m
+      ? { pad: '20px', headH: '64px', heroH: '520px', cols: 4, gap: '12px', titleTop: '40px', fichaTop: '0', textTop: '56px', galTop: '72px', galGap: '40px', nextTop: '104px', nextBot: '72px', nextMin: '0', display: '48px', h2: '36px', key: '20px', lead: '22px', body: '15px', bleedAr: '4 / 5' }
+      : { pad: '64px', headH: '88px', heroH: '860px', cols: 12, gap: '24px', titleTop: '72px', fichaTop: '40px', textTop: '120px', galTop: '160px', galGap: '120px', nextTop: '200px', nextBot: '120px', nextMin: '100%', display: '104px', h2: '64px', key: '26px', lead: '28px', body: '17px', bleedAr: '21 / 9' };
+    const L = m
+      ? { title: '1 / -1', ficha: '1 / -1', text: '1 / -1', nextText: '1 / -1', nextImg: '1 / -1' }
+      : { title: '1 / span 7', ficha: '9 / span 4', text: '4 / span 5', nextText: '1 / span 5', nextImg: '7 / span 6' };
+    const g = [
+      { slot: 'lerez-g1', ph: 'Recepción · celosía de roble', cap: '01 — Recepción', d: ['1 / -1', '16 / 9', '0'], mb: ['1 / -1', '4 / 3', '0'] },
+      { slot: 'lerez-g2', ph: 'Detalle · listones de roble', cap: '02 — Celosía', d: ['1 / span 5', '3 / 4', '0'], mb: ['1 / span 3', '3 / 4', '0'] },
+      { slot: 'lerez-g3', ph: 'Corredor curvo de gabinetes', cap: '03 — Corredor', d: ['7 / span 6', '4 / 3', '0'], mb: ['2 / span 3', '4 / 3', '0'] },
+      { slot: 'lerez-g4', ph: 'Sala de espera · luz natural', cap: '04 — Espera', d: ['5 / span 4', '4 / 5', '0'], mb: ['1 / -1', '4 / 5', '0'] },
+      { slot: 'lerez-g5', ph: 'Gabinete · mobiliario a medida', cap: '05 — Gabinete', d: ['1 / span 8', '3 / 2', '0'], mb: ['1 / -1', '3 / 2', '0'] }
+    ];
+    const gallery = g.map(x => { const k = m ? x.mb : x.d; return { ...x, col: k[0], ar: k[1], mt: k[2] }; });
+    const ficha = [
+      { k: 'Tipo', v: 'Clínica dental' },
+      { k: 'Alcance', v: 'Proyecto de interiorismo y dirección de obra' },
+      { k: 'Estado', v: 'Construido' },
+      { k: 'Equipo', v: 'NAN Arquitectos' },
+      { k: 'Fotografía', v: 'Nombre del fotógrafo' }
+    ];
+    return { m, d: !m, c, v, L, gallery, ficha };
+  }
+}
+</script>
+</body>
+</html>

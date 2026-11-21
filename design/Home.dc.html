@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;family=Instrument+Sans:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#F5F3EF;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}a:hover{color:#6F6D68}button{font:inherit;color:inherit}</style>
+</helmet>
+<div style="position:relative;background:#F5F3EF;color:#1A1A18;font-family:'Instrument Sans',sans-serif;font-size:{{ v.body }};line-height:1.55;overflow:hidden">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;height:{{ v.headH }};padding:0 {{ v.pad }}">
+    <a href="Home.dc.html" style="display:flex;align-items:center;gap:10px">
+      <span style="width:11px;height:11px;background:#E8BE2E;display:block"></span>
+      <span style="font-weight:500;font-size:14px;letter-spacing:.16em">NAN</span>
+      <span style="font-size:14px;letter-spacing:.02em;color:#6F6D68">Arquitectos</span>
+    </a>
+    <sc-if value="{{ d }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;gap:40px;font-size:14px">
+        <a href="Proyectos.dc.html">Proyectos</a>
+        <a href="Home.dc.html">Estudio</a>
+        <a href="Home.dc.html">Servicios</a>
+        <a href="Home.dc.html">Contacto</a>
+      </nav>
+      <div style="display:flex;gap:12px;font-size:13px;color:#6F6D68"><span style="color:#1A1A18">ES</span><span>GL</span></div>
+    </sc-if>
+    <sc-if value="{{ m }}">
+      <button onClick="{{ openMenu }}" style="background:none;border:0;padding:12px 0;font-size:14px;cursor:pointer">Menú</button>
+    </sc-if>
+  </header>
+
+  <section style="position:relative;height:{{ v.heroH }}">
+    <sc-for list="{{ slides }}" as="s" hint-placeholder-count="1">
+      <div style="position:absolute;inset:0;opacity:{{ s.op }};pointer-events:{{ s.pe }};transition:opacity .8s ease">
+        <image-slot style="position:absolute;inset:0;width:100%;height:100%" id="{{ s.slot }}" shape="rect" placeholder="{{ s.ph }}"></image-slot>
+      </div>
+    </sc-for>
+  </section>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:18px {{ v.pad }} 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px">
+      <a href="Proyecto.dc.html" style="font-family:Newsreader,serif;font-size:{{ v.cap }};font-weight:400">{{ cur.n }}</a>
+      <span style="font-size:13px;color:#6F6D68">{{ cur.l }} · {{ cur.y }}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;font-size:13px;font-variant-numeric:tabular-nums">
+      <button onClick="{{ prev }}" style="background:none;border:0;padding:8px 4px;cursor:pointer;color:#6F6D68">Ant.</button>
+      <span>{{ counter }}</span>
+      <button onClick="{{ next }}" style="background:none;border:0;padding:8px 4px;cursor:pointer;color:#6F6D68">Sig.</button>
+    </div>
+  </div>
+
+  <section style="padding:{{ v.secPad }} {{ v.pad }} 0">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-bottom:{{ v.headGap }}">
+      <h2 style="margin:0;font-family:Newsreader,serif;font-weight:300;font-size:{{ v.h2 }};line-height:1.1;letter-spacing:-.01em">Obras seleccionadas</h2>
+      <a href="Proyectos.dc.html" style="font-size:14px;white-space:nowrap">Todos los proyectos →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};row-gap:{{ v.rowGap }};align-items:start">
+      <sc-for list="{{ works }}" as="p" hint-placeholder-count="5">
+        <div style="grid-column:{{ p.col }};margin-top:{{ p.mt }};display:flex;flex-direction:column;gap:14px">
+          <div style="position:relative;overflow:hidden;aspect-ratio:{{ p.ar }}">
+            <image-slot style="position:absolute;inset:0;width:100%;height:100%" id="{{ p.slot }}" shape="rect" placeholder="{{ p.ph }}"></image-slot>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 16px">
+            <a href="Proyecto.dc.html" style="font-family:Newsreader,serif;font-size:{{ v.cap }}">{{ p.n }}</a>
+            <span style="font-size:13px;color:#6F6D68">{{ p.t }} · {{ p.l }} · {{ p.y }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="padding:{{ v.secPad }} {{ v.pad }} 0">
+    <div style="display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};row-gap:28px;border-top:1px solid rgba(26,26,24,.14);padding-top:28px">
+      <div style="grid-column:{{ L.label }};font-size:13px;color:#6F6D68">Estudio</div>
+      <p style="grid-column:{{ L.text }};margin:0;font-family:Newsreader,serif;font-weight:300;font-size:{{ v.h2 }};line-height:1.18;letter-spacing:-.01em;text-wrap:pretty">Hacemos arquitectura para que la vida ocurra dentro. Pocos materiales, luz natural y proporciones medidas; cuidamos cada detalle hasta que deja de notarse.</p>
+      <p style="grid-column:{{ L.a }};margin:{{ v.subGap }} 0 0;color:#1A1A18;text-wrap:pretty">NAN es un estudio de arquitectura e interiorismo con sede en Pontevedra. Proyectamos clínicas, restaurantes, comercios, oficinas y viviendas en Galicia, y acompañamos cada encargo desde el primer boceto hasta la entrega de llaves.</p>
+      <div style="grid-column:{{ L.b }};margin:{{ v.subGap }} 0 0;display:flex;align-items:flex-end">
+        <a href="Home.dc.html" style="font-size:14px">Conocer el estudio →</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:{{ v.secPad }} {{ v.pad }} 0">
+    <div style="display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};border-top:1px solid rgba(26,26,24,.14);padding-top:28px;padding-bottom:{{ v.headGap }}">
+      <div style="grid-column:{{ L.label }};font-size:13px;color:#6F6D68">Servicios</div>
+    </div>
+    <sc-for list="{{ services }}" as="s" hint-placeholder-count="5">
+      <div style="display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};row-gap:10px;padding:{{ v.svcPad }} 0;border-top:1px solid rgba(26,26,24,.14);align-items:baseline">
+        <span style="grid-column:{{ S.num }};font-size:13px;color:#6F6D68;font-variant-numeric:tabular-nums">{{ s.num }}</span>
+        <h3 style="grid-column:{{ S.name }};margin:0;font-family:Newsreader,serif;font-weight:300;font-size:{{ v.h3 }};line-height:1.15">{{ s.name }}</h3>
+        <p style="grid-column:{{ S.desc }};margin:0;color:#1A1A18;text-wrap:pretty">{{ s.desc }}</p>
+      </div>
+    </sc-for>
+  </section>
+
+  <section style="padding:{{ v.secPad }} {{ v.pad }} {{ v.secPad }}">
+    <div style="display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};row-gap:28px;border-top:1px solid rgba(26,26,24,.14);padding-top:28px">
+      <div style="grid-column:{{ L.label }};font-size:13px;color:#6F6D68">Contacto</div>
+      <div style="grid-column:{{ L.text }};display:flex;flex-direction:column;gap:{{ v.subGap }}">
+        <h2 style="margin:0;font-family:Newsreader,serif;font-weight:300;font-size:{{ v.display }};line-height:1.02;letter-spacing:-.02em">Cuéntenos<br>su proyecto.</h2>
+        <a href="mailto:hola@nanarquitectos.es" style="font-family:Newsreader,serif;font-weight:300;font-size:{{ v.h3 }};text-decoration:underline;text-decoration-color:#E8BE2E;text-decoration-thickness:2px;text-underline-offset:8px;align-self:flex-start">hola@nanarquitectos.es</a>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;font-size:14px">
+          <div><div style="color:#6F6D68">Estudio</div><div>Rúa Michelena 00, bajo<br>36002 Pontevedra</div></div>
+          <div><div style="color:#6F6D68">Teléfono</div><div>+34 986 000 000</div></div>
+          <div><div style="color:#6F6D68">Horario</div><div>Lunes a viernes<br>9:00–14:00 · 16:00–19:00</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:28px {{ v.pad }} 40px;border-top:1px solid rgba(26,26,24,.14);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-size:13px;color:#6F6D68">
+    <span>© 2026 NAN Arquitectos · Pontevedra, Galicia</span>
+    <div style="display:flex;flex-wrap:wrap;gap:12px 24px"><a href="Home.dc.html">Instagram</a><a href="Home.dc.html">LinkedIn</a><a href="Home.dc.html">Aviso legal</a><a href="Home.dc.html">Privacidad</a></div>
+  </footer>
+
+  <sc-if value="{{ menu }}">
+    <div style="position:absolute;top:0;left:0;right:0;height:844px;background:#F5F3EF;z-index:20;display:flex;flex-direction:column;padding:0 20px 32px">
+      <div style="display:flex;align-items:center;justify-content:space-between;height:64px">
+        <div style="display:flex;align-items:center;gap:10px"><span style="width:11px;height:11px;background:#E8BE2E;display:block"></span><span style="font-weight:500;font-size:14px;letter-spacing:.16em">NAN</span><span style="font-size:14px;color:#6F6D68">Arquitectos</span></div>
+        <button onClick="{{ closeMenu }}" style="background:none;border:0;padding:12px 0;font-size:14px;cursor:pointer">Cerrar</button>
+      </div>
+      <nav style="display:flex;flex-direction:column;gap:6px;margin-top:56px;font-family:Newsreader,serif;font-weight:300;font-size:44px;line-height:1.15">
+        <a href="Proyectos.dc.html">Proyectos</a><a href="Home.dc.html">Estudio</a><a href="Home.dc.html">Servicios</a><a href="Home.dc.html">Contacto</a>
+      </nav>
+      <div style="margin-top:auto;display:flex;justify-content:space-between;font-size:14px"><span>hola@nanarquitectos.es</span><span style="color:#6F6D68"><span style="color:#1A1A18">ES</span> · GL</span></div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { slide: 0, menu: false };
+  renderVals() {
+    const m = !!this.props.mobile;
+    const v = m
+      ? { pad: '20px', headH: '64px', heroH: '560px', cols: 4, gap: '12px', rowGap: '56px', secPad: '104px', headGap: '28px', subGap: '24px', svcPad: '22px', display: '46px', h2: '30px', h3: '24px', cap: '19px', body: '15px' }
+      : { pad: '64px', headH: '88px', heroH: '780px', cols: 12, gap: '24px', rowGap: '160px', secPad: '200px', headGap: '56px', subGap: '48px', svcPad: '36px', display: '104px', h2: '48px', h3: '34px', cap: '22px', body: '16px' };
+    const L = m
+      ? { label: '1 / -1', text: '1 / -1', a: '1 / -1', b: '1 / -1' }
+      : { label: '1 / span 3', text: '4 / span 8', a: '4 / span 4', b: '9 / span 3' };
+    const S = m
+      ? { num: '1 / span 1', name: '2 / span 3', desc: '2 / span 3' }
+      : { num: '1 / span 1', name: '2 / span 5', desc: '8 / span 4' };
+    const hero = [
+      { n: 'Casa A Caeira', l: 'Poio', y: '2024', slot: 'hero-caeira', ph: 'Hero · Casa A Caeira · salón' },
+      { n: 'Clínica Dental Lérez', l: 'Pontevedra', y: '2025', slot: 'hero-lerez', ph: 'Hero · Clínica Lérez · recepción' },
+      { n: 'Restaurante Ribeira', l: 'Combarro', y: '2024', slot: 'hero-ribeira', ph: 'Hero · Restaurante Ribeira · sala' }
+    ];
+    const i = this.state.slide;
+    const slides = hero.map((h, k) => ({ ...h, op: k === i ? 1 : 0, pe: k === i ? 'auto' : 'none' }));
+    const raw = [
+      { n: 'Clínica Dental Lérez', t: 'Clínica', l: 'Pontevedra', y: '2025', slot: 'p-lerez', ph: 'Clínica Lérez · gabinete', d: ['1 / span 7', '4 / 3', '0'], mb: ['1 / -1', '4 / 3', '0'] },
+      { n: 'Restaurante Ribeira', t: 'Restaurante', l: 'Combarro', y: '2024', slot: 'p-ribeira', ph: 'Ribeira · barra', d: ['9 / span 4', '3 / 4', '220px'], mb: ['2 / span 3', '3 / 4', '0'] },
+      { n: 'Casa A Caeira', t: 'Vivienda', l: 'Poio', y: '2024', slot: 'p-caeira', ph: 'A Caeira · cocina', d: ['2 / span 4', '4 / 5', '0'], mb: ['1 / span 3', '4 / 5', '0'] },
+      { n: 'Óptica Peregrina', t: 'Comercio', l: 'Pontevedra', y: '2023', slot: 'p-peregrina', ph: 'Peregrina · expositor', d: ['7 / span 6', '3 / 2', '260px'], mb: ['1 / -1', '3 / 2', '0'] },
+      { n: 'Oficinas Arealonga', t: 'Oficina', l: 'Vigo', y: '2025', slot: 'p-arealonga', ph: 'Arealonga · planta de trabajo', d: ['1 / -1', '21 / 9', '0'], mb: ['1 / -1', '4 / 3', '0'] }
+    ];
+    const works = raw.map(p => { const g = m ? p.mb : p.d; return { ...p, col: g[0], ar: g[1], mt: g[2] }; });
+    const services = [
+      { num: '01', name: 'Arquitectura', desc: 'Obra nueva y rehabilitación de viviendas y edificios. Proyecto básico y de ejecución, licencias y tramitación.' },
+      { num: '02', name: 'Interiorismo', desc: 'Reformas integrales, mobiliario a medida y selección de materiales, iluminación y acabados.' },
+      { num: '03', name: 'Clínicas y oficinas', desc: 'Distribución funcional, normativa sanitaria y accesibilidad para consultas, clínicas y espacios de trabajo.' },
+      { num: '04', name: 'Hostelería y comercio', desc: 'Restaurantes, tiendas y showrooms con identidad propia, pensados para la operación diaria.' },
+      { num: '05', name: 'Dirección de obra', desc: 'Seguimiento en obra, coordinación de gremios y control de plazos y costes.' }
+    ];
+    const n = hero.length;
+    return {
+      m, d: !m, v, L, S, slides, works, services,
+      cur: hero[i],
+      counter: String(i + 1).padStart(2, '0') + ' / ' + String(n).padStart(2, '0'),
+      prev: () => this.setState({ slide: (i - 1 + n) % n }),
+      next: () => this.setState({ slide: (i + 1) % n }),
+      menu: m && this.state.menu,
+      openMenu: () => this.setState({ menu: true }),
+      closeMenu: () => this.setState({ menu: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

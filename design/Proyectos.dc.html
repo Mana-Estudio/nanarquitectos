@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;family=Instrument+Sans:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#F5F3EF;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}a:hover{color:#6F6D68}button{font:inherit;color:inherit}</style>
+</helmet>
+<div style="position:relative;background:#F5F3EF;color:#1A1A18;font-family:'Instrument Sans',sans-serif;font-size:{{ v.body }};line-height:1.55;min-height:{{ v.minH }}">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;height:{{ v.headH }};padding:0 {{ v.pad }}">
+    <a href="Home.dc.html" style="display:flex;align-items:center;gap:10px">
+      <span style="width:11px;height:11px;background:#E8BE2E;display:block"></span>
+      <span style="font-weight:500;font-size:14px;letter-spacing:.16em">NAN</span>
+      <span style="font-size:14px;letter-spacing:.02em;color:#6F6D68">Arquitectos</span>
+    </a>
+    <sc-if value="{{ d }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;gap:40px;font-size:14px">
+        <a href="Proyectos.dc.html" style="text-decoration:underline;text-decoration-color:#E8BE2E;text-decoration-thickness:2px;text-underline-offset:6px">Proyectos</a>
+        <a href="Home.dc.html">Estudio</a>
+        <a href="Home.dc.html">Servicios</a>
+        <a href="Home.dc.html">Contacto</a>
+      </nav>
+      <div style="display:flex;gap:12px;font-size:13px;color:#6F6D68"><span style="color:#1A1A18">ES</span><span>GL</span></div>
+    </sc-if>
+    <sc-if value="{{ m }}">
+      <span style="padding:12px 0;font-size:14px">Menú</span>
+    </sc-if>
+  </header>
+
+  <section style="padding:{{ v.topPad }} {{ v.pad }} 0;display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};row-gap:16px;align-items:end">
+    <h1 style="grid-column:{{ L.title }};margin:0;font-family:Newsreader,serif;font-weight:300;font-size:{{ v.display }};line-height:1;letter-spacing:-.02em">Proyectos<sup style="font-family:'Instrument Sans',sans-serif;font-size:14px;letter-spacing:0;vertical-align:top;margin-left:8px;color:#6F6D68">{{ total }}</sup></h1>
+    <p style="grid-column:{{ L.intro }};margin:0;color:#1A1A18;text-wrap:pretty">Clínicas, restaurantes, comercios, oficinas y viviendas en Galicia. Obra construida, fotografiada en uso.</p>
+  </section>
+
+  <div style="margin:{{ v.barTop }} {{ v.pad }} 0;border-top:1px solid rgba(26,26,24,.14);border-bottom:1px solid rgba(26,26,24,.14);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 24px;padding:6px 0">
+    <div style="display:flex;gap:{{ v.chipGap }};overflow-x:auto;max-width:100%;font-size:14px">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="6">
+        <button onClick="{{ f.pick }}" style="background:none;border:0;padding:12px 0;cursor:pointer;white-space:nowrap;display:flex;gap:6px;align-items:baseline;color:{{ f.color }};text-decoration:{{ f.deco }};text-decoration-color:#E8BE2E;text-decoration-thickness:2px;text-underline-offset:6px">{{ f.label }}<span style="font-size:11px;color:#6F6D68">{{ f.count }}</span></button>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:20px;font-size:14px">
+      <button onClick="{{ toGrid }}" style="background:none;border:0;padding:12px 0;cursor:pointer;color:{{ vg.color }}">Retícula</button>
+      <button onClick="{{ toIndex }}" style="background:none;border:0;padding:12px 0;cursor:pointer;color:{{ vi.color }}">Índice</button>
+    </div>
+  </div>
+
+  <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ true }}">
+    <section style="padding:{{ v.listTop }} {{ v.pad }} {{ v.secPad }};display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};row-gap:{{ v.rowGap }};align-items:start">
+      <sc-for list="{{ items }}" as="p" hint-placeholder-count="6">
+        <div style="grid-column:span {{ v.card }};display:flex;flex-direction:column;gap:14px">
+          <div style="position:relative;overflow:hidden;aspect-ratio:4 / 3">
+            <image-slot style="position:absolute;inset:0;width:100%;height:100%" id="{{ p.slot }}" shape="rect" placeholder="{{ p.ph }}"></image-slot>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <a href="Proyecto.dc.html" style="font-family:Newsreader,serif;font-size:{{ v.cap }};line-height:1.25">{{ p.n }}</a>
+            <span style="font-size:13px;color:#6F6D68">{{ p.t }} · {{ p.l }} · {{ p.y }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ isIndex }}">
+    <section style="padding:{{ v.listTop }} {{ v.pad }} {{ v.secPad }};display:grid;grid-template-columns:repeat({{ v.cols }},minmax(0,1fr));column-gap:{{ v.gap }};align-items:start">
+      <div style="grid-column:{{ L.table }}">
+        <sc-if value="{{ d }}">
+          <div style="display:grid;grid-template-columns:56px minmax(0,1fr) 130px 160px 64px 72px;gap:16px;padding:0 0 12px;font-size:12px;color:#6F6D68;border-bottom:1px solid rgba(26,26,24,.14)">
+            <span>Nº</span>
+            <button onClick="{{ sortName }}" style="background:none;border:0;padding:0;text-align:left;cursor:pointer;color:inherit">Proyecto {{ ar.n }}</button>
+            <span>Tipo</span><span>Lugar</span>
+            <button onClick="{{ sortYear }}" style="background:none;border:0;padding:0;text-align:left;cursor:pointer;color:inherit">Año {{ ar.y }}</button>
+            <button onClick="{{ sortArea }}" style="background:none;border:0;padding:0;text-align:right;cursor:pointer;color:inherit">m² {{ ar.a }}</button>
+          </div>
+          <sc-for list="{{ items }}" as="p" hint-placeholder-count="8">
+            <a href="Proyecto.dc.html" onMouseEnter="{{ p.hover }}" style="display:grid;grid-template-columns:56px minmax(0,1fr) 130px 160px 64px 72px;gap:16px;align-items:baseline;padding:18px 0;border-bottom:1px solid rgba(26,26,24,.14);font-size:14px;color:{{ p.rowColor }};transition:color .2s">
+              <span style="display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;color:#6F6D68"><span style="width:7px;height:7px;background:{{ p.mark }};display:block"></span>{{ p.num }}</span>
+              <span style="font-family:Newsreader,serif;font-size:22px;line-height:1.2">{{ p.n }}</span>
+              <span>{{ p.t }}</span><span>{{ p.l }}</span>
+              <span style="font-variant-numeric:tabular-nums">{{ p.y }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums">{{ p.a }}</span>
+            </a>
+          </sc-for>
+        </sc-if>
+        <sc-if value="{{ m }}">
+          <sc-for list="{{ items }}" as="p" hint-placeholder-count="8">
+            <a href="Proyecto.dc.html" style="display:flex;flex-direction:column;gap:2px;padding:16px 0;border-bottom:1px solid rgba(26,26,24,.14)">
+              <span style="display:flex;justify-content:space-between;gap:12px;align-items:baseline"><span style="font-family:Newsreader,serif;font-size:20px;line-height:1.2">{{ p.n }}</span><span style="font-size:13px;font-variant-numeric:tabular-nums">{{ p.y }}</span></span>
+              <span style="font-size:13px;color:#6F6D68">{{ p.t }} · {{ p.l }} · {{ p.a }} m²</span>
+            </a>
+          </sc-for>
+        </sc-if>
+      </div>
+      <sc-if value="{{ d }}">
+        <div style="grid-column:10 / span 3;position:sticky;top:24px;display:flex;flex-direction:column;gap:12px">
+          <div style="position:relative;overflow:hidden;aspect-ratio:4 / 5">
+            <sc-for list="{{ previews }}" as="p" hint-placeholder-count="1">
+              <div style="position:absolute;inset:0;opacity:{{ p.op }};transition:opacity .35s ease">
+                <image-slot style="position:absolute;inset:0;width:100%;height:100%" id="{{ p.slot }}" shape="rect" placeholder="{{ p.ph }}"></image-slot>
+              </div>
+            </sc-for>
+          </div>
+          <span style="font-size:13px;color:#6F6D68">{{ hov.n }} · {{ hov.l }}</span>
+        </div>
+      </sc-if>
+    </section>
+  </sc-if>
+
+  <footer style="padding:28px {{ v.pad }} 40px;border-top:1px solid rgba(26,26,24,.14);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-size:13px;color:#6F6D68">
+    <span>© 2026 NAN Arquitectos · Pontevedra, Galicia</span>
+    <div style="display:flex;flex-wrap:wrap;gap:12px 24px"><a href="Home.dc.html">Instagram</a><a href="Home.dc.html">LinkedIn</a><a href="Home.dc.html">Aviso legal</a><a href="Home.dc.html">Privacidad</a></div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Retícula&quot;,&quot;Índice&quot;],&quot;default&quot;:&quot;Retícula&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { f: 'Todos', view: null, hov: 0, sort: null, dir: 1 };
+  renderVals() {
+    const m = !!this.props.mobile;
+    const view = this.state.view || this.props.view || 'Retícula';
+    const v = m
+      ? { pad: '20px', headH: '64px', topPad: '48px', barTop: '40px', listTop: '32px', secPad: '96px', cols: 4, gap: '12px', rowGap: '48px', card: 4, chipGap: '20px', display: '56px', cap: '19px', body: '15px', minH: '844px' }
+      : { pad: '64px', headH: '88px', topPad: '120px', barTop: '88px', listTop: '56px', secPad: '200px', cols: 12, gap: '24px', rowGap: '88px', card: 4, chipGap: '32px', display: '120px', cap: '22px', body: '16px', minH: '900px' };
+    const L = m ? { title: '1 / -1', intro: '1 / -1', table: '1 / -1' } : { title: '1 / span 7', intro: '9 / span 4', table: '1 / span 8' };
+    const all = [
+      ['Clínica Dental Lérez', 'Clínica', 'Pontevedra', 2025, 320, 'p-lerez'],
+      ['Oficinas Arealonga', 'Oficina', 'Vigo', 2025, 540, 'p-arealonga'],
+      ['Restaurante Ribeira', 'Restaurante', 'Combarro', 2024, 180, 'p-ribeira'],
+      ['Casa A Caeira', 'Vivienda', 'Poio', 2024, 260, 'p-caeira'],
+      ['Clínica Veterinaria Mourente', 'Clínica', 'Pontevedra', 2024, 160, 'p-mourente'],
+      ['Óptica Peregrina', 'Comercio', 'Pontevedra', 2023, 95, 'p-peregrina'],
+      ['Piso Rúa Real', 'Vivienda', 'Pontevedra', 2023, 140, 'p-ruareal'],
+      ['Taberna O Peirao', 'Restaurante', 'Bueu', 2023, 230, 'p-peirao'],
+      ['Fisioterapia Silgar', 'Clínica', 'Sanxenxo', 2022, 210, 'p-silgar'],
+      ['Forno Vello', 'Comercio', 'Marín', 2022, 70, 'p-fornovello'],
+      ['Casa en Lourizán', 'Vivienda', 'Pontevedra', 2021, 190, 'p-lourizan'],
+      ['Sede Bora Asesores', 'Oficina', 'Pontevedra', 2021, 310, 'p-bora']
+    ].map((r, i) => ({ n: r[0], t: r[1], l: r[2], y: r[3], a: r[4], slot: r[5], ph: r[0] + ' · foto principal', idx: i }));
+    const cats = [['Todos', null], ['Clínicas', 'Clínica'], ['Restaurantes', 'Restaurante'], ['Comercios', 'Comercio'], ['Oficinas', 'Oficina'], ['Viviendas', 'Vivienda']];
+    const active = cats.find(c => c[0] === this.state.f)[1];
+    const filters = cats.map(([label, t]) => {
+      const on = label === this.state.f;
+      return { label, count: t ? all.filter(p => p.t === t).length : all.length, color: on ? '#1A1A18' : '#6F6D68', deco: on ? 'underline' : 'none', pick: () => this.setState({ f: label }) };
+    });
+    let list = all.filter(p => !active || p.t === active);
+    const { sort, dir } = this.state;
+    if (sort) list = [...list].sort((a, b) => (a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0) * dir);
+    const hovIdx = list.some(p => p.idx === this.state.hov) ? this.state.hov : (list[0] ? list[0].idx : 0);
+    const items = list.map((p, k) => ({
+      ...p, num: String(k + 1).padStart(2, '0'),
+      rowColor: '#1A1A18', mark: p.idx === hovIdx ? '#E8BE2E' : 'transparent',
+      hover: () => this.state.hov !== p.idx && this.setState({ hov: p.idx })
+    }));
+    const setSort = key => () => this.setState(s => ({ sort: key, dir: s.sort === key ? -s.dir : (key === 'n' ? 1 : -1) }));
+    const arrow = key => (sort === key ? (dir === 1 ? '↑' : '↓') : '');
+    const isGrid = view === 'Retícula';
+    return {
+      m, d: !m, v, L, filters, items, total: list.length,
+      isGrid, isIndex: !isGrid,
+      vg: { color: isGrid ? '#1A1A18' : '#6F6D68' }, vi: { color: isGrid ? '#6F6D68' : '#1A1A18' },
+      toGrid: () => this.setState({ view: 'Retícula' }), toIndex: () => this.setState({ view: 'Índice' }),
+      previews: all.map(p => ({ ...p, op: p.idx === hovIdx ? 1 : 0 })),
+      hov: all[hovIdx],
+      sortName: setSort('n'), sortYear: setSort('y'), sortArea: setSort('a'),
+      ar: { n: arrow('n'), y: arrow('y'), a: arrow('a') }
+    };
+  }
+}
+</script>
+</body>
+</html>

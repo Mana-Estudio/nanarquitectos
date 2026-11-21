@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;family=Instrument+Sans:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#E7E4DE;font-family:'Instrument Sans',system-ui,sans-serif;color:#1A1A18}a{color:inherit}a:hover{color:#6F6D68}.dv-turn{padding:48px 56px 40px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:12px;margin:0 0 24px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:500 15px/1.2 'Instrument Sans',sans-serif}.dv-opts{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:10px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 12px/1.3 'Instrument Sans',sans-serif;color:rgba(0,0,0,.6)}.dv-card{background:#F5F3EF;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}.dv-opt:target .dv-oid{background:#1A1A18;color:#fff}.dv-next{margin:28px 0 0;font:12px/1.5 'Instrument Sans',sans-serif;color:rgba(0,0,0,.55)}</style>
+</helmet>
+<section class="dv-turn" id="t0">
+  <div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;max-width:1440px">
+    <div style="grid-column:1 / span 5;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:11px;height:11px;background:#E8BE2E;display:block"></span><span style="font-weight:500;font-size:14px;letter-spacing:.16em">NAN</span><span style="font-size:14px;color:#6F6D68">Arquitectos · web</span></div>
+      <h1 style="margin:0;font-family:Newsreader,serif;font-weight:300;font-size:56px;line-height:1.05;letter-spacing:-.02em">Home, Proyectos y Detalle. Desktop 1440 y mobile 390.</h1>
+    </div>
+    <div style="grid-column:7 / span 6;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 32px;font-size:13px;line-height:1.55;align-content:end">
+      <div><div style="color:#6F6D68">Tipografía</div>Newsreader Light para títulos, Instrument Sans para texto y ficha.</div>
+      <div><div style="color:#6F6D68">Retícula</div>12 columnas, márgenes de 64 px, medianil de 24 px. Mobile: 4 columnas, 20 px.</div>
+      <div><div style="color:#6F6D68">Color</div>
+        <div style="display:flex;gap:6px;margin-top:6px">
+          <span style="width:28px;height:28px;background:#F5F3EF;border:1px solid rgba(0,0,0,.12);display:block"></span>
+          <span style="width:28px;height:28px;background:#1A1A18;display:block"></span>
+          <span style="width:28px;height:28px;background:#8C8A85;display:block"></span>
+          <span style="width:28px;height:28px;background:#E8BE2E;display:block"></span>
+        </div>
+      </div>
+      <div><div style="color:#6F6D68">Amarillo</div>Solo en logo, navegación activa, filtro activo, fila señalada del índice y email de contacto.</div>
+    </div>
+  </div>
+</section>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Home</span></div>
+  <div class="dv-opts">
+    <div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Desktop 1440</div>
+      <div class="dv-card" style="width:1440px"><dc-import name="Home" hint-size="1440px,5200px"></dc-import></div></div>
+    <div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Mobile 390 · pulsar «Menú»</div>
+      <div class="dv-card" style="width:390px"><dc-import name="Home" mobile="{{ true }}" hint-size="390px,4200px"></dc-import></div></div>
+  </div>
+</section>
+
+<section class="dv-turn" id="t2">
+  <div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Proyectos · filtro por tipo, retícula e índice</span></div>
+  <div class="dv-opts">
+    <div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Desktop · retícula</div>
+      <div class="dv-card" style="width:1440px"><dc-import name="Proyectos" hint-size="1440px,2600px"></dc-import></div></div>
+    <div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Desktop · índice (hover muestra la obra)</div>
+      <div class="dv-card" style="width:1440px"><dc-import name="Proyectos" view="Índice" hint-size="1440px,1600px"></dc-import></div></div>
+    <div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Mobile · retícula</div>
+      <div class="dv-card" style="width:390px"><dc-import name="Proyectos" mobile="{{ true }}" hint-size="390px,4000px"></dc-import></div></div>
+    <div class="dv-opt" id="2d"><div class="dv-olabel"><a class="dv-oid" href="#2d">2d</a>Mobile · índice</div>
+      <div class="dv-card" style="width:390px"><dc-import name="Proyectos" mobile="{{ true }}" view="Índice" hint-size="390px,1500px"></dc-import></div></div>
+  </div>
+</section>
+
+<section class="dv-turn" id="t3">
+  <div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Detalle de proyecto · claro y oscuro</span></div>
+  <div class="dv-opts">
+    <div class="dv-opt" id="3a"><div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Desktop · claro</div>
+      <div class="dv-card" style="width:1440px"><dc-import name="Proyecto" hint-size="1440px,6400px"></dc-import></div></div>
+    <div class="dv-opt" id="3b"><div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a>Desktop · oscuro</div>
+      <div class="dv-card" style="width:1440px;background:#151513"><dc-import name="Proyecto" dark="{{ true }}" hint-size="1440px,6400px"></dc-import></div></div>
+    <div class="dv-opt" id="3c"><div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a>Mobile · claro</div>
+      <div class="dv-card" style="width:390px"><dc-import name="Proyecto" mobile="{{ true }}" hint-size="390px,5200px"></dc-import></div></div>
+    <div class="dv-opt" id="3d"><div class="dv-olabel"><a class="dv-oid" href="#3d">3d</a>Mobile · oscuro</div>
+      <div class="dv-card" style="width:390px;background:#151513"><dc-import name="Proyecto" mobile="{{ true }}" dark="{{ true }}" hint-size="390px,5200px"></dc-import></div></div>
+  </div>
+  <p class="dv-next">Siguiente: «sustituir el logo por el real» · «ficha más técnica, estilo tabla» · «hero de la home sin carrusel, una sola obra»</p>
+</section>
+</x-dc>
+</body>
+</html>

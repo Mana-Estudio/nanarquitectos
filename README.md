@@ -2,7 +2,9 @@
 
 Prototipo de la nueva web de [NAN Arquitectos](https://www.nanarquitectos.com/) (Pontevedra). Diagnóstico y plan en [PLAN.md](PLAN.md).
 
-**Stack:** Astro · `astro:assets` (AVIF/WebP + srcset) · View Transitions nativas · GSAP (ScrollTrigger, Flip) · Lenis.
+El diseño de referencia es el export de Claude Design en [design/](design/) (Home, Proyectos y Detalle, desktop y mobile).
+
+**Stack:** Astro · Newsreader + Instrument Sans · `astro:assets` (AVIF/WebP + srcset) · View Transitions nativas · GSAP (ScrollTrigger, Flip) · Lenis.
 
 ```sh
 npm install

@@ -9,7 +9,7 @@ function fotos(slug: string): ImageMetadata[] {
     .map(([, mod]) => mod.default);
 }
 
-export type Categoria = 'Hostelería' | 'Clínicas' | 'Comercial' | 'Vivienda' | 'Oficina';
+export type Categoria = 'Clínica' | 'Hostelería' | 'Comercio' | 'Oficina' | 'Vivienda';
 
 export interface Proyecto {
   slug: string;
@@ -19,6 +19,7 @@ export interface Proyecto {
   lugar: string;
   anio: number;
   superficie: string;
+  m2: number;
   /** índice de la foto horizontal usada como portada */
   portada: number;
   resumen: string;
@@ -35,6 +36,7 @@ const data: Omit<Proyecto, 'fotos'>[] = [
     lugar: 'Pontevedra',
     anio: 2025,
     superficie: '200 m²',
+    m2: 200,
     portada: 2,
     resumen: 'Un restaurante que traduce la tradición franciscana a madera, microcemento y luz cálida.',
     texto: [
@@ -51,6 +53,7 @@ const data: Omit<Proyecto, 'fotos'>[] = [
     lugar: 'Moraña, Pontevedra',
     anio: 2022,
     superficie: '4.000 m²',
+    m2: 4000,
     portada: 0,
     resumen: 'Un pazo, sus jardines y un pabellón de eventos ordenados por la topografía del lugar.',
     texto: [
@@ -63,10 +66,11 @@ const data: Omit<Proyecto, 'fotos'>[] = [
     slug: 'mercedes-fayos',
     nombre: 'Mercedes Fayos Fons',
     titulo: 'Clínica de ortodoncia Mercedes Fayos Fons',
-    categoria: 'Clínicas',
+    categoria: 'Clínica',
     lugar: 'Pontevedra',
     anio: 2024,
     superficie: '200 m²',
+    m2: 200,
     portada: 0,
     resumen: 'Una clínica abierta a la ciudad, organizada con volúmenes puros y membranas translúcidas.',
     texto: [
@@ -83,6 +87,7 @@ const data: Omit<Proyecto, 'fotos'>[] = [
     lugar: 'Pontevedra',
     anio: 2024,
     superficie: '150 m²',
+    m2: 150,
     portada: 0,
     resumen: 'Un apartamento para una ilustradora, con madera oscura y puertas de color.',
     texto: [
@@ -95,10 +100,11 @@ const data: Omit<Proyecto, 'fotos'>[] = [
     slug: 'carlos-pons',
     nombre: 'Carlos Pons',
     titulo: 'Centro de belleza Carlos Pons',
-    categoria: 'Comercial',
+    categoria: 'Comercio',
     lugar: 'Pontevedra',
     anio: 2025,
     superficie: '220 m²',
+    m2: 220,
     portada: 0,
     resumen: 'Rocas de acero, puestos de roble y cortinas que se mueven como el cabello.',
     texto: [
@@ -115,6 +121,7 @@ const data: Omit<Proyecto, 'fotos'>[] = [
     lugar: 'Calle Michelena 30, Pontevedra',
     anio: 2020,
     superficie: '530 m²',
+    m2: 530,
     portada: 1,
     resumen: 'Dependencias municipales adaptadas a la nueva normalidad, con metal, madera y aire limpio.',
     texto: [
@@ -127,17 +134,32 @@ const data: Omit<Proyecto, 'fotos'>[] = [
 
 export const proyectos: Proyecto[] = data.map((p) => ({ ...p, fotos: fotos(p.slug) }));
 
-export const categorias: Categoria[] = ['Clínicas', 'Comercial', 'Hostelería', 'Oficina', 'Vivienda'];
+export const filtros: { label: string; cat: Categoria | null }[] = [
+  { label: 'Todos', cat: null },
+  { label: 'Clínicas', cat: 'Clínica' },
+  { label: 'Hostelería', cat: 'Hostelería' },
+  { label: 'Comercios', cat: 'Comercio' },
+  { label: 'Oficinas', cat: 'Oficina' },
+  { label: 'Viviendas', cat: 'Vivienda' },
+];
+
+export const ciudad = (p: Proyecto) => p.lugar.split(',').pop()!.trim();
 
 export const portada = (p: Proyecto) => p.fotos[p.portada] ?? p.fotos[0];
 
-/** Fotos para el cross-fade del hero (todas horizontales) */
-export const heroSlides = [
-  { slug: 'marna', foto: 2 },
-  { slug: 'pazo-buzaca', foto: 0 },
-  { slug: 'vivienda-parche', foto: 0 },
-  { slug: 'ayuntamiento-pontevedra', foto: 1 },
-].map(({ slug, foto }) => {
+const pick = (slug: string, foto: number) => {
   const p = proyectos.find((x) => x.slug === slug)!;
   return { proyecto: p, imagen: p.fotos[foto] };
-});
+};
+
+/** Hero de la home: 3 obras, todas en horizontal */
+export const heroSlides = [pick('marna', 5), pick('pazo-buzaca', 3), pick('vivienda-parche', 1)];
+
+/** Obras seleccionadas: posición en la retícula según el diseño */
+export const obrasHome = [
+  { ...pick('marna', 2), col: '1 / span 7', ar: '4 / 3', mt: '0' },
+  { ...pick('mercedes-fayos', 0), col: '9 / span 4', ar: '3 / 4', mt: '220px' },
+  { ...pick('carlos-pons', 0), col: '2 / span 4', ar: '4 / 5', mt: '0' },
+  { ...pick('vivienda-parche', 0), col: '7 / span 6', ar: '3 / 2', mt: '260px' },
+  { ...pick('pazo-buzaca', 0), col: '1 / -1', ar: '21 / 9', mt: '0' },
+];
