@@ -36,6 +36,7 @@ const proyectos = await Promise.all(cargados.map(async (p) => {
     portada: p.portadaFoto ?? Math.max(0, f.findIndex(isL)),
     galeria: p.galeria ?? 'mosaico',
     mostrar: { ficha: true, texto: true, galeria: true, planos: true, siguiente: true, ...p.mostrar },
+    diseno: { texto: 'editorial', ...p.diseno },
     _f: f,
   };
 }));

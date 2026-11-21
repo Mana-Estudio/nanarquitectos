@@ -22,6 +22,7 @@ create table if not exists public.proyectos (
   fotos       jsonb not null default '[]',
   planos      jsonb not null default '[]',
   portada     text,          -- id de la foto destacada; null = la primera horizontal
+  diseno      jsonb not null default '{}',   -- formatos elegidos en el panel: { "texto": "editorial" | "columnas" | "cita" }
   updated_at  timestamptz not null default now()
 );
 create index if not exists proyectos_orden_idx on public.proyectos (orden);

@@ -17,10 +17,9 @@ const total = String(proyectos.length);
 const hero = portada(p);
 const resto = p.fotos.filter((f) => f !== hero);
 const plural = filtros.find((f) => f.cat === p.categoria)?.label ?? 'Proyectos';
-const resumenEnTexto = !!p.resumen && !!p.texto[0] && p.texto[0].startsWith(p.resumen);
-const cuerpo = p.texto.map((t, i) => (i === 0 && resumenEnTexto ? t.slice(p.resumen.length).trim() : t)).filter(Boolean);
-const nota = cuerpo.length > 2 ? cuerpo[cuerpo.length - 1] : null;
-const principal = nota ? cuerpo.slice(0, -1) : cuerpo;
+// Texto: el primer párrafo es la entradilla; el formato lo elige el cliente en el panel
+const parrafos = p.texto.map((t) => t.trim()).filter(Boolean);
+const formato = p.diseno?.texto ?? 'editorial';
 const n = (i: number) => String(i + 1).padStart(2, '0');
 ---
 <Base title={p.titulo} description={p.resumen || `${p.titulo}: proyecto de NAN Arquitectos en ${p.lugar}${p.anio ? ` (${p.anio})` : ''}.`} ogImage={hero.src} current="proyectos">
@@ -56,18 +55,16 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
       </div>}
     </section>
 
-    {M.texto && p.resumen && <section class="pad grid12 body">
+    {M.texto && parrafos.length > 0 && <section class:list={['pad grid12 body', `f-${formato}`]}>
       <div class="text" data-reveal="text">
-        <p class="lead serif">{p.resumen}</p>
-        {principal.map((t) => <p>{t}</p>)}
-        {nota && <p class="t3-mobile">{nota}</p>}
+        <p class="lead serif">{parrafos[0]}</p>
+        {parrafos.length > 1 && <div class="rest">{parrafos.slice(1).map((t) => <p>{t}</p>)}</div>}
       </div>
     </section>}
 
     {M.galeria && resto.length > 0 && (
       <div class:list={['gallery', `is-${p.galeria}`]}>
         <Gallery fotos={resto} layout={p.galeria} titulo={p.titulo} />
-        {nota && nota.length < 420 && p.galeria !== 'galeria' && <p class="note serif pad" data-reveal="text"><span>{nota}</span></p>}
       </div>
     )}
 
@@ -193,9 +190,17 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
   .rows dt { font-size: 13px; }
 
   .body { padding-top: 120px; font-size: 17px; line-height: 1.6; }
+  /* Formatos de texto (los mismos que ofrece el panel) */
   .text { grid-column: 4 / span 5; display: flex; flex-direction: column; gap: 24px; }
+  .rest { display: flex; flex-direction: column; gap: 24px; }
   .lead { font-weight: 300; font-size: clamp(22px, 2vw, 28px); line-height: 1.35; }
-  .t3-mobile { display: none; }
+  .f-columnas .text { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap) calc(var(--gap) * 3); align-items: start; }
+  .f-columnas .lead { font-size: clamp(26px, 2.6vw, 38px); line-height: 1.2; }
+  .f-columnas .rest { display: block; columns: 2; column-gap: calc(var(--gap) * 2); }
+  .f-columnas .rest p { break-inside: avoid; margin-bottom: 24px; }
+  .f-cita .text { grid-column: 2 / span 10; gap: 56px; }
+  .f-cita .lead { font-size: clamp(30px, 4vw, 58px); line-height: 1.1; letter-spacing: -0.015em; text-wrap: balance; }
+  .f-cita .rest { margin-left: 50%; }
 
   .gallery { padding-top: 120px; }
   .gallery.is-sueltas { padding-top: 160px; }
@@ -231,10 +236,13 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
   @media (max-width: 760px) {
     .p-hero { height: 520px; min-height: 0; }
     .head { padding-top: 40px; }
-    .title-col, .ficha, .text { grid-column: 1 / -1; }
+    .title-col, .ficha, .text, .f-columnas .text, .f-cita .text { grid-column: 1 / -1; }
+    .f-columnas .text { grid-template-columns: 1fr; }
+    .f-columnas .rest { columns: 1; }
+    .f-cita .text { gap: 32px; }
+    .f-cita .rest { margin-left: 0; }
     .ficha { padding-top: 0; }
     .body { padding-top: 56px; font-size: 15px; }
-    .t3-mobile { display: block; }
     .note { display: none; }
     .gallery, .gallery.is-sueltas, .planos { padding-top: 56px; }
     .next { margin-top: 104px; padding-bottom: 72px; }

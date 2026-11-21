@@ -71,6 +71,8 @@ interface Raw {
   galeria?: Galeria;
   /** Qué bloques se muestran en la página del proyecto */
   mostrar?: Partial<Visibilidad>;
+  /** Formatos de diseño elegidos en el panel (texto: editorial | columnas | cita) */
+  diseno?: { texto?: TextoFormato };
   /** Posición en el carrusel de la home (1–3) y foto elegida (índice en `fotos`) */
   hero?: number;
   heroFoto?: number;
@@ -80,6 +82,7 @@ interface Raw {
 }
 
 export type Galeria = 'mosaico' | 'galeria' | 'sueltas';
+export type TextoFormato = 'editorial' | 'columnas' | 'cita';
 export const galerias: { id: Galeria; label: string }[] = [
   { id: 'mosaico', label: 'Mosaico' },
   { id: 'galeria', label: 'Galería deslizable' },

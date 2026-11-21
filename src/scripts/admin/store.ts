@@ -10,6 +10,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 export type Galeria = 'mosaico' | 'galeria' | 'sueltas';
+export type TextoFormato = 'editorial' | 'columnas' | 'cita';
+export interface Diseno { texto: TextoFormato }
 /** `repo`: foto que vive en el repositorio · `path`: foto subida al bucket */
 export interface Foto { id: string; src: string; w: number; h: number; repo?: string; path?: string }
 export interface Mostrar { ficha: boolean; texto: boolean; galeria: boolean; planos: boolean; siguiente: boolean }
@@ -29,6 +31,7 @@ export interface P {
   portada: number;
   galeria: Galeria;
   mostrar: Mostrar;
+  diseno: Diseno;
 }
 export interface Slot { slug: string; foto: string }
 /** Carrusel (3) y obras seleccionadas (5) de la home */
@@ -132,7 +135,7 @@ export function supabaseStore(seed: Estado, url: string, key: string, orient: ('
   const fromFoto = (f: Foto) => (f.path ? { id: f.id, path: f.path, w: f.w, h: f.h } : { id: f.id, repo: f.repo });
   const row = (p: P, i: number) => ({
     slug: p.slug, nombre: p.nombre, titulo: p.titulo, categoria: p.categoria, lugar: p.lugar, anio: p.anio, m2: p.m2,
-    texto: p.texto, publicado: p.publicado, orden: i, galeria: p.galeria, mostrar: p.mostrar,
+    texto: p.texto, publicado: p.publicado, orden: i, galeria: p.galeria, mostrar: p.mostrar, diseno: p.diseno,
     fotos: p.fotos.map(fromFoto), planos: p.planos.map(fromFoto), portada: p.fotos[p.portada]?.id ?? null,
   });
   // Lo último guardado, para enviar solo las filas que cambiaron
@@ -163,6 +166,7 @@ export function supabaseStore(seed: Estado, url: string, key: string, orient: ('
         return {
           slug: x.slug, nombre: x.nombre, titulo: x.titulo, categoria: x.categoria, lugar: x.lugar, anio: x.anio, m2: x.m2,
           texto: x.texto, publicado: x.publicado, galeria: x.galeria, mostrar: x.mostrar, fotos,
+          diseno: { texto: 'editorial', ...x.diseno },
           planos: (x.planos as Fila[]).map(toFoto).filter(Boolean) as Foto[],
           portada: k >= 0 ? k : Math.max(0, fotos.findIndex((f) => f.w > f.h)),
         };

@@ -1,4 +1,4 @@
-import { localStore, supabaseStore, type Estado, type Foto, type Galeria, type Mostrar, type P, type Portada } from './store';
+import { localStore, supabaseStore, type Estado, type Foto, type Galeria, type Mostrar, type P, type Portada, type TextoFormato } from './store';
 
 interface Seed { estado: Estado; slots: { label: string; o: 'L' | 'P' }[]; categorias: string[]; logo: string; supabase: { url: string; key: string } | null }
 const seed: Seed = JSON.parse(document.getElementById('seed')!.textContent!);
@@ -14,7 +14,6 @@ let port: Portada | null = null;
 let dirty = false;
 let q = '';
 let cat = '';
-let showPrev = false;
 let lastHash = location.hash;
 let sesion = false;
 /** Hay cambios guardados que todavía no se publicaron en la web */
@@ -30,13 +29,6 @@ const GAL: { id: Galeria; t: string; d: string }[] = [
   { id: 'mosaico', t: 'Mosaico', d: 'Retícula densa, poco aire entre fotos' },
   { id: 'galeria', t: 'Galería deslizable', d: 'Tira horizontal que se pasa con el dedo' },
   { id: 'sueltas', t: 'Imágenes sueltas', d: 'Composición editorial, con mucho aire' },
-];
-const BLOQUES: { k: keyof Mostrar; t: string; d: string }[] = [
-  { k: 'ficha', t: 'Ficha técnica', d: 'Lugar, año y superficie junto al título' },
-  { k: 'texto', t: 'Texto', d: 'Los párrafos de descripción' },
-  { k: 'galeria', t: 'Galería', d: 'Todas las fotos salvo la destacada' },
-  { k: 'planos', t: 'Planos', d: 'Solo aparece si se subió alguno' },
-  { k: 'siguiente', t: 'Siguiente proyecto', d: 'Enlace al proyecto que sigue al final' },
 ];
 
 /* ── Utilidades ───────────────────────────────────── */
@@ -106,13 +98,14 @@ function enter() {
   draft = null;
   port = null;
   dirty = false;
-  showPrev = false;
+  picking = false;
   if (view === 'nuevo') {
-    draft = { slug: '', nombre: '', titulo: '', categoria: 'Vivienda', lugar: '', anio: new Date().getFullYear(), m2: null, texto: [''], publicado: false, fotos: [], planos: [], portada: 0, galeria: 'mosaico', mostrar: { ficha: true, texto: true, galeria: true, planos: true, siguiente: true }, nuevo: true };
+    draft = { slug: '', nombre: '', titulo: '', categoria: 'Vivienda', lugar: '', anio: new Date().getFullYear(), m2: null, texto: [''], publicado: false, fotos: [], planos: [], portada: 0, galeria: 'mosaico', mostrar: { ficha: true, texto: true, galeria: true, planos: true, siguiente: true }, diseno: { texto: 'editorial' }, nuevo: true };
   } else if (view === 'proyectos' && arg) {
     const p = bySlug(arg);
     if (!p) { location.replace('#/proyectos'); return; }
     draft = structuredClone(p);
+    draft.diseno ??= { texto: 'editorial' };
   } else if (view === 'portada') {
     port = structuredClone(E.portada);
   }
@@ -331,7 +324,8 @@ function sortable(list: HTMLElement, item: string, done: (ids: string[]) => void
     const over = (e.target as HTMLElement).closest<HTMLElement>(item);
     if (!over || over === drag) return;
     const r = over.getBoundingClientRect();
-    const horizontal = getComputedStyle(list).display.includes('grid') && r.width < list.clientWidth / 2;
+    // En retículas y tiras (elementos más angostos que la lista) se compara en horizontal
+    const horizontal = r.width < list.clientWidth * 0.9;
     const after = horizontal ? e.clientX > r.left + r.width / 2 : e.clientY > r.top + r.height / 2;
     over.parentElement!.insertBefore(drag, after ? over.nextSibling : over);
   });
@@ -344,121 +338,107 @@ function sortable(list: HTMLElement, item: string, done: (ids: string[]) => void
   });
 }
 
-/* Editor */
-function photos(kind: 'fotos' | 'planos') {
-  const d = draft!;
-  const list = d[kind];
-  return `<div class="phs" data-phs="${kind}">
-    ${list.map((f, i) => `
-      <figure class="ph ${kind === 'fotos' && i === d.portada ? 'is-cover' : ''}" draggable="true" data-id="${f.id}">
-        <img src="${f.src}" alt="" loading="lazy" draggable="false">
-        <span class="ph-o">${isL(f) ? 'Horizontal' : 'Vertical'}</span>
-        ${kind === 'fotos' ? `<button type="button" class="ph-star" data-cover="${i}" aria-pressed="${i === d.portada}" aria-label="${i === d.portada ? 'Foto destacada' : 'Usar como foto destacada'}" title="Foto destacada">★</button>` : ''}
-        <span class="ph-act">
-          <button type="button" class="ib" data-phmove="-1" data-kind="${kind}" data-i="${i}" aria-label="Mover antes" ${i === 0 ? 'disabled' : ''}>←</button>
-          <button type="button" class="ib" data-phmove="1" data-kind="${kind}" data-i="${i}" aria-label="Mover después" ${i === list.length - 1 ? 'disabled' : ''}>→</button>
-          <button type="button" class="ib ib-del" data-phdel="${i}" data-kind="${kind}" aria-label="Quitar foto">×</button>
-        </span>
-      </figure>`).join('')}
-    <label class="drop" data-drop="${kind}">
-      <input type="file" accept="image/*" multiple data-up="${kind}" class="sr-only">
-      <span class="drop-plus" aria-hidden="true">+</span>
-      <span class="drop-t">${kind === 'fotos' ? 'Subir fotos' : 'Subir planos'}</span>
-      <span class="drop-d">Arrastre aquí o haga clic</span>
-    </label>
-  </div>`;
-}
+/* Editor visual: se edita sobre la plantilla de la página del proyecto */
+const TEXTOS: { id: TextoFormato; t: string; d: string }[] = [
+  { id: 'editorial', t: 'Editorial', d: 'Entradilla y una columna estrecha' },
+  { id: 'columnas', t: 'Dos columnas', d: 'Entradilla a la izquierda y el texto en columnas' },
+  { id: 'cita', t: 'Cita', d: 'La entradilla en grande, como una frase destacada' },
+];
+let device: 'desktop' | 'tablet' | 'mobile' = 'desktop';
+let picking = false;
+
+/** Cambios de formato con transición suave (View Transitions) cuando el navegador la soporta */
+const vt = (fn: () => void) => {
+  const d = document as Document & { startViewTransition?: (f: () => void) => void };
+  if (d.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) d.startViewTransition(fn);
+  else fn();
+};
 function sw(name: string, on: boolean, t: string, d?: string) {
   return `<label class="sw sw-row"><span class="sw-txt"><span>${t}</span>${d ? `<span class="hint">${d}</span>` : ''}</span><input type="checkbox" ${name} ${on ? 'checked' : ''}><span class="sw-ui" aria-hidden="true"></span></label>`;
 }
-function form() {
-  const d = draft!;
-  return `
-  <section class="card">
-    <h2 class="card-t">Datos del proyecto</h2>
-    <div class="grid2">
-      <label class="fld fld-wide"><span>Nombre</span><input class="in in-lg" data-f="nombre" value="${esc(d.nombre)}" required placeholder="Ej.: Vivienda en Poio"></label>
-      <label class="fld fld-wide"><span>Título completo <em>aparece en Google y en la pestaña del navegador</em></span><input class="in" data-f="titulo" value="${esc(d.titulo)}" placeholder="${esc(d.nombre || 'Igual que el nombre')}"></label>
-      <label class="fld"><span>Categoría</span><select class="in" data-f="categoria">${seed.categorias.map((c) => `<option ${c === d.categoria ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
-      <label class="fld"><span>Lugar</span><input class="in" data-f="lugar" value="${esc(d.lugar)}" placeholder="Pontevedra"></label>
-      <label class="fld"><span>Año</span><input class="in" type="number" inputmode="numeric" data-f="anio" value="${d.anio ?? ''}" min="1990" max="2100"></label>
-      <label class="fld"><span>Superficie (m²)</span><input class="in" type="number" inputmode="numeric" data-f="m2" value="${d.m2 ?? ''}" min="0"></label>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2 class="card-t">Fotos <span class="num mut">${d.fotos.length}</span></h2>
-    <p class="hint">La estrella marca la foto destacada: es la portada del proyecto y la de su tarjeta en el listado. Arrastre para ordenar.</p>
-    ${photos('fotos')}
-  </section>
-
-  <section class="card">
-    <h2 class="card-t">Cómo se muestran las fotos</h2>
-    <div class="modes" role="radiogroup" aria-label="Presentación de las fotos">
-      ${GAL.map((g) => `
-        <label class="mode ${d.galeria === g.id ? 'is-on' : ''}">
-          <input type="radio" name="galeria" value="${g.id}" ${d.galeria === g.id ? 'checked' : ''} data-gal class="sr-only">
-          <span class="mode-fig mode-${g.id}" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-          <span class="mode-t">${g.t}</span><span class="hint">${g.d}</span>
-        </label>`).join('')}
-    </div>
-  </section>
-
-  <section class="card">
-    <h2 class="card-t">Textos</h2>
-    <p class="hint">El primer párrafo se destaca como entradilla. Los demás se leen debajo.</p>
-    <div class="paras">
-      ${d.texto.map((t, i) => `
-        <div class="para">
-          <span class="para-n num">${two(i + 1)}</span>
-          <textarea class="in" rows="${Math.min(8, Math.max(2, Math.ceil(t.length / 90)))}" data-para="${i}" aria-label="Párrafo ${i + 1}">${esc(t)}</textarea>
-          <span class="para-act">
-            <button type="button" class="ib" data-pmove="-1" data-i="${i}" aria-label="Subir párrafo" ${i === 0 ? 'disabled' : ''}>↑</button>
-            <button type="button" class="ib" data-pmove="1" data-i="${i}" aria-label="Bajar párrafo" ${i === d.texto.length - 1 ? 'disabled' : ''}>↓</button>
-            <button type="button" class="ib ib-del" data-pdel="${i}" aria-label="Quitar párrafo">×</button>
-          </span>
-        </div>`).join('')}
-    </div>
-    <button type="button" class="b b-ghost" data-padd><span class="plus" aria-hidden="true">+</span> Añadir párrafo</button>
-  </section>
-
-  <section class="card">
-    <h2 class="card-t">Planos <span class="num mut">${d.planos.length}</span></h2>
-    <p class="hint">Opcional. Se muestran sobre fondo blanco, sin recortar.</p>
-    ${photos('planos')}
-  </section>
-
-  <section class="card">
-    <h2 class="card-t">Qué se muestra en la página</h2>
-    <div class="sws">${BLOQUES.map((b) => sw(`data-show="${b.k}"`, d.mostrar[b.k], b.t, b.d)).join('')}</div>
-  </section>
-
-  <section class="card">
-    <h2 class="card-t">Publicación</h2>
-    <div class="sws">${sw('data-f-pub', d.publicado, 'Publicado en la web', 'Si está apagado, el proyecto queda como borrador y no aparece')}</div>
-    ${d.nuevo ? '' : '<button type="button" class="b b-danger-ghost" data-del>Eliminar proyecto</button>'}
-  </section>`;
+/** Barra de opciones de un bloque: nombre, herramientas y el botón de mostrar u ocultar en la web */
+function bar(name: string, tools = '', hide?: keyof Mostrar) {
+  const on = hide ? draft!.mostrar[hide] : true;
+  return `<div class="blk-bar" role="toolbar" aria-label="${name}">
+    <span class="blk-name">${name}</span>${tools}
+    ${hide ? `<button type="button" class="tb tb-eye ${on ? '' : 'is-off'}" data-toggle="${hide}" aria-pressed="${!on}" title="${on ? 'Ocultar en la web' : 'Mostrar en la web'}">${on ? 'Visible' : 'Oculto'}</button>` : ''}
+  </div>`;
 }
-function preview() {
+const seg = (attr: string, opts: { id: string; t: string; d: string }[], cur: string, fig: string) =>
+  `<span class="seg" role="radiogroup">${opts.map((o) => `<button type="button" class="seg-b ${o.id === cur ? 'is-on' : ''}" ${attr}="${o.id}" role="radio" aria-checked="${o.id === cur}" title="${o.d}"><span class="mini ${fig}-${o.id}" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>${o.t}</span></button>`).join('')}</span>`;
+const ce = (field: string, val: unknown, ph: string, cls = '', tag = 'span') =>
+  `<${tag} class="ce ${cls}" contenteditable="plaintext-only" spellcheck="true" data-edit="${field}" data-ph="${ph}">${esc(val ?? '')}</${tag}>`;
+const upTile = (kind: 'fotos' | 'planos') =>
+  `<label class="cv-up" data-drop="${kind}"><input type="file" accept="image/*" multiple data-up="${kind}" class="sr-only"><span class="drop-plus" aria-hidden="true">+</span><span class="drop-t">${kind === 'fotos' ? 'Subir fotos' : 'Subir planos'}</span><span class="hint">o arrastrarlas aquí</span></label>`;
+
+function canvas() {
   const d = draft!;
+  const M = d.mostrar;
   const cover = d.fotos[d.portada] ?? d.fotos[0];
   const rest = d.fotos.filter((f) => f !== cover);
-  const M = d.mostrar;
-  const textos = d.texto.filter((t) => t.trim());
-  const img = (f: Foto) => `<img src="${f.src}" alt="" class="${isL(f) ? 'l' : 'p'}" loading="lazy">`;
+  const i = E.proyectos.findIndex((p) => p.slug === d.slug);
+  const next = E.proyectos[(i + 1) % E.proyectos.length];
+  const img = (f: Foto) => `<img src="${f.src}" alt="" draggable="false" loading="lazy">`;
+  const ph = (f: Foto, kind: 'fotos' | 'planos') => {
+    const k = d[kind].indexOf(f);
+    return `<figure class="cv-ph ${isL(f) ? 'l' : 'p'}" draggable="true" data-id="${f.id}">${img(f)}
+      <span class="ph-act">
+        ${kind === 'fotos' ? `<button type="button" class="ib" data-cover="${k}" title="Usar como portada" aria-label="Usar como portada">★</button>` : ''}
+        <button type="button" class="ib" data-phmove="-1" data-kind="${kind}" data-i="${k}" aria-label="Mover antes">←</button>
+        <button type="button" class="ib" data-phmove="1" data-kind="${kind}" data-i="${k}" aria-label="Mover después">→</button>
+        <button type="button" class="ib ib-del" data-phdel="${k}" data-kind="${kind}" aria-label="Quitar foto">×</button>
+      </span></figure>`;
+  };
+  const up = (kind: 'fotos' | 'planos', t: string) => `<label class="tb"><input type="file" accept="image/*" multiple data-up="${kind}" class="sr-only">${t}</label>`;
   return `
-    <div class="pv-hero">${cover ? img(cover) : '<span>Sin fotos todavía</span>'}</div>
-    <div class="pv-head">
-      <p class="pv-name">${esc(d.nombre || 'Nombre del proyecto')}</p>
-      ${M.ficha ? `<dl class="pv-ficha"><div><dt>Lugar</dt><dd>${esc(d.lugar || '—')}</dd></div><div><dt>Año</dt><dd>${d.anio ?? '—'}</dd></div><div><dt>Superficie</dt><dd>${d.m2 ? `${d.m2} m²` : '—'}</dd></div></dl>` : ''}
+  <section class="blk blk-hero">
+    ${bar('Portada', `<button type="button" class="tb ${picking ? 'is-on' : ''}" data-pick aria-expanded="${picking}">${picking ? 'Listo' : 'Cambiar foto'}</button>`)}
+    <div class="cv-hero">${cover ? img(cover) : '<div class="cv-empty">Suba fotos para elegir la portada</div>'}</div>
+    ${picking ? `<div class="pick" role="radiogroup" aria-label="Foto de portada">${d.fotos.map((f, k) => `<button type="button" class="pick-b ${k === d.portada ? 'is-on' : ''}" data-cover="${k}" role="radio" aria-checked="${k === d.portada}">${img(f)}</button>`).join('')}${upTile('fotos')}</div>` : ''}
+  </section>
+
+  <section class="blk blk-head">
+    ${bar('Título y ficha', '', 'ficha')}
+    <div class="cv-head">
+      <div class="cv-tcol"><p class="cv-crumb">Proyectos / <span data-crumb>${esc(d.categoria)}</span></p>${ce('nombre', d.nombre, 'Nombre del proyecto', 'cv-title', 'h1')}</div>
+      <dl class="cv-ficha ${M.ficha ? '' : 'is-hidden'}">
+        <div><dt>Lugar</dt><dd>${ce('lugar', d.lugar, 'Lugar')}</dd></div>
+        <div><dt>Año</dt><dd>${ce('anio', d.anio, 'Año')}</dd></div>
+        <div><dt>Superficie</dt><dd>${ce('m2', d.m2, '—')} m²</dd></div>
+      </dl>
     </div>
-    ${M.texto && textos.length ? `<div class="pv-text">${textos.slice(0, 2).map((t, i) => `<p class="${i ? '' : 'pv-lead'}">${esc(t.length > 200 ? `${t.slice(0, 200)}…` : t)}</p>`).join('')}</div>` : ''}
-    ${M.galeria && rest.length ? `<div class="pv-g pv-${d.galeria}">${rest.map(img).join('')}</div>` : ''}
-    ${M.planos && d.planos.length ? `<p class="pv-lbl">Planos</p><div class="pv-g pv-mosaico pv-planos">${d.planos.map(img).join('')}</div>` : ''}
-    ${M.siguiente ? '<p class="pv-next"><span>Siguiente proyecto</span><span>→</span></p>' : ''}`;
+  </section>
+
+  <section class="blk blk-text ${M.texto ? '' : 'is-hidden'}">
+    ${bar('Texto', seg('data-tfmt', TEXTOS, d.diseno.texto, 'mini-t'), 'texto')}
+    <div class="cv-text f-${d.diseno.texto}">
+      <p class="ce cv-lead" contenteditable="plaintext-only" data-para="0" data-ph="Escriba la entradilla: una o dos frases que presenten el proyecto">${esc(d.texto[0] ?? '')}</p>
+      <div class="cv-rest">
+        ${d.texto.slice(1).map((t, k) => `<div class="cv-p"><p class="ce" contenteditable="plaintext-only" data-para="${k + 1}" data-ph="Escriba un párrafo">${esc(t)}</p><button type="button" class="ib ib-del cv-pdel" data-pdel="${k + 1}" aria-label="Quitar párrafo">×</button></div>`).join('')}
+        <button type="button" class="cv-add" data-padd>+ Añadir párrafo</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk blk-gal ${M.galeria ? '' : 'is-hidden'}" data-dropzone="fotos">
+    ${bar('Galería', seg('data-gal', GAL, d.galeria, 'mini-g') + up('fotos', 'Subir fotos'), 'galeria')}
+    ${rest.length ? `<div class="cv-g g-${d.galeria}" data-phs="fotos">${rest.map((f) => ph(f, 'fotos')).join('')}</div>` : `<div class="cv-g-empty">${upTile('fotos')}</div>`}
+  </section>
+
+  <section class="blk blk-planos ${M.planos ? '' : 'is-hidden'}" data-dropzone="planos">
+    ${bar('Planos', up('planos', 'Subir planos'), 'planos')}
+    ${d.planos.length ? `<div class="cv-g g-mosaico is-contain" data-phs="planos">${d.planos.map((f) => ph(f, 'planos')).join('')}</div>` : `<div class="cv-g-empty">${upTile('planos')}<p class="hint">Opcional: si no hay planos, este bloque no aparece en la web.</p></div>`}
+  </section>
+
+  <section class="blk blk-next ${M.siguiente ? '' : 'is-hidden'}">
+    ${bar('Siguiente proyecto', '', 'siguiente')}
+    <div class="cv-next"><span class="hint">Siguiente proyecto</span><span class="cv-next-n">${esc(next && next.slug !== d.slug ? next.nombre : 'El primero del listado')}</span></div>
+  </section>`;
 }
+
 function editor() {
   const d = draft!;
+  const devs = [['desktop', 'Escritorio'], ['tablet', 'Tablet'], ['mobile', 'Móvil']];
   return `
   <header class="top top-ed">
     <div class="top-l">
@@ -466,50 +446,63 @@ function editor() {
       <h1 class="ttl" data-ttl>${esc(d.nombre || 'Nuevo proyecto')}</h1>
     </div>
     <div class="top-act">
+      <span class="dev" role="radiogroup" aria-label="Tamaño de la vista previa">${devs.map(([k, t]) => `<button type="button" class="dev-b ${device === k ? 'is-on' : ''}" data-dev="${k}" role="radio" aria-checked="${device === k}">${t}</button>`).join('')}</span>
       <span class="state" data-state>${d.nuevo ? 'Sin guardar' : 'Todo guardado'}</span>
-      ${d.nuevo ? '' : `<a class="b b-ghost" href="/proyectos/${d.slug}/" target="_blank" rel="noopener">Ver en la web <span class="arr">↗</span></a>`}
+      <button type="button" class="b b-ghost" data-drawer>Ajustes</button>
+      ${d.nuevo ? '' : `<a class="b b-ghost b-web" href="/proyectos/${d.slug}/" target="_blank" rel="noopener">Ver en la web <span class="arr">↗</span></a>`}
       <button type="button" class="b b-pri" data-save><span data-save-t>${d.nuevo ? 'Crear proyecto' : 'Guardar'}</span></button>
     </div>
   </header>
-  <div class="ed ${showPrev ? 'show-prev' : ''}">
-    <div class="ed-form" data-form>${form()}</div>
-    <aside class="ed-prev" aria-label="Vista previa">
-      <div class="prev-head"><span>Vista previa</span><span class="hint" data-prev-mode>${GAL.find((g) => g.id === d.galeria)!.t}</span></div>
-      <div class="prev" data-prev>${preview()}</div>
-    </aside>
-  </div>
-  <button type="button" class="prev-toggle" data-prevtoggle aria-pressed="${showPrev}">${showPrev ? 'Volver a editar' : 'Ver vista previa'}</button>`;
+  <p class="ed-hint hint">Así se verá la página. Pase el ratón sobre cada bloque para ver sus opciones y escriba los textos directamente encima.</p>
+  <div class="stage"><div class="cv cv-${device}" data-cv>${canvas()}</div></div>
+  <div class="drawer-bg" data-drawer-close hidden></div>
+  <aside class="drawer" aria-label="Ajustes del proyecto" data-drawer-panel>
+    <div class="drawer-h"><h2 class="card-t">Ajustes</h2><button type="button" class="ib" data-drawer-close aria-label="Cerrar ajustes">×</button></div>
+    <label class="fld"><span>Categoría</span><select class="in" data-f="categoria">${seed.categorias.map((c) => `<option ${c === d.categoria ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
+    <label class="fld"><span>Título completo <em>aparece en Google y en la pestaña</em></span><input class="in" data-f="titulo" value="${esc(d.titulo)}" placeholder="${esc(d.nombre || 'Igual que el nombre')}"></label>
+    <div class="sws">${sw('data-f-pub', d.publicado, 'Publicado en la web', 'Apagado, el proyecto queda como borrador')}</div>
+    ${d.nuevo ? '' : '<button type="button" class="b b-danger-ghost" data-del>Eliminar proyecto</button>'}
+  </aside>`;
 }
-function refreshForm(focusSel?: string) {
-  $('[data-form]')!.innerHTML = form();
-  refreshPrev();
-  if (focusSel) $(focusSel)?.focus();
+function redraw(focusSel?: string, anim = false) {
+  const go = () => {
+    $('[data-cv]')!.innerHTML = canvas();
+    if (focusSel) {
+      const el = $(focusSel);
+      el?.focus();
+      if (el?.isContentEditable) { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); getSelection()?.removeAllRanges(); getSelection()?.addRange(r); }
+    }
+  };
+  if (anim) vt(go); else go();
 }
-function refreshPrev() {
-  $('[data-prev]')!.innerHTML = preview();
-  $('[data-prev-mode]')!.textContent = GAL.find((g) => g.id === draft!.galeria)!.t;
+function setDrawer(open: boolean) {
+  $('[data-drawer-panel]')!.classList.toggle('is-open', open);
+  $('.drawer-bg')!.hidden = !open;
+  if (open) $<HTMLElement>('[data-drawer-panel] select')!.focus();
 }
 
 async function subir(kind: 'fotos' | 'planos', files: FileList | File[]) {
   const imgs = Array.from(files).filter((f) => f.type.startsWith('image/'));
   if (!imgs.length) return;
-  const drop = $(`[data-drop="${kind}"]`);
-  drop?.classList.add('is-busy');
-  if (drop) drop.querySelector('.drop-t')!.textContent = `Subiendo ${imgs.length} ${imgs.length === 1 ? 'imagen' : 'imágenes'}…`;
+  app.querySelectorAll<HTMLElement>(`[data-drop="${kind}"]`).forEach((z) => {
+    z.classList.add('is-busy');
+    z.querySelector('.drop-t')!.textContent = `Subiendo ${imgs.length} ${imgs.length === 1 ? 'imagen' : 'imágenes'}…`;
+  });
+  toast(`Subiendo ${imgs.length} ${imgs.length === 1 ? 'imagen' : 'imágenes'}…`);
   let fallos = 0;
   for (const f of imgs) {
     try { draft![kind].push(await store.upload(f)); } catch { fallos++; }
   }
   markDirty();
-  refreshForm();
-  toast(fallos ? `${fallos} ${fallos === 1 ? 'imagen no se pudo' : 'imágenes no se pudieron'} leer. Pruebe con JPG o PNG.` : `${imgs.length - fallos} ${imgs.length === 1 ? 'imagen añadida' : 'imágenes añadidas'}`);
+  redraw(undefined, true);
+  toast(fallos ? `${fallos} ${fallos === 1 ? 'imagen no se pudo' : 'imágenes no se pudieron'} subir. Pruebe con JPG o PNG.` : `${imgs.length} ${imgs.length === 1 ? 'imagen añadida' : 'imágenes añadidas'}`);
 }
 
 async function guardar() {
   const d = draft!;
   if (!d.nombre.trim()) {
     toast('Escriba el nombre del proyecto para guardarlo.');
-    $('[data-f="nombre"]')?.focus();
+    $('[data-edit="nombre"]')?.focus();
     return;
   }
   const btn = $('[data-save]')!;
@@ -565,68 +558,106 @@ function reorderFotos(kind: 'fotos' | 'planos', fn: () => void) {
 function bindEditor() {
   const main = $('#main')!;
   const d = draft!;
+  const num = (v: string) => { const n = parseInt(v.replace(/\D/g, ''), 10); return Number.isFinite(n) ? n : null; };
 
+  // Textos escritos sobre la página: se guardan en el borrador sin redibujar (no se pierde el cursor)
   main.addEventListener('input', (e) => {
-    const t = e.target as HTMLInputElement;
-    if (t.dataset.f) {
-      const k = t.dataset.f as 'nombre' | 'titulo' | 'categoria' | 'lugar' | 'anio' | 'm2';
-      (d as any)[k] = k === 'anio' || k === 'm2' ? (t.value ? Number(t.value) : null) : t.value;
-      if (k === 'nombre') $('[data-ttl]')!.textContent = t.value || 'Nuevo proyecto';
+    const t = e.target as HTMLElement;
+    if (t.dataset.edit) {
+      const k = t.dataset.edit;
+      const v = t.textContent!.trim();
+      if (k === 'anio' || k === 'm2') d[k] = num(v);
+      else (d as unknown as Record<string, string>)[k] = v;
+      if (k === 'nombre') $('[data-ttl]')!.textContent = v || 'Nuevo proyecto';
     } else if (t.dataset.para) {
-      d.texto[Number(t.dataset.para)] = t.value;
+      d.texto[Number(t.dataset.para)] = t.textContent!;
+    } else if (t.dataset.f === 'titulo') {
+      d.titulo = (t as HTMLInputElement).value;
     } else return;
     markDirty();
-    refreshPrev();
   });
   main.addEventListener('change', (e) => {
     const t = e.target as HTMLInputElement;
-    if (t.matches('[data-gal]')) {
-      d.galeria = t.value as Galeria;
-      main.querySelectorAll('.mode').forEach((m) => m.classList.toggle('is-on', m.contains(t)));
-    } else if (t.dataset.show) d.mostrar[t.dataset.show as keyof Mostrar] = t.checked;
+    if (t.dataset.up) { subir(t.dataset.up as 'fotos' | 'planos', t.files!); return; }
+    if (t.dataset.f === 'categoria') { d.categoria = t.value; const c = $('[data-crumb]'); if (c) c.textContent = t.value; }
     else if (t.matches('[data-f-pub]')) d.publicado = t.checked;
-    else if (t.dataset.up) { subir(t.dataset.up as 'fotos' | 'planos', t.files!); return; }
-    else if (t.dataset.f === 'categoria') d.categoria = t.value;
     else return;
     markDirty();
-    refreshPrev();
   });
+  // Enter: en el título o la ficha termina la edición; en un párrafo crea el siguiente
+  main.addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    if (e.key === 'Escape' && $('[data-drawer-panel]')!.classList.contains('is-open')) { setDrawer(false); return; }
+    if (e.key !== 'Enter' || e.shiftKey) return;
+    if (t.dataset.edit) { e.preventDefault(); t.blur(); }
+    else if (t.dataset.para) {
+      e.preventDefault();
+      const i = Number(t.dataset.para);
+      d.texto.splice(i + 1, 0, '');
+      markDirty();
+      redraw(`[data-para="${i + 1}"]`);
+    }
+  });
+  // Pegar: siempre texto plano; varios párrafos pegados se convierten en varios párrafos
+  main.addEventListener('paste', (e) => {
+    const t = e.target as HTMLElement;
+    const box = t.closest<HTMLElement>('[contenteditable]');
+    if (!box) return;
+    e.preventDefault();
+    const txt = e.clipboardData?.getData('text/plain') ?? '';
+    if (box.dataset.para && /\n\s*\n/.test(txt)) {
+      const parts = txt.split(/\n\s*\n/).map((s) => s.replace(/\s+/g, ' ').trim()).filter(Boolean);
+      const i = Number(box.dataset.para);
+      document.execCommand('insertText', false, parts.shift()!);
+      d.texto[i] = box.textContent!;
+      d.texto.splice(i + 1, 0, ...parts);
+      markDirty();
+      redraw(`[data-para="${i + parts.length}"]`);
+      return;
+    }
+    document.execCommand('insertText', false, txt.replace(/\s+/g, ' '));
+  });
+
   main.addEventListener('click', async (e) => {
-    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button');
+    const b = (e.target as HTMLElement).closest<HTMLElement>('button, [data-drawer-close]');
     if (!b) return;
     const kind = b.dataset.kind as 'fotos' | 'planos';
     if (b.matches('[data-save]')) return guardar();
-    if (b.matches('[data-prevtoggle]')) {
-      showPrev = !showPrev;
-      $('.ed')!.classList.toggle('show-prev', showPrev);
-      b.textContent = showPrev ? 'Volver a editar' : 'Ver vista previa';
-      b.setAttribute('aria-pressed', String(showPrev));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (b.dataset.dev) {
+      device = b.dataset.dev as typeof device;
+      vt(() => {
+        $('[data-cv]')!.className = `cv cv-${device}`;
+        main.querySelectorAll('.dev-b').forEach((x) => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-checked', String(x === b)); });
+      });
       return;
     }
+    if (b.matches('[data-drawer]')) return setDrawer(true);
+    if (b.matches('[data-drawer-close]')) return setDrawer(false);
+    if (b.matches('[data-pick]')) { picking = !picking; return redraw(undefined, true); }
     if (b.dataset.cover) {
       d.portada = Number(b.dataset.cover);
-      main.querySelectorAll('[data-phs="fotos"] .ph').forEach((f, i) => {
-        f.classList.toggle('is-cover', i === d.portada);
-        f.querySelector('.ph-star')?.setAttribute('aria-pressed', String(i === d.portada));
-      });
-      b.classList.add('is-pop');
+      toast('Foto de portada cambiada');
+    } else if (b.dataset.toggle) {
+      const k = b.dataset.toggle as keyof Mostrar;
+      d.mostrar[k] = !d.mostrar[k];
+    } else if (b.dataset.tfmt) {
+      d.diseno.texto = b.dataset.tfmt as TextoFormato;
+    } else if (b.dataset.gal) {
+      d.galeria = b.dataset.gal as Galeria;
     } else if (b.dataset.phdel) {
       reorderFotos(kind, () => d[kind].splice(Number(b.dataset.phdel), 1));
-      refreshForm();
     } else if (b.dataset.phmove) {
       reorderFotos(kind, () => moveIn(d[kind], Number(b.dataset.i), Number(b.dataset.phmove)));
-      refreshForm(`[data-phs="${kind}"] [data-phmove="${b.dataset.phmove}"][data-i="${Number(b.dataset.i) + Number(b.dataset.phmove)}"]`);
+      markDirty();
+      return redraw();
     } else if (b.matches('[data-padd]')) {
       d.texto.push('');
-      refreshForm(`[data-para="${d.texto.length - 1}"]`);
+      markDirty();
+      return redraw(`[data-para="${d.texto.length - 1}"]`);
     } else if (b.dataset.pdel) {
       d.texto.splice(Number(b.dataset.pdel), 1);
-      if (!d.texto.length) d.texto.push('');
-      refreshForm();
-    } else if (b.dataset.pmove) {
-      moveIn(d.texto, Number(b.dataset.i), Number(b.dataset.pmove));
-      refreshForm(`[data-pmove="${b.dataset.pmove}"][data-i="${Number(b.dataset.i) + Number(b.dataset.pmove)}"]`);
+      markDirty();
+      return redraw();
     } else if (b.matches('[data-del]')) {
       if (!(await ask(`¿Eliminar «${d.nombre}»? Se quitará de la web y no se puede deshacer.`, 'Eliminar', true))) return;
       E.proyectos = E.proyectos.filter((p) => p.slug !== d.slug);
@@ -639,37 +670,40 @@ function bindEditor() {
       return;
     } else return;
     markDirty();
-    refreshPrev();
+    redraw(undefined, true);
   });
 
-  // Fotos: arrastrar archivos para subir y arrastrar miniaturas para ordenar
+  // Fotos: soltar archivos sobre la galería o los planos para subirlos
   main.addEventListener('dragover', (e) => {
-    const z = (e.target as HTMLElement).closest<HTMLElement>('[data-drop]');
+    const z = (e.target as HTMLElement).closest<HTMLElement>('[data-drop], [data-dropzone]');
     if (z && e.dataTransfer?.types.includes('Files')) { e.preventDefault(); z.classList.add('is-over'); }
   });
-  main.addEventListener('dragleave', (e) => (e.target as HTMLElement).closest('[data-drop]')?.classList.remove('is-over'));
+  main.addEventListener('dragleave', (e) => (e.target as HTMLElement).closest('[data-drop], [data-dropzone]')?.classList.remove('is-over'));
   main.addEventListener('drop', (e) => {
-    const z = (e.target as HTMLElement).closest<HTMLElement>('[data-drop]');
+    const z = (e.target as HTMLElement).closest<HTMLElement>('[data-drop], [data-dropzone]');
     if (!z || !e.dataTransfer?.files.length) return;
     e.preventDefault();
     z.classList.remove('is-over');
-    subir(z.dataset.drop as 'fotos' | 'planos', e.dataTransfer.files);
+    subir((z.dataset.drop ?? z.dataset.dropzone) as 'fotos' | 'planos', e.dataTransfer.files);
   });
-  const sortPhotos = () => (['fotos', 'planos'] as const).forEach((kind) => {
+  // Arrastrar fotos dentro de la galería para ordenarlas (tras cada redibujado se vuelven a enlazar)
+  const bindSort = () => (['fotos', 'planos'] as const).forEach((kind) => {
     const box = $(`[data-phs="${kind}"]`);
-    if (box && !box.dataset.bound) {
-      box.dataset.bound = '1';
-      sortable(box, '.ph', (ids) => {
-        reorderFotos(kind, () => { d[kind] = ids.map((id) => d[kind].find((f) => f.id === id)!); });
-        markDirty();
-        refreshForm();
-        sortPhotos();
-      }, 'id');
-    }
+    if (!box || box.dataset.bound) return;
+    box.dataset.bound = '1';
+    sortable(box, '.cv-ph', (ids) => {
+      if (kind === 'fotos') {
+        const cover = d.fotos[d.portada];
+        const rest = ids.map((id) => d.fotos.find((f) => f.id === id)!);
+        d.fotos = cover ? [cover, ...rest] : rest;
+        d.portada = 0;
+      } else d.planos = ids.map((id) => d.planos.find((f) => f.id === id)!);
+      markDirty();
+      redraw();
+    }, 'id');
   });
-  sortPhotos();
-  // tras cada refreshForm las cajas son nuevas: se vuelven a enlazar
-  new MutationObserver(sortPhotos).observe($('[data-form]')!, { childList: true });
+  bindSort();
+  new MutationObserver(bindSort).observe($('[data-cv]')!, { childList: true });
 
   document.onkeydown = (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's' && draft) { e.preventDefault(); guardar(); }
