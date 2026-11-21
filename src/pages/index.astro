@@ -30,9 +30,10 @@ const total = String(heroSlides.length).padStart(2, '0');
         <span class="small mut" data-hero-meta>{ciudad(heroSlides[0].proyecto)} · {heroSlides[0].proyecto.anio}</span>
       </p>
       <div class="hero-ctrl small num">
-        <button class="mut" data-hero-prev aria-label="Obra anterior">Ant.</button>
-        <span aria-live="polite"><span data-hero-index>01</span> / {total}</span>
-        <button class="mut" data-hero-next aria-label="Obra siguiente">Sig.</button>
+        <button class="mut" data-hero-prev aria-label="Ant., obra anterior">Ant.</button>
+        <span data-hero-live aria-live="off" aria-atomic="true"><span class="sr-only">Obra </span><span data-hero-index>01</span> / {total}</span>
+        <button class="mut" data-hero-next aria-label="Sig., obra siguiente">Sig.</button>
+        <button class="mut" data-hero-pause aria-pressed="false" hidden>Pausa</button>
       </div>
     </div>
   </section>
@@ -46,7 +47,7 @@ const total = String(heroSlides.length).padStart(2, '0');
       {obrasHome.map((o) => (
         <a href={`/proyectos/${o.proyecto.slug}/`} class="work" style={`--col:${o.col};--mt:${o.mt}`}>
           <div class="frame" data-reveal="img" style={`aspect-ratio:${o.ar};view-transition-name:p-${o.proyecto.slug}`}>
-            <Image src={o.imagen} alt={o.proyecto.titulo} widths={[640, 1024, 1600, 2400]} sizes={o.col === '1 / -1' ? '100vw' : '(max-width: 760px) 100vw, 60vw'} format="webp" quality={72} />
+            <Image src={o.imagen} alt={o.proyecto.titulo} widths={[640, 1024, 1600, 2400]} sizes={o.col === '1 / -1' ? '100vw' : `(max-width: 760px) 100vw, ${Math.round((Number(o.col.match(/span (\d+)/)?.[1] ?? 12) / 12) * 100)}vw`} format="webp" quality={72} />
           </div>
           <p class="work-cap">
             <span class="serif cap">{o.proyecto.nombre}</span>
@@ -137,12 +138,35 @@ const total = String(heroSlides.length).padStart(2, '0');
     else gsap.to(cap, { opacity: 0, y: -6, duration: 0.3, ease: 'power2.in', onComplete: () => { swap(); gsap.fromTo(cap, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.8, ease }); } });
     restart();
   }
+  // Autoplay: se detiene con el botón Pausa (WCAG 2.2.2) y mientras el puntero o el foco están en el hero
+  const hero = document.querySelector<HTMLElement>('.hero')!;
+  const live = document.querySelector<HTMLElement>('[data-hero-live]')!;
+  const pauseBtn = document.querySelector<HTMLButtonElement>('[data-hero-pause]')!;
+  let paused = reduced;
+  let hovering = false;
   function restart() {
     window.clearTimeout(timer);
-    if (!reduced) timer = window.setTimeout(() => show(cur + 1), AUTOPLAY);
+    if (!paused && !hovering) timer = window.setTimeout(() => show(cur + 1), AUTOPLAY);
   }
-  document.querySelector('[data-hero-prev]')!.addEventListener('click', () => show(cur - 1));
-  document.querySelector('[data-hero-next]')!.addEventListener('click', () => show(cur + 1));
+  function setPaused(p: boolean) {
+    paused = p;
+    pauseBtn.textContent = p ? 'Reproducir' : 'Pausa';
+    pauseBtn.setAttribute('aria-pressed', String(p));
+    live.setAttribute('aria-live', p ? 'polite' : 'off');
+    restart();
+  }
+  const manual = (step: number) => { live.setAttribute('aria-live', 'polite'); show(cur + step); };
+  document.querySelector('[data-hero-prev]')!.addEventListener('click', () => manual(-1));
+  document.querySelector('[data-hero-next]')!.addEventListener('click', () => manual(1));
+  if (!reduced) {
+    pauseBtn.hidden = false;
+    pauseBtn.addEventListener('click', () => setPaused(!paused));
+    hero.addEventListener('pointerenter', () => { hovering = true; restart(); });
+    hero.addEventListener('pointerleave', () => { hovering = false; restart(); });
+    hero.addEventListener('focusin', () => { hovering = true; restart(); });
+    hero.addEventListener('focusout', (e) => { if (!hero.contains(e.relatedTarget as Node)) { hovering = false; restart(); } });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) window.clearTimeout(timer); else restart(); });
+  }
 
   if (!reduced) {
     gsap.timeline({ defaults: { ease } })
@@ -160,7 +184,7 @@ const total = String(heroSlides.length).padStart(2, '0');
   .small-link { font-size: 14px; white-space: nowrap; }
 
   /* Hero */
-  .hero-media { position: relative; height: min(780px, calc(100svh - var(--head-h) - 72px)); min-height: 420px; background: #e7e4de; }
+  .hero-media { position: relative; height: min(780px, calc(100svh - var(--head-h) - 72px)); min-height: 420px; background: var(--frame); }
   .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s var(--ease-out); }
   .slide.is-active { opacity: 1; }
   .slide :global(img) { width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transition: transform 7s linear; }

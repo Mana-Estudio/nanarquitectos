@@ -11,13 +11,24 @@ const ease = 'expo.out';
 
 /* Menú mobile: «Menú» / «Cerrar» */
 const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+const menu = document.querySelector<HTMLElement>('[data-menu]');
+const mobile = window.matchMedia('(max-width: 760px)');
+const isOpen = () => document.documentElement.classList.contains('menu-open');
+// En mobile el menú cerrado queda fuera del orden de tabulación y del árbol de accesibilidad
+const syncInert = () => { if (menu) menu.inert = mobile.matches && !isOpen(); };
 const setMenu = (open: boolean) => {
+  if (open === isOpen()) return;
   document.documentElement.classList.toggle('menu-open', open);
   toggle?.setAttribute('aria-expanded', String(open));
   if (toggle) toggle.textContent = open ? 'Cerrar' : 'Menú';
+  syncInert();
   (window as any).__lenis?.[open ? 'stop' : 'start']();
+  if (open) menu?.querySelector('a')?.focus();
+  else if (mobile.matches) toggle?.focus();
 };
-toggle?.addEventListener('click', () => setMenu(!document.documentElement.classList.contains('menu-open')));
+syncInert();
+mobile.addEventListener('change', () => { if (!mobile.matches) setMenu(false); syncInert(); });
+toggle?.addEventListener('click', () => setMenu(!isOpen()));
 document.querySelectorAll('[data-menu] a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
 document.addEventListener('keydown', (e) => e.key === 'Escape' && setMenu(false));
 
@@ -54,6 +65,11 @@ if (!reduced) {
       yPercent: 5, ease: 'none',
       scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
     });
+  });
+} else {
+  /* Movimiento reducido: sin desplazamientos ni máscaras, solo un fundido corto al entrar en pantalla */
+  gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
+    gsap.from(el, { opacity: 0, duration: 0.5, ease: 'power1.out', scrollTrigger: { trigger: el, start: 'top 95%', once: true } });
   });
 }
 

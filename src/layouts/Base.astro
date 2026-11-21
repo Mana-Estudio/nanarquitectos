@@ -63,13 +63,13 @@ const nav = [
       <a href="/" class="brand" aria-label="NAN Arquitectos, inicio">
         <Image src={logo} alt="NAN Arquitectos" width={190} height={88} loading="eager" />
       </a>
-      <nav class="nav" data-menu aria-label="Principal">
+      <nav class="nav" id="menu" data-menu aria-label="Principal">
         {nav.map((n) => (
           <a href={n.href} class:list={{ 'is-current': current === n.id }} aria-current={current === n.id ? 'page' : undefined}>{n.label}</a>
         ))}
         <p class="menu-foot small"><a href="tel:+34691563366">+34 691 563 366</a></p>
       </nav>
-      <button class="menu-btn" data-menu-toggle aria-expanded="false">Menú</button>
+      <button class="menu-btn" data-menu-toggle aria-expanded="false" aria-controls="menu">Menú</button>
     </header>
 
     <main id="main">
@@ -118,6 +118,10 @@ const nav = [
       transition: clip-path 0.7s var(--ease-out);
     }
     :global(.menu-open) .nav { clip-path: inset(0 0 0 0); }
+    @media (prefers-reduced-motion: reduce) {
+      :global(html:not(.force-motion)) .nav { clip-path: none; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0s 0.2s; }
+      :global(html.menu-open:not(.force-motion)) .nav { opacity: 1; visibility: visible; transition: opacity 0.2s; }
+    }
     .menu-foot { display: block; margin-top: auto; font-family: var(--sans); font-size: 14px; }
   }
 

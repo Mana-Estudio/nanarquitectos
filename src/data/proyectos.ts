@@ -48,7 +48,8 @@ export const proyectos: Proyecto[] = (raw as Raw[])
       ...p,
       nombre: capital(p.nombre.replace(/\s+/g, ' ').trim()),
       superficie: p.m2 ? `${new Intl.NumberFormat('es-ES').format(p.m2)} m²` : null,
-      resumen: p.texto[0] ? primeraFrase(p.texto[0]) : `${p.categoria === 'Otros' ? 'Proyecto' : p.categoria} en ${ciudad(p)}${p.anio ? `, ${p.anio}` : ''}.`,
+      // Sin texto en la web original: no se inventa un resumen (queda vacío y la página omite el bloque)
+      resumen: p.texto[0] ? primeraFrase(p.texto[0]) : '',
       fotos: f,
       portada: f.find(isL) ?? f[0],
     };

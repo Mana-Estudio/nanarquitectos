@@ -45,13 +45,13 @@ if (sangre && !sangre.fits) galeria.push({ col: '7 / span 6', ar: `${sangre.img.
 const vistas = [...galeria.map((g) => g.img), ...(bleed ? [bleed] : [])];
 const full = await Promise.all(vistas.map((img) => getImage({ src: img, width: Math.min(2400, img.width), format: 'webp', quality: 82 })));
 const plural = filtros.find((f) => f.cat === p.categoria)?.label ?? 'Proyectos';
-const resumenEnTexto = p.texto[0] && p.texto[0].startsWith(p.resumen);
+const resumenEnTexto = !!p.resumen && !!p.texto[0] && p.texto[0].startsWith(p.resumen);
 const cuerpo = p.texto.map((t, i) => (i === 0 && resumenEnTexto ? t.slice(p.resumen.length).trim() : t)).filter(Boolean);
 const nota = cuerpo.length > 2 ? cuerpo[cuerpo.length - 1] : null;
 const principal = nota ? cuerpo.slice(0, -1) : cuerpo;
 const n = (i: number) => String(i + 1).padStart(2, '0');
 ---
-<Base title={p.titulo} description={p.resumen} ogImage={hero.src} current="proyectos">
+<Base title={p.titulo} description={p.resumen || `${p.titulo}: proyecto de NAN Arquitectos en ${p.lugar}${p.anio ? ` (${p.anio})` : ''}.`} ogImage={hero.src} current="proyectos">
   <article>
     <div class="frame p-hero" style={`view-transition-name:p-${p.slug}`}>
       <Image src={hero} alt={p.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading="eager" fetchpriority="high" format="webp" quality={72} />
@@ -77,20 +77,20 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
       </div>
     </section>
 
-    <section class="pad grid12 body">
+    {p.resumen && <section class="pad grid12 body">
       <div class="text" data-reveal="text">
         <p class="lead serif">{p.resumen}</p>
         {principal.map((t) => <p>{t}</p>)}
         {nota && <p class="t3-mobile">{nota}</p>}
       </div>
-    </section>
+    </section>}
 
     <section class="pad grid12 gallery" aria-label="Galería">
       {galeria.map((g, i) => (
         <figure style={`--col:${g.col};--mcol:${g.m}`}>
-          <button class="g-open" data-open={i} aria-label={`Ver foto ${n(i)} a pantalla completa`}>
+          <button class="g-open" data-open={i} aria-label={`Ampliar imagen ${i + 1} de ${vistas.length}`}>
             <div class="frame" data-reveal="img" style={`aspect-ratio:${g.ar}`}>
-              <Image src={g.img} alt={`${p.nombre}, foto ${n(i)}`} widths={[640, 1024, 1600, 2400]} sizes={g.col === '1 / -1' ? '100vw' : '(max-width: 760px) 100vw, 60vw'} format="webp" quality={74} />
+              <Image src={g.img} alt={`${p.titulo}, imagen ${i + 1} de ${vistas.length}`} widths={[640, 1024, 1600, 2400]} sizes={g.col === '1 / -1' ? '100vw' : `(max-width: 760px) 100vw, ${Math.round((Number(g.col.match(/span (\d+)/)?.[1] ?? 12) / 12) * 100)}vw`} format="webp" quality={74} />
             </div>
           </button>
           <figcaption class="small mut num">{n(i)}</figcaption>
@@ -101,9 +101,9 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
 
     {bleed && (
       <>
-        <button class="bleed g-open" data-open={galeria.length} aria-label={`Ver foto ${n(galeria.length)} a pantalla completa`}>
+        <button class="bleed g-open" data-open={galeria.length} aria-label={`Ampliar imagen ${galeria.length + 1} de ${vistas.length}`}>
           <div class="frame" data-parallax>
-            <Image src={bleed} alt={`${p.nombre}, foto ${n(galeria.length)}`} widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} />
+            <Image src={bleed} alt={`${p.titulo}, imagen ${galeria.length + 1} de ${vistas.length}`} widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} />
           </div>
         </button>
         <p class="pad small mut num bleed-cap">{n(galeria.length)}</p>
@@ -130,12 +130,12 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
 
   <dialog class="lightbox" data-lightbox aria-label="Galería a pantalla completa">
     <img data-lb-img src={full[0]?.src} alt="" loading="lazy" decoding="async" />
-    <p class="lb-count num"><span data-lb-i>01</span> / {n(vistas.length - 1)}</p>
-    <button class="lb-btn lb-close" data-lb-close>Cerrar</button>
-    <button class="lb-btn lb-prev" data-lb-prev>Ant.</button>
-    <button class="lb-btn lb-next" data-lb-next>Sig.</button>
+    <p class="lb-count num" aria-live="polite"><span class="sr-only">Imagen </span><span data-lb-i>01</span> / {n(vistas.length - 1)}</p>
+    <button class="lb-btn lb-close" data-lb-close aria-label="Cerrar galería">Cerrar</button>
+    <button class="lb-btn lb-prev" data-lb-prev aria-label="Ant., imagen anterior">Ant.</button>
+    <button class="lb-btn lb-next" data-lb-next aria-label="Sig., imagen siguiente">Sig.</button>
   </dialog>
-  <script type="application/json" data-lb-src set:html={JSON.stringify(full.map((f, i) => ({ src: f.src, alt: `${p.nombre}, foto ${n(i)}` })))} />
+  <script type="application/json" data-lb-src set:html={JSON.stringify(full.map((f, i) => ({ src: f.src, alt: `${p.titulo}, imagen ${i + 1} de ${vistas.length}` })))} />
 </Base>
 
 <script>
@@ -156,10 +156,18 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
     cur = (i + items.length) % items.length;
     const swap = () => {
       img.loading = 'eager';
-      img.src = items[cur].src;
+      const at = cur;
+      // Muestra al instante la miniatura ya cargada y la cambia por la versión grande cuando llega
+      const thumb = document.querySelector<HTMLImageElement>(`[data-open="${at}"] img`)?.currentSrc;
+      const full = new Image();
+      full.onload = () => { if (cur === at) img.src = items[at].src; };
+      full.src = items[at].src;
+      if (!full.complete && thumb) img.src = thumb;
+      else img.src = items[at].src;
       img.alt = items[cur].alt;
       count.textContent = pad(cur);
       if (!reduced) gsap.fromTo(img, { opacity: 0, x: dir * 40 }, { opacity: 1, x: 0, duration: 0.7, ease });
+      else gsap.fromTo(img, { opacity: 0 }, { opacity: 1, duration: 0.2 });
     };
     if (dir && !reduced) gsap.to(img, { opacity: 0, x: -dir * 40, duration: 0.25, onComplete: swap });
     else swap();
@@ -228,14 +236,14 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
 
   .lightbox {
     width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
-    background: #151513; color: #ece9e3; overflow: hidden;
+    background: var(--night); color: var(--night-ink); overflow: hidden;
   }
-  .lightbox::backdrop { background: #151513; }
+  .lightbox::backdrop { background: var(--night); }
   .lightbox[open] { display: grid; place-items: center; }
   .lightbox img { max-width: calc(100vw - 12rem); max-height: calc(100dvh - 8rem); width: auto; height: auto; object-fit: contain; }
-  .lb-count { position: absolute; left: 2rem; bottom: 1.75rem; font-size: 13px; color: #a3a19b; }
-  .lb-btn { position: absolute; padding: 12px; font-size: 14px; color: #a3a19b; transition: color 0.3s; }
-  .lb-btn:hover, .lb-btn:focus-visible { color: #ece9e3; outline-color: #ece9e3; }
+  .lb-count { position: absolute; left: 2rem; bottom: 1.75rem; font-size: 13px; color: var(--night-mut); }
+  .lb-btn { position: absolute; padding: 12px; font-size: 14px; color: var(--night-mut); transition: color 0.3s; }
+  .lb-btn:hover, .lb-btn:focus-visible { color: var(--night-ink); outline-color: var(--night-ink); }
   .lb-close { top: 1.25rem; right: 1.5rem; }
   .lb-prev { left: 1.5rem; top: 50%; translate: 0 -50%; }
   .lb-next { right: 1.5rem; top: 50%; translate: 0 -50%; }

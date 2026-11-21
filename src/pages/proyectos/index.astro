@@ -28,13 +28,14 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
     </div>
   </div>
 
+  <p class="sr-only" role="status" data-status></p>
   <section class="list pad" aria-label="Listado de proyectos">
     <ul class="grid grid12" data-grid>
       {proyectos.map((p, i) => (
         <li class="card" data-cat={p.categoria}>
           <a href={`/proyectos/${p.slug}/`}>
             <div class="frame" data-reveal="img" style={`aspect-ratio:4 / 3;view-transition-name:p-${p.slug}`}>
-              <Image src={portada(p)} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 33vw" format="webp" quality={72} loading={i < 3 ? 'eager' : 'lazy'} />
+              <Image src={portada(p)} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 30vw" format="webp" quality={72} loading={i < 3 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
             </div>
             <span class="serif cap">{p.nombre}</span>
             <span class="small mut">{meta(p)}</span>
@@ -45,12 +46,12 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
 
     <div class="index grid12" data-index hidden>
       <div class="table">
-        <div class="row head small mut" role="presentation">
+        <div class="row head small mut" role="group" aria-label="Ordenar el índice">
           <span>Nº</span>
-          <button data-sort="nombre">Proyecto <i data-arrow="nombre"></i></button>
+          <button data-sort="nombre" aria-label="Ordenar por nombre">Proyecto <i data-arrow="nombre" aria-hidden="true"></i></button>
           <span>Tipo</span><span>Lugar</span>
-          <button data-sort="anio">Año <i data-arrow="anio"></i></button>
-          <button data-sort="m2" class="right">m² <i data-arrow="m2"></i></button>
+          <button data-sort="anio" aria-label="Ordenar por año">Año <i data-arrow="anio" aria-hidden="true"></i></button>
+          <button data-sort="m2" class="right" aria-label="Ordenar por superficie">m² <i data-arrow="m2" aria-hidden="true"></i></button>
         </div>
         <ol class="rows" data-rows>
           {proyectos.map((p, i) => (
@@ -105,7 +106,17 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
       if (!r.classList.contains('is-hidden')) r.querySelector('[data-nr]')!.textContent = String(++n).padStart(2, '0');
     });
     total.textContent = String(n);
+    return n;
   }
+  const strip = document.querySelector<HTMLElement>('.filters')!;
+  const edge = () => strip.classList.toggle('has-more', strip.scrollLeft + strip.clientWidth < strip.scrollWidth - 4);
+  strip.addEventListener('scroll', edge, { passive: true });
+  window.addEventListener('resize', edge);
+  edge();
+  // El filtro activo queda siempre a la vista
+  strip.addEventListener('click', (e) => (e.target as HTMLElement).closest('button')?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: reduced ? 'auto' : 'smooth' }));
+  const status = document.querySelector('[data-status]')!;
+  const say = (t: string) => { status.textContent = ''; requestAnimationFrame(() => (status.textContent = t)); };
 
   document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) =>
     btn.addEventListener('click', () => {
@@ -115,10 +126,12 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
       const match = (el: HTMLElement) => filter === 'all' || el.dataset.cat === filter;
       cards.forEach((c) => c.classList.toggle('is-hidden', !match(c)));
       rows().forEach((r) => r.classList.toggle('is-hidden', !match(r)));
-      renumber();
+      const n = renumber();
+      say(`${n} ${n === 1 ? 'proyecto' : 'proyectos'}${filter === 'all' ? '' : ` en ${btn.textContent!.replace(/\d+$/, '').trim()}`}`);
       const first = rows().find((r) => !r.classList.contains('is-hidden'));
       if (first) highlight(Number(first.dataset.i));
-      if (!reduced && !grid.hidden) {
+      if (reduced) gsap.fromTo([...cards, ...rows()].filter((el) => !el.classList.contains('is-hidden')), { opacity: 0.3 }, { opacity: 1, duration: 0.3 });
+      else if (!grid.hidden) {
         Flip.from(state, {
           duration: 0.9, ease, absolute: true,
           onEnter: (els) => gsap.fromTo(els, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8, ease }),
@@ -152,6 +165,7 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
       sorted.forEach((r) => rowsEl.appendChild(r));
       document.querySelectorAll<HTMLElement>('[data-arrow]').forEach((a) => (a.textContent = a.dataset.arrow === key ? (dir === 1 ? '↑' : '↓') : ''));
       renumber();
+      say(`Ordenado por ${btn.textContent!.trim().replace(/[↑↓]/, '').trim().toLowerCase()}, ${dir === 1 ? 'ascendente' : 'descendente'}`);
       if (state) Flip.from(state, { duration: 0.6, ease });
     }),
   );
@@ -235,7 +249,9 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
     .intro { padding-top: 48px; }
     .title, .intro-text { grid-column: 1 / -1; }
     .bar { margin-top: 40px; }
-    .filters { gap: 20px; }
+    .filters { gap: 20px; margin-right: calc(var(--pad) * -1); padding-right: var(--pad); scroll-padding-inline: var(--pad); }
+    /* Indicio de que la tira sigue: borde que se desvanece mientras quede contenido a la derecha */
+    .filters.has-more { mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent); }
     .list { padding-top: 32px; }
     .grid { row-gap: 48px; }
     .card { grid-column: 1 / -1; }
