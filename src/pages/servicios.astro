@@ -1,11 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import { Image, getImage } from 'astro:assets';
-import { foto } from '../data/proyectos';
+import { foto, im } from '../data/proyectos';
 import { servicios, proceso } from '../data/estudio';
 
 const fotos = servicios.map((s) => foto(...s.foto));
-const thumbs = await Promise.all(fotos.map((f) => getImage({ src: f, width: 560, format: 'webp', quality: 70 })));
+const thumbs = await Promise.all(fotos.map((f) => getImage({ ...im(f, 560), format: 'webp', quality: 70 })));
 const tipos = ['Vivienda', 'Clínica o salud', 'Hostelería', 'Comercio', 'Oficina'];
 ---
 <Base title="Servicios" current="servicios" ogImage={fotos[0].src} description="Arquitectura, interiorismo, construcción llave en mano, mobiliario e iluminación: NAN Arquitectos acompaña el proyecto desde el diseño hasta la entrega.">
@@ -29,7 +29,7 @@ const tipos = ['Vivienda', 'Clínica o salud', 'Hostelería', 'Comercio', 'Ofici
   {servicios.map((s, i) => (
     <section class:list={['sv-ch pad grid12', i % 2 ? 'is-r' : 'is-l']} id={s.id} aria-labelledby={`${s.id}-t`}>
       <div class="sv-img frame" data-reveal="clip" data-parallax="7">
-        <Image src={fotos[i]} alt={`${s.nombre}: obra de NAN Arquitectos`} widths={[640, 1024, 1600, 2400]} sizes="(max-width: 760px) 100vw, 66vw" format="webp" quality={72} />
+        <Image {...im(fotos[i])} alt={`${s.nombre}: obra de NAN Arquitectos`} widths={[640, 1024, 1600, 2400]} sizes="(max-width: 760px) 100vw, 66vw" format="webp" quality={72} />
       </div>
       <div class="sv-txt">
         <h2 id={`${s.id}-t`} class="sv-t" data-reveal="text">{s.nombre}</h2>

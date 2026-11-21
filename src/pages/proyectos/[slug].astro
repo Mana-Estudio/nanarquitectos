@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import Gallery from '../../components/Gallery.astro';
-import { proyectos, portada, ciudad, filtros, tipo } from '../../data/proyectos';
+import { proyectos, portada, ciudad, filtros, tipo, im } from '../../data/proyectos';
 
 export function getStaticPaths() {
   return proyectos.map((p, i) => ({
@@ -26,7 +26,7 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
 <Base title={p.titulo} description={p.resumen || `${p.titulo}: proyecto de NAN Arquitectos en ${p.lugar}${p.anio ? ` (${p.anio})` : ''}.`} ogImage={hero.src} current="proyectos">
   <article>
     <div class="frame p-hero" style={`view-transition-name:p-${p.slug}`}>
-      <Image src={hero} alt={p.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading="eager" fetchpriority="high" format="webp" quality={72} />
+      <Image {...im(hero)} alt={p.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading="eager" fetchpriority="high" format="webp" quality={72} />
     </div>
 
     <section class="pad grid12 head">
@@ -91,7 +91,7 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
       </div>
       <a href={`/proyectos/${next.slug}/`} class="next-img" tabindex="-1" aria-hidden="true">
         <div class="frame" style="aspect-ratio:3 / 2">
-          <Image src={portada(next)} alt="" widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 50vw" format="webp" quality={70} />
+          <Image {...im(portada(next))} alt="" widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 50vw" format="webp" quality={70} />
         </div>
       </a>
     </section>}

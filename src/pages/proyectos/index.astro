@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { Image, getImage } from 'astro:assets';
-import { proyectos, filtros, portada, ciudad, tipo } from '../../data/proyectos';
+import { proyectos, filtros, portada, ciudad, tipo, im } from '../../data/proyectos';
 
 const conteo = (cat: string | null) => (cat ? proyectos.filter((p) => p.categoria === cat).length : proyectos.length);
 const fmt = new Intl.NumberFormat('es-ES');
@@ -10,7 +10,7 @@ const meta = (p: (typeof proyectos)[number]) => [tipo(p), ciudad(p), p.anio].fil
 const PER = 18;
 const SHAPES = 'abcdefghi';
 const pages = Math.ceil(proyectos.length / PER);
-const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(p), width: 640, format: 'webp', quality: 72 })));
+const previews = await Promise.all(proyectos.map((p) => getImage({ ...im(portada(p), 640), format: 'webp', quality: 72 })));
 ---
 <Base title="Proyectos" current="proyectos" description="Proyectos de NAN Arquitectos: clínicas, hostelería, comercios, oficinas y viviendas en Pontevedra y Galicia.">
   <section class="intro pad grid12">
@@ -39,7 +39,7 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
         <li class="card" data-cat={p.categoria} data-shape={SHAPES[i % 9]} data-m={i % 3 ? 's' : 'b'} hidden={i >= PER}>
           <a href={`/proyectos/${p.slug}/`}>
             <div class="frame" data-reveal="clip" data-parallax="5" style={`view-transition-name:p-${p.slug}`}>
-              <Image src={portada(p)} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, (max-width: 1100px) 60vw, 58vw" format="webp" quality={72} loading={i < 4 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+              <Image {...im(portada(p))} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, (max-width: 1100px) 60vw, 58vw" format="webp" quality={72} loading={i < 4 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
             </div>
             <span class="card-cap">
               <span class="serif cap">{p.nombre}</span>

@@ -1,8 +1,10 @@
-import { localStore, type Estado, type Foto, type Galeria, type Mostrar, type P, type Portada } from './store';
+import { localStore, supabaseStore, type Estado, type Foto, type Galeria, type Mostrar, type P, type Portada } from './store';
 
-interface Seed { estado: Estado; slots: { label: string; o: 'L' | 'P' }[]; categorias: string[]; logo: string }
+interface Seed { estado: Estado; slots: { label: string; o: 'L' | 'P' }[]; categorias: string[]; logo: string; supabase: { url: string; key: string } | null }
 const seed: Seed = JSON.parse(document.getElementById('seed')!.textContent!);
-const store = localStore(seed.estado);
+const store = seed.supabase
+  ? supabaseStore(seed.estado, seed.supabase.url, seed.supabase.key, seed.slots.map((s) => s.o))
+  : localStore(seed.estado);
 const app = document.getElementById('app')!;
 
 /* ── Estado ───────────────────────────────────────── */
@@ -14,6 +16,15 @@ let q = '';
 let cat = '';
 let showPrev = false;
 let lastHash = location.hash;
+let sesion = false;
+/** Hay cambios guardados que todavía no se publicaron en la web */
+const PEND = 'nan-admin-pendiente';
+const pendiente = (v?: boolean) => {
+  try {
+    if (v !== undefined) v ? localStorage.setItem(PEND, '1') : localStorage.removeItem(PEND);
+    return localStorage.getItem(PEND) === '1';
+  } catch { return false; }
+};
 
 const GAL: { id: Galeria; t: string; d: string }[] = [
   { id: 'mosaico', t: 'Mosaico', d: 'Retícula densa, poco aire entre fotos' },
@@ -36,8 +47,28 @@ const two = (n: number) => String(n).padStart(2, '0');
 const $ = <T extends HTMLElement = HTMLElement>(s: string, r: ParentNode = app) => r.querySelector<T>(s);
 const bySlug = (s: string) => E.proyectos.find((p) => p.slug === s);
 const enPortada = (s: string) => [...E.portada.hero, ...E.portada.home].some((x) => x?.slug === s);
-const authed = () => { try { return sessionStorage.getItem('nan-admin') === '1'; } catch { return true; } };
-const persist = () => store.save(E);
+const authed = () => {
+  if (store.auth) return sesion;
+  try { return sessionStorage.getItem('nan-admin') === '1'; } catch { return true; }
+};
+/** Guarda y avisa si falla. Devuelve true si se guardó */
+async function persist() {
+  try {
+    await store.save(E);
+    if (store.publish) { pendiente(true); syncPub(); }
+    return true;
+  } catch (err) {
+    toast(`No se pudo guardar: ${(err as Error).message}. Revise la conexión e inténtelo de nuevo.`);
+    return false;
+  }
+}
+function syncPub() {
+  const b = $('[data-publish]', document);
+  if (!b) return;
+  const p = pendiente();
+  b.classList.toggle('has-pend', p);
+  b.querySelector('.pub-t')!.textContent = p ? 'Publicar cambios en la web' : 'La web está al día';
+}
 
 function toast(msg: string) {
   const t = $('#toast', document);
@@ -115,6 +146,7 @@ function render() {
   const [view] = route();
   const v = view === 'portada' ? 'portada' : 'proyectos';
   const content = draft ? editor() : port ? portadaView() : lista();
+  queueMicrotask(syncPub);
   app.innerHTML = `
   <div class="adm">
     <aside class="side">
@@ -124,6 +156,7 @@ function render() {
         <a href="#/portada" class="${v === 'portada' ? 'is-on' : ''}"><span>Portada de la web</span></a>
       </nav>
       <div class="side-foot">
+        ${store.publish ? `<button class="pub" data-publish><span class="pub-dot" aria-hidden="true"></span><span class="pub-t">La web está al día</span></button>` : ''}
         <a href="/" target="_blank" rel="noopener" class="side-link">Ver la web <span class="arr">↗</span></a>
         ${store.demo ? `<p class="demo"><span class="dot"></span>Modo demo: los cambios se guardan solo en este navegador.</p><button class="side-link" data-reset>Restablecer datos de la demo</button>` : ''}
         <button class="side-link" data-logout>Cerrar sesión</button>
@@ -144,13 +177,30 @@ function login() {
       <h1 class="login-t">Panel del estudio</h1>
       <label class="fld"><span>Email</span><input class="in" type="email" name="email" autocomplete="username" required></label>
       <label class="fld"><span>Contraseña</span><input class="in" type="password" name="pass" autocomplete="current-password" required></label>
-      <button class="b b-pri b-block">Entrar</button>
+      <p class="login-err" data-login-err role="alert"></p>
+      <button class="b b-pri b-block" data-login-btn>Entrar</button>
       ${store.demo ? '<p class="hint">Demo: entra con cualquier email y contraseña. Los cambios se guardan solo en este navegador.</p>' : ''}
     </form>
   </div>`;
-  $('[data-login]')!.addEventListener('submit', (e) => {
+  $('[data-login]')!.addEventListener('submit', async (e) => {
     e.preventDefault();
-    try { sessionStorage.setItem('nan-admin', '1'); } catch {}
+    const f = new FormData(e.target as HTMLFormElement);
+    if (store.auth) {
+      const btn = $('[data-login-btn]')!;
+      btn.classList.add('is-busy');
+      btn.textContent = 'Entrando…';
+      const err = await store.auth.signIn(String(f.get('email')), String(f.get('pass')));
+      if (err) {
+        btn.classList.remove('is-busy');
+        btn.textContent = 'Entrar';
+        $('[data-login-err]')!.textContent = err;
+        return;
+      }
+      sesion = true;
+      if (!(await cargar())) return;
+    } else {
+      try { sessionStorage.setItem('nan-admin', '1'); } catch {}
+    }
     if (!location.hash) history.replaceState(null, '', '#/proyectos');
     lastHash = location.hash;
     enter();
@@ -187,6 +237,15 @@ function row(p: P) {
   </li>`;
 }
 function lista() {
+  if (!E.proyectos.length && !store.demo) {
+    return `
+    <header class="top"><div><h1 class="ttl">Proyectos</h1><p class="sub">La base de datos está vacía.</p></div></header>
+    <section class="card import">
+      <h2 class="card-t">Importar los proyectos de la web actual</h2>
+      <p class="hint">Se cargan los ${seed.estado.proyectos.length} proyectos con sus textos, fotos y la portada que tiene hoy la web. Después se pueden editar desde aquí.</p>
+      <button type="button" class="b b-pri" data-import>Importar ${seed.estado.proyectos.length} proyectos</button>
+    </section>`;
+  }
   const pub = E.proyectos.filter((p) => p.publicado).length;
   const list = filtrados();
   return `
@@ -204,6 +263,17 @@ function lista() {
   <ol class="rows" data-rows>${list.map(row).join('') || '<li class="empty">Ningún proyecto coincide con la búsqueda.</li>'}</ol>`;
 }
 function bindLista() {
+  const imp = $('[data-import]');
+  if (imp) {
+    imp.addEventListener('click', async () => {
+      imp.classList.add('is-busy');
+      imp.textContent = 'Importando…';
+      E = structuredClone(seed.estado);
+      if (await persist()) { toast(`${E.proyectos.length} proyectos importados`); render(); }
+      else { E = { proyectos: [], portada: { hero: [null, null, null], home: [null, null, null, null, null] } }; render(); }
+    });
+    return;
+  }
   const rows = $('[data-rows]')!;
   const redraw = () => {
     rows.innerHTML = filtrados().map(row).join('') || '<li class="empty">Ningún proyecto coincide con la búsqueda.</li>';
@@ -456,7 +526,11 @@ async function guardar() {
   } else {
     E.proyectos[E.proyectos.findIndex((x) => x.slug === p.slug)] = p;
   }
-  await persist();
+  if (!(await persist())) {
+    if (nuevo) E.proyectos.shift();
+    btn.classList.remove('is-busy');
+    return;
+  }
   dirty = false;
   draft = { ...structuredClone(p) };
   btn.classList.remove('is-busy');
@@ -658,8 +732,9 @@ function portadaView() {
         redraw();
         $(`[data-slotfoto="${b.dataset.slotfoto}"]`)?.focus();
       } else if (b.matches('[data-psave]')) {
+        const antes = E.portada;
         E.portada = structuredClone(port!);
-        await persist();
+        if (!(await persist())) { E.portada = antes; return; }
         markDirty(false);
         toast('Portada guardada');
       }
@@ -670,12 +745,26 @@ function portadaView() {
 
 /* ── Acciones globales ────────────────────────────── */
 app.addEventListener('click', async (e) => {
-  const b = (e.target as HTMLElement).closest<HTMLElement>('[data-logout], [data-reset]');
+  const b = (e.target as HTMLElement).closest<HTMLElement>('[data-logout], [data-reset], [data-publish]');
   if (!b) return;
-  if (b.matches('[data-logout]')) {
+  if (b.matches('[data-publish]')) {
+    if (dirty) { toast('Guarde los cambios del proyecto antes de publicar.'); return; }
+    b.classList.add('is-busy');
+    try {
+      await store.publish!();
+      pendiente(false);
+      toast('Publicando: la web se actualiza en unos minutos.');
+    } catch (err) {
+      toast(`No se pudo publicar: ${(err as Error).message}`);
+    }
+    b.classList.remove('is-busy');
+    syncPub();
+  } else if (b.matches('[data-logout]')) {
     if (dirty && !(await ask('Hay cambios sin guardar. ¿Cerrar sesión igualmente?', 'Cerrar sesión', true))) return;
     dirty = false;
     try { sessionStorage.removeItem('nan-admin'); } catch {}
+    await store.auth?.signOut();
+    sesion = false;
     login();
   } else if (await ask('Se borrarán todos los cambios hechos en esta demo y se volverá a los datos reales del sitio.', 'Restablecer', true)) {
     await store.reset();
@@ -686,9 +775,22 @@ app.addEventListener('click', async (e) => {
   }
 });
 
-store.load().then((e) => {
-  E = e;
+async function cargar() {
+  try {
+    E = await store.load();
+    return true;
+  } catch (err) {
+    app.innerHTML = `<div class="login"><div class="login-card"><h1 class="login-t">No se pudieron cargar los proyectos</h1><p class="hint">${esc((err as Error).message)}</p><button class="b b-pri b-block" onclick="location.reload()">Reintentar</button></div></div>`;
+    return false;
+  }
+}
+(async () => {
+  if (store.auth) {
+    sesion = await store.auth.session();
+    if (!sesion) return login();
+  }
+  if (!(await cargar())) return;
   if (!location.hash) history.replaceState(null, '', '#/proyectos');
   lastHash = location.hash;
   enter();
-});
+})();

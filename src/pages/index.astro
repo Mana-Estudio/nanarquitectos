@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
-import { heroSlides, obrasHome, ciudad, tipo, publicaciones } from '../data/proyectos';
+import { heroSlides, obrasHome, ciudad, tipo, publicaciones, im } from '../data/proyectos';
 
 // Textos tomados de nanarquitectos.com (Estudio y Gestión de obra)
 const servicios = [
@@ -20,7 +20,7 @@ const total = String(heroSlides.length).padStart(2, '0');
     <div class="hero-media" data-hero>
       {heroSlides.map((s, i) => (
         <figure class:list={['slide', { 'is-active': i === 0 }]} data-slide data-name={s.proyecto.nombre} data-meta={`${ciudad(s.proyecto)} · ${s.proyecto.anio}`} data-href={`/proyectos/${s.proyecto.slug}/`} aria-hidden={i === 0 ? undefined : 'true'}>
-          <Image src={s.imagen} alt={s.proyecto.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} format="webp" quality={70} />
+          <Image {...im(s.imagen)} alt={s.proyecto.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} format="webp" quality={70} />
         </figure>
       ))}
     </div>
@@ -47,7 +47,7 @@ const total = String(heroSlides.length).padStart(2, '0');
       {obrasHome.map((o, i) => (
         <a href={`/proyectos/${o.proyecto.slug}/`} class="work" style={`--col:${o.col};--mt:${o.mt}`} data-speed={i % 2 ? '0.22' : undefined}>
           <div class="frame" data-reveal="img" style={`aspect-ratio:${o.ar};view-transition-name:p-${o.proyecto.slug}`}>
-            <Image src={o.imagen} alt={o.proyecto.titulo} widths={[640, 1024, 1600, 2400]} sizes={o.col === '1 / -1' ? '100vw' : `(max-width: 760px) 100vw, ${Math.round((Number(o.col.match(/span (\d+)/)?.[1] ?? 12) / 12) * 100)}vw`} format="webp" quality={72} />
+            <Image {...im(o.imagen)} alt={o.proyecto.titulo} widths={[640, 1024, 1600, 2400]} sizes={o.col === '1 / -1' ? '100vw' : `(max-width: 760px) 100vw, ${Math.round((Number(o.col.match(/span (\d+)/)?.[1] ?? 12) / 12) * 100)}vw`} format="webp" quality={72} />
           </div>
           <p class="work-cap">
             <span class="serif cap">{o.proyecto.nombre}</span>

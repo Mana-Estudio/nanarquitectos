@@ -5,6 +5,41 @@ const files = import.meta.glob<{ default: ImageMetadata }>('../assets/proyectos/
 // Planos opcionales: src/assets/proyectos/<slug>/planos/*.{jpg,png,webp}
 const planosFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/proyectos/*/planos/*.{jpg,jpeg,png,webp}', { eager: true });
 
+/* ── Fuente de datos: Supabase (lo que edita el panel) o, si no está configurado, proyectos.json ── */
+const SB_URL = import.meta.env.PUBLIC_SUPABASE_URL as string | undefined;
+const SB_KEY = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+type FotoDB = { id: string; repo?: string; path?: string; w?: number; h?: number };
+type Fila = Omit<Raw, 'portadaFoto'> & { orden: number; fotos: FotoDB[]; planos: FotoDB[]; portada: string | null };
+type Slot = { slug: string; foto: string | null } | null;
+
+async function remoto(): Promise<{ filas: Fila[]; portada: { hero?: Slot[]; home?: Slot[] } } | null> {
+  if (!SB_URL || !SB_KEY) return null;
+  const get = (q: string) => fetch(`${SB_URL}/rest/v1/${q}`, { headers: { apikey: SB_KEY } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${r.status} ${r.statusText}`))));
+  try {
+    const [filas, aj] = await Promise.all([get('proyectos?select=*&order=orden'), get('ajustes?clave=eq.portada&select=valor')]);
+    // Base vacía (antes de importar desde el panel): mejor la copia del repositorio que una web sin proyectos
+    if (!filas.length) return null;
+    return { filas, portada: aj[0]?.valor ?? {} };
+  } catch (e) {
+    console.warn('[proyectos] No se pudo leer Supabase; se usa proyectos.json.', e);
+    return null;
+  }
+}
+const R = await remoto();
+
+/** Foto subida desde el panel: se sirve desde el bucket público y Astro la optimiza como imagen remota */
+type Remota = ImageMetadata & { remote?: true };
+const resolver = (x: FotoDB): ImageMetadata | undefined =>
+  x.path
+    ? ({ src: `${SB_URL}/storage/v1/object/public/proyectos/${x.path}`, width: x.w!, height: x.h!, format: 'jpg', remote: true } as Remota)
+    : (files[`../assets/proyectos/${x.repo}`] ?? planosFiles[`../assets/proyectos/${x.repo}`])?.default;
+
+/** Props para <Image> / getImage de una foto local o remota (con `width`, escala manteniendo la proporción) */
+export const im = (f: ImageMetadata, width?: number) =>
+  (f as Remota).remote
+    ? { src: f.src, width: width ?? f.width, height: Math.round(((width ?? f.width) * f.height) / f.width) }
+    : width ? { src: f, width } : { src: f };
+
 function fotos(slug: string, src = files): ImageMetadata[] {
   return Object.entries(src)
     .filter(([path]) => path.includes(`/proyectos/${slug}/`))
@@ -53,6 +88,26 @@ export const galerias: { id: Galeria; label: string }[] = [
 export interface Visibilidad { ficha: boolean; texto: boolean; galeria: boolean; planos: boolean; siguiente: boolean }
 const visibleDefault: Visibilidad = { ficha: true, texto: true, galeria: true, planos: true, siguiente: true };
 
+type Fuente = Raw & { _fotos?: ImageMetadata[]; _planos?: ImageMetadata[] };
+const fuente: Fuente[] = R
+  ? R.filas.map((r) => {
+      const ok = r.fotos.map((x) => ({ x, img: resolver(x) })).filter((y) => y.img);
+      const idx = (id?: string | null) => { const k = ok.findIndex((y) => y.x.id === id); return k >= 0 ? k : undefined; };
+      const pos = (list: Slot[] | undefined) => { const k = (list ?? []).findIndex((s) => s?.slug === r.slug); return k >= 0 ? { n: k + 1, foto: idx(list![k]!.foto) } : null; };
+      const hero = pos(R.portada.hero);
+      const home = pos(R.portada.home);
+      return {
+        ...r,
+        superficie: null,
+        portadaFoto: idx(r.portada),
+        hero: hero?.n, heroFoto: hero?.foto,
+        home: home?.n, homeFoto: home?.foto,
+        _fotos: ok.map((y) => y.img!),
+        _planos: r.planos.map(resolver).filter(Boolean) as ImageMetadata[],
+      };
+    })
+  : (raw as Raw[]);
+
 export interface Proyecto extends Omit<Raw, 'mostrar' | 'galeria'> {
   resumen: string;
   fotos: ImageMetadata[];
@@ -72,17 +127,17 @@ export function ciudad(p: Pick<Proyecto, 'lugar'>) {
   return (known ?? 'Pontevedra').replace(/^\w/, (c) => c.toUpperCase());
 }
 
-export const proyectos: Proyecto[] = (raw as Raw[])
+export const proyectos: Proyecto[] = fuente
   .filter((p) => p.publicado !== false)
   .map((p, i) => ({ p, i }))
   .sort((a, b) => (a.p.orden ?? 1e6 + a.i) - (b.p.orden ?? 1e6 + b.i))
-  .map(({ p }) => {
-    const f = fotos(p.slug);
+  .map(({ p: { _fotos, _planos, ...p } }) => {
+    const f = _fotos ?? fotos(p.slug);
     return {
       ...p,
       galeria: p.galeria ?? 'mosaico',
       mostrar: { ...visibleDefault, ...p.mostrar },
-      planos: fotos(p.slug, planosFiles),
+      planos: _planos ?? fotos(p.slug, planosFiles),
       nombre: capital(p.nombre.replace(/\s+/g, ' ').trim()),
       superficie: p.m2 ? `${new Intl.NumberFormat('es-ES').format(p.m2)} m²` : null,
       // Sin texto en la web original: no se inventa un resumen (queda vacío y la página omite el bloque)
@@ -116,6 +171,9 @@ export const foto = (slug: string, n = 0, o?: 'L' | 'P') => {
 export const cargados = raw as Raw[];
 export const fotosDe = (slug: string) => fotos(slug);
 export const planosDe = (slug: string) => fotos(slug, planosFiles);
+/** Ruta de cada foto dentro de src/assets/proyectos/ (en el mismo orden que fotosDe / planosDe) */
+export const archivosDe = (slug: string, planos = false) =>
+  Object.keys(planos ? planosFiles : files).filter((k) => k.includes(`/proyectos/${slug}/`)).sort((a, b) => a.localeCompare(b)).map((k) => k.replace('../assets/proyectos/', ''));
 
 /** «Obras seleccionadas»: 5 posiciones fijas del diseño. El panel decide qué proyecto y qué foto va en cada una */
 export const homeSlots = [

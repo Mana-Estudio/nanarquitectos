@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
-import { proyectos, foto } from '../data/proyectos';
+import { proyectos, foto, im } from '../data/proyectos';
 import { estudio, socios, revistas, prensa } from '../data/estudio';
 
 const hero = foto('oficina-nan-arquitectos', 0, 'L');
@@ -30,7 +30,7 @@ const existe = new Set(proyectos.map((p) => p.slug));
   </section>
 
   <div class="st-bleed frame" data-reveal="clip" data-parallax="8">
-    <Image src={hero} alt="Oficina de NAN Arquitectos en Pontevedra" widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} loading="eager" />
+    <Image {...im(hero)} alt="Oficina de NAN Arquitectos en Pontevedra" widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} loading="eager" />
   </div>
 
   <section class="manifiesto pad grid12" aria-label="Manifiesto">
@@ -40,7 +40,7 @@ const existe = new Set(proyectos.map((p) => p.slug));
   <section class="socios pad grid12" aria-labelledby="socios-t">
     <h2 id="socios-t" class="sr-only">Socios fundadores</h2>
     <div class="socios-img frame" data-reveal="clip" data-parallax="6" data-speed="0.25">
-      <Image src={retrato} alt="Espacio de trabajo del estudio" widths={[640, 1024, 1400]} sizes="(max-width: 760px) 70vw, 30vw" format="webp" quality={72} />
+      <Image {...im(retrato)} alt="Espacio de trabajo del estudio" widths={[640, 1024, 1400]} sizes="(max-width: 760px) 70vw, 30vw" format="webp" quality={72} />
     </div>
     <ul class="socios-list">
       {socios.map((s) => (
@@ -56,7 +56,7 @@ const existe = new Set(proyectos.map((p) => p.slug));
       <div class="caps-stick">
         {capFotos.map((f, i) => (
           <div class:list={['frame caps-f', { 'is-on': i === 0 }]} data-cap-f={i}>
-            <Image src={f} alt="" widths={[640, 1024, 1600]} sizes="40vw" format="webp" quality={72} />
+            <Image {...im(f)} alt="" widths={[640, 1024, 1600]} sizes="40vw" format="webp" quality={72} />
           </div>
         ))}
         <p class="caps-count small mut num"><span data-cap-n>01</span> / 05</p>
@@ -66,7 +66,7 @@ const existe = new Set(proyectos.map((p) => p.slug));
       {estudio.capitulos.map((c, i) => (
         <li class="cap-item" data-cap={i}>
           <div class="frame cap-inline" style="aspect-ratio: 4 / 3">
-            <Image src={capFotos[i]} alt="" widths={[640, 1024]} sizes="100vw" format="webp" quality={70} />
+            <Image {...im(capFotos[i])} alt="" widths={[640, 1024]} sizes="100vw" format="webp" quality={70} />
           </div>
           <h3 class="cap-t">{c.titulo}</h3>
           <p>{c.texto}</p>

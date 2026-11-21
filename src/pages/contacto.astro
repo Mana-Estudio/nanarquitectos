@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
-import { foto } from '../data/proyectos';
+import { foto, im } from '../data/proyectos';
 import { contacto } from '../data/estudio';
 
 const img = foto('oficina-nan-arquitectos', 2, 'L');
@@ -53,7 +53,7 @@ const pasos = ['Tipo de proyecto', 'Alcance', 'El espacio', 'Plazo y presupuesto
 
   <div class="ct-img pad">
     <div class="frame" data-reveal="clip" data-parallax="7">
-      <Image src={img} alt="Oficina de NAN Arquitectos en la Plaza de España de Pontevedra" widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} />
+      <Image {...im(img)} alt="Oficina de NAN Arquitectos en la Plaza de España de Pontevedra" widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} />
     </div>
   </div>
 
