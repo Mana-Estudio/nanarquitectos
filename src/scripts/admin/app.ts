@@ -1,6 +1,6 @@
-import { localStore, supabaseStore, type Estado, type Foto, type Galeria, type Mostrar, type P, type Portada, type TextoFormato } from './store';
+import { localStore, supabaseStore, type Estado, type Foto, type Galeria, type Mostrar, type P, type Portada, type Slot, type TextoFormato } from './store';
 
-interface Seed { estado: Estado; slots: { label: string; o: 'L' | 'P' }[]; categorias: string[]; logo: string; supabase: { url: string; key: string } | null }
+interface Seed { estado: Estado; slots: { label: string; o: 'L' | 'P'; col: string; ar: string; mt: string }[]; categorias: string[]; logo: string; supabase: { url: string; key: string } | null }
 const seed: Seed = JSON.parse(document.getElementById('seed')!.textContent!);
 const store = seed.supabase
   ? supabaseStore(seed.estado, seed.supabase.url, seed.supabase.key, seed.slots.map((s) => s.o))
@@ -108,6 +108,8 @@ function enter() {
     draft.diseno ??= { texto: 'editorial' };
   } else if (view === 'portada') {
     port = structuredClone(E.portada);
+    heroI = 0;
+    target = null;
   }
   render();
   window.scrollTo(0, 0);
@@ -710,71 +712,176 @@ function bindEditor() {
   };
 }
 
-/* Portada de la web */
-function slotCard(kind: 'hero' | 'home', i: number) {
-  const s = port![kind][i];
+/* Portada de la web: maqueta editable de la home */
+let heroI = 0;
+let target: { kind: 'hero' | 'home'; i: number } | null = null;
+let pq = '';
+
+const devHTML = () => `<span class="dev" role="radiogroup" aria-label="Tamaño de la vista previa">${[['desktop', 'Escritorio'], ['tablet', 'Tablet'], ['mobile', 'Móvil']].map(([k, t]) => `<button type="button" class="dev-b ${device === k ? 'is-on' : ''}" data-dev="${k}" role="radio" aria-checked="${device === k}">${t}</button>`).join('')}</span>`;
+const slotImg = (s: Slot | null) => {
   const p = s ? bySlug(s.slug) : undefined;
-  const o = kind === 'hero' ? 'L' : seed.slots[i].o;
-  const label = kind === 'hero' ? 'Foto horizontal a pantalla completa' : seed.slots[i].label;
-  const usados = new Set(port![kind].filter((x, k) => x && k !== i).map((x) => x!.slug));
+  if (!p) return null;
+  return { p, f: p.fotos.find((f) => f.id === s!.foto) ?? p.fotos[0] };
+};
+const slotO = (kind: 'hero' | 'home', i: number) => (kind === 'hero' ? 'L' : seed.slots[i].o);
+
+function homeCanvas() {
+  const P = port!;
+  const h = slotImg(P.hero[heroI]);
+  const tabs = P.hero.map((s, k) => {
+    const x = slotImg(s);
+    return `<button type="button" class="hp-tab ${k === heroI ? 'is-on' : ''}" data-hero-i="${k}" aria-pressed="${k === heroI}"><span class="hp-tab-img">${x?.f ? `<img src="${x.f.src}" alt="">` : ''}</span><span class="num">${two(k + 1)}</span></button>`;
+  }).join('');
   return `
-  <div class="slot ${p ? '' : 'is-empty'}">
-    <div class="slot-h"><span class="slot-n num">${two(i + 1)}</span><span class="hint">${label}</span></div>
-    <div class="slot-cover ${o === 'P' ? 'is-p' : ''}">${p && s ? `<img src="${p.fotos.find((f) => f.id === s.foto)?.src ?? p.fotos[0]?.src}" alt="">` : '<span>Vacío</span>'}</div>
-    <select class="in" data-slot="${kind}:${i}" aria-label="Proyecto en la posición ${i + 1}">
-      <option value="">Sin proyecto</option>
-      ${E.proyectos.filter((x) => x.publicado).map((x) => `<option value="${x.slug}" ${x.slug === s?.slug ? 'selected' : ''} ${usados.has(x.slug) ? 'disabled' : ''}>${esc(x.nombre)}</option>`).join('')}
-    </select>
-    ${p && s ? `<div class="slot-ph" role="radiogroup" aria-label="Foto para esta posición">${p.fotos.map((f) => `<button type="button" class="sp ${f.id === s.foto ? 'is-on' : ''} ${(o === 'L') === isL(f) ? '' : 'is-dim'}" data-slotfoto="${kind}:${i}:${f.id}" role="radio" aria-checked="${f.id === s.foto}" aria-label="${isL(f) ? 'Horizontal' : 'Vertical'}"><img src="${f.src}" alt="" loading="lazy"></button>`).join('')}</div>` : ''}
-  </div>`;
-}
-function portadaView() {
-  const draw = () => `
-  <header class="top">
-    <div><h1 class="ttl">Portada de la web</h1><p class="sub">Elija qué proyectos se destacan en la home, en qué posición y con qué foto.</p></div>
-    <div class="top-act"><span class="state" data-state>Todo guardado</span><button type="button" class="b b-pri" data-psave><span data-save-t>Guardar portada</span></button></div>
-  </header>
-  <section class="card">
-    <h2 class="card-t">Carrusel principal</h2>
-    <p class="hint">Las fotos que pasan a pantalla completa al abrir la web. Mejor en horizontal: las verticales aparecen atenuadas.</p>
-    <div class="slots slots-3">${[0, 1, 2].map((i) => slotCard('hero', i)).join('')}</div>
+  <section class="blk hp-hero">
+    ${bar(`Carrusel · foto ${two(heroI + 1)} de 03`, `<button type="button" class="tb" data-slot-open="hero:${heroI}">${h ? 'Cambiar obra o foto' : 'Elegir obra'}</button>${h ? `<button type="button" class="tb" data-slot-clear="hero:${heroI}">Quitar</button>` : ''}`)}
+    <button type="button" class="hp-media" data-slot-open="hero:${heroI}" aria-label="Cambiar la foto ${heroI + 1} del carrusel">${h?.f ? `<img src="${h.f.src}" alt="">` : '<span class="hp-empty">Elegir la obra de esta foto</span>'}</button>
+    <div class="hp-cap">
+      <p><span class="hp-name">${h ? esc(h.p.nombre) : 'Sin obra'}</span><span class="hint">${h ? esc([h.p.lugar, h.p.anio].filter(Boolean).join(' · ')) : ''}</span></p>
+      <div class="hp-tabs" role="group" aria-label="Fotos del carrusel">${tabs}</div>
+    </div>
   </section>
-  <section class="card">
-    <h2 class="card-t">Obras seleccionadas</h2>
-    <p class="hint">Las cinco obras bajo el carrusel. Cada posición tiene una forma fija en el diseño.</p>
-    <div class="slots slots-5">${[0, 1, 2, 3, 4].map((i) => slotCard('home', i)).join('')}</div>
-  </section>`;
-  queueMicrotask(() => {
-    const main = $('#main')!;
-    const redraw = () => { main.innerHTML = draw(); markDirty(true); };
-    main.addEventListener('change', (e) => {
-      const t = e.target as HTMLSelectElement;
-      if (!t.dataset.slot) return;
-      const [kind, i] = t.dataset.slot.split(':') as ['hero' | 'home', string];
-      const p = bySlug(t.value);
-      const o = kind === 'hero' ? 'L' : seed.slots[Number(i)].o;
-      port![kind][Number(i)] = p ? { slug: p.slug, foto: (p.fotos.find((f) => (o === 'L') === isL(f)) ?? p.fotos[0])?.id ?? '' } : null;
-      redraw();
-      $(`[data-slot="${t.dataset.slot}"]`)?.focus();
-    });
-    main.addEventListener('click', async (e) => {
-      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button');
-      if (!b) return;
-      if (b.dataset.slotfoto) {
-        const [kind, i, id] = b.dataset.slotfoto.split(':');
-        port![kind as 'hero' | 'home'][Number(i)]!.foto = id;
-        redraw();
-        $(`[data-slotfoto="${b.dataset.slotfoto}"]`)?.focus();
-      } else if (b.matches('[data-psave]')) {
-        const antes = E.portada;
-        E.portada = structuredClone(port!);
-        if (!(await persist())) { E.portada = antes; return; }
-        markDirty(false);
-        toast('Portada guardada');
-      }
-    });
+  <section class="blk hp-works">
+    ${bar('Obras seleccionadas', '<span class="blk-name">Haga clic en una foto para cambiarla</span>')}
+    <div class="hp-head"><h2 class="hp-h2">Obras seleccionadas</h2><span class="hint">Todos los proyectos →</span></div>
+    <div class="hp-grid">${seed.slots.map((sl, k) => {
+      const x = slotImg(P.home[k]);
+      return `<div class="hp-slot" style="--col:${sl.col};--mt:${(parseInt(sl.mt, 10) || 0) / 14.4}">
+        <button type="button" class="hp-frame ${x ? '' : 'is-empty'}" style="aspect-ratio:${sl.ar}" data-slot-open="home:${k}" aria-label="Cambiar la obra de la posición ${k + 1}">
+          ${x?.f ? `<img src="${x.f.src}" alt="">` : '<span class="hp-empty">Elegir obra</span>'}
+          <span class="hp-pos"><span class="num">${two(k + 1)}</span> · ${sl.label}</span>
+        </button>
+        <p class="hp-wcap"><span class="hp-wname">${x ? esc(x.p.nombre) : 'Posición libre'}</span><span class="hint">${x ? esc([x.p.categoria, x.p.anio].filter(Boolean).join(' · ')) : ''}</span></p>
+      </div>`;
+    }).join('')}</div>
+  </section>
+  <p class="hp-rest hint">Debajo siguen Estudio, Publicaciones, Servicios y Contacto, que no cambian desde aquí.</p>`;
+}
+
+function pkList() {
+  const { kind, i } = target!;
+  const s = port![kind][i];
+  const used = new Map(port![kind].map((x, k) => [x?.slug, k] as const).filter(([sl, k]) => sl && k !== i));
+  const q = pq.toLowerCase();
+  const list = E.proyectos.filter((p) => p.publicado && (!q || `${p.nombre} ${p.lugar}`.toLowerCase().includes(q)));
+  return list.map((p) => {
+    const f = p.fotos[p.portada] ?? p.fotos[0];
+    const u = used.get(p.slug);
+    return `<li><button type="button" class="pk-item ${p.slug === s?.slug ? 'is-on' : ''}" data-pk-slug="${p.slug}" ${u !== undefined ? 'disabled' : ''}>
+      <span class="pk-th">${f ? `<img src="${f.src}" alt="" loading="lazy">` : ''}</span>
+      <span class="pk-t"><span>${esc(p.nombre)}</span><span class="hint">${u !== undefined ? `Ya está en la posición ${two(u + 1)}` : esc([p.categoria, p.anio].filter(Boolean).join(' · '))}</span></span>
+    </button></li>`;
+  }).join('') || '<li class="hint pk-none">Ningún proyecto publicado coincide.</li>';
+}
+function pickerHTML() {
+  const { kind, i } = target!;
+  const s = port![kind][i];
+  const o = slotO(kind, i);
+  const cur = s ? bySlug(s.slug) : undefined;
+  const where = kind === 'hero' ? `Carrusel · foto ${two(i + 1)}` : `Obras seleccionadas · posición ${two(i + 1)} (${seed.slots[i].label.toLowerCase()})`;
+  return `
+  <div class="drawer-h"><h2 class="card-t">Elegir obra</h2><button type="button" class="ib" data-picker-close aria-label="Cerrar">×</button></div>
+  <p class="hint">${esc(where)}</p>
+  ${cur ? `<div class="pk-cur">
+    <p class="pk-lbl">Foto de «${esc(cur.nombre)}» <span class="hint">· mejor ${o === 'L' ? 'horizontal' : 'vertical'}</span></p>
+    <div class="pk-ph" role="radiogroup" aria-label="Foto">${cur.fotos.map((f) => `<button type="button" class="sp ${f.id === s!.foto ? 'is-on' : ''} ${(o === 'L') === isL(f) ? '' : 'is-dim'}" data-pk-foto="${f.id}" role="radio" aria-checked="${f.id === s!.foto}" aria-label="${isL(f) ? 'Horizontal' : 'Vertical'}"><img src="${f.src}" alt="" loading="lazy"></button>`).join('')}</div>
+  </div>` : ''}
+  <input class="in" type="search" placeholder="Buscar proyecto" value="${esc(pq)}" data-pk-q aria-label="Buscar proyecto">
+  <ul class="pk-list" data-pk-list>${pkList()}</ul>
+  ${s ? `<button type="button" class="b b-danger-ghost" data-slot-clear="${kind}:${i}">Quitar de esta posición</button>` : ''}`;
+}
+
+function portadaView() {
+  queueMicrotask(bindPortada);
+  return `
+  <header class="top top-ed">
+    <div class="top-l"><h1 class="ttl">Portada de la web</h1></div>
+    <div class="top-act">
+      ${devHTML()}
+      <span class="state" data-state>Todo guardado</span>
+      <a class="b b-ghost b-web" href="/" target="_blank" rel="noopener">Ver la web <span class="arr">↗</span></a>
+      <button type="button" class="b b-pri" data-psave><span data-save-t>Guardar portada</span></button>
+    </div>
+  </header>
+  <p class="ed-hint hint">Así se ve el inicio de la web. Haga clic en cualquier foto para elegir qué obra va ahí y con qué imagen.</p>
+  <div class="stage"><div class="cv cv-${device}" data-cv>${homeCanvas()}</div></div>
+  <div class="drawer-bg" data-picker-close hidden></div>
+  <aside class="drawer pk" aria-label="Elegir obra" data-picker></aside>`;
+}
+
+function bindPortada() {
+  const main = $('#main')!;
+  const P = port!;
+  const drawerEl = $('[data-picker]')!;
+  const bg = main.querySelector<HTMLElement>('.drawer-bg')!;
+  const redrawHome = () => vt(() => { $('[data-cv]')!.innerHTML = homeCanvas(); });
+  const refreshPicker = () => { if (target) drawerEl.innerHTML = pickerHTML(); };
+  const openPicker = (kind: 'hero' | 'home', i: number) => {
+    target = { kind, i };
+    pq = '';
+    drawerEl.innerHTML = pickerHTML();
+    drawerEl.classList.add('is-open');
+    bg.hidden = false;
+    $<HTMLInputElement>('[data-pk-q]')?.focus({ preventScroll: true });
+  };
+  const closePicker = () => { target = null; drawerEl.classList.remove('is-open'); bg.hidden = true; };
+  const parse = (v: string) => { const [k, i] = v.split(':'); return [k as 'hero' | 'home', Number(i)] as const; };
+
+  main.addEventListener('click', async (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('button, [data-picker-close]');
+    if (!b) return;
+    if (b.dataset.dev) {
+      device = b.dataset.dev as typeof device;
+      vt(() => {
+        $('[data-cv]')!.className = `cv cv-${device}`;
+        main.querySelectorAll('.dev-b').forEach((x) => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-checked', String(x === b)); });
+      });
+    } else if (b.dataset.heroI) {
+      heroI = Number(b.dataset.heroI);
+      redrawHome();
+    } else if (b.dataset.slotOpen) {
+      const [k, i] = parse(b.dataset.slotOpen);
+      if (k === 'hero' && heroI !== i) { heroI = i; redrawHome(); }
+      openPicker(k, i);
+    } else if (b.matches('[data-picker-close]')) {
+      closePicker();
+    } else if (b.dataset.slotClear) {
+      const [k, i] = parse(b.dataset.slotClear);
+      P[k][i] = null;
+      markDirty();
+      redrawHome();
+      closePicker();
+      toast('Posición vaciada');
+    } else if (b.dataset.pkSlug && target) {
+      const p = bySlug(b.dataset.pkSlug)!;
+      const o = slotO(target.kind, target.i);
+      P[target.kind][target.i] = { slug: p.slug, foto: (p.fotos.find((f) => (o === 'L') === isL(f)) ?? p.fotos[0])?.id ?? '' };
+      markDirty();
+      redrawHome();
+      refreshPicker();
+    } else if (b.dataset.pkFoto && target) {
+      P[target.kind][target.i]!.foto = b.dataset.pkFoto;
+      markDirty();
+      redrawHome();
+      refreshPicker();
+    } else if (b.matches('[data-psave]')) {
+      const antes = E.portada;
+      E.portada = structuredClone(P);
+      if (!(await persist())) { E.portada = antes; return; }
+      markDirty(false);
+      $('[data-save-t]')!.textContent = 'Guardada';
+      b.classList.add('is-ok');
+      window.setTimeout(() => { b.classList.remove('is-ok'); const t = $('[data-save-t]'); if (t) t.textContent = 'Guardar portada'; }, 1600);
+      toast('Portada guardada');
+    }
   });
-  return draw();
+  main.addEventListener('input', (e) => {
+    const t = e.target as HTMLInputElement;
+    if (!t.matches('[data-pk-q]') || !target) return;
+    pq = t.value;
+    $('[data-pk-list]')!.innerHTML = pkList();
+  });
+  main.addEventListener('keydown', (e) => { if (e.key === 'Escape' && target) closePicker(); });
 }
 
 /* ── Acciones globales ────────────────────────────── */

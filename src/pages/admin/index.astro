@@ -55,7 +55,7 @@ const portada = {
 };
 const seed = {
   estado: { proyectos: proyectos.map(({ _f, ...p }) => p), portada },
-  slots: homeSlots.map((s) => ({ label: s.label, o: s.o })),
+  slots: homeSlots.map((s) => ({ label: s.label, o: s.o, col: s.col, ar: s.ar, mt: s.mt })),
   categorias: ['Vivienda', 'Clínica', 'Hostelería', 'Comercio', 'Oficina', 'Otros'],
   logo: (await getImage({ src: logo, width: 190, format: 'webp' })).src,
   // Con estas variables el panel trabaja contra Supabase; sin ellas, en modo demo
