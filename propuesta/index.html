@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta · Nueva web para NAN Arquitectos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   FIXED 16:9 STAGE: MANDATORY BASE STYLES
+   (copia íntegra de viewport-base.css)
+   =========================================== */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--slide-bg, #fff); }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: var(--slide-bg, #fff); }
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+.deck-controls { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1000; }
+@media print {
+  html, body { width: 1920px; height: auto; overflow: visible; background: #fff; }
+  .deck-viewport { position: static; overflow: visible; background: #fff; }
+  .deck-stage { position: static; width: auto; height: auto; transform: none !important; background: none; }
+  .slide { position: relative; display: block !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; width: 1920px; height: 1080px; break-after: page; page-break-after: always; }
+  .slide:last-child { break-after: auto; page-break-after: auto; }
+  .deck-controls { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+}
+
+/* ===========================================
+   SISTEMA VISUAL (el mismo de la web)
+   Fondo hueso, tinta, gris y amarillo solo en acentos.
+   Newsreader Light para títulos, Instrument Sans para texto.
+   =========================================== */
+:root {
+  --bg: #F5F3EF;
+  --ink: #1A1A18;
+  --mut: #6F6D68;
+  --line: rgba(26, 26, 24, .14);
+  --yellow: #E8BE2E;
+  --frame: #E7E4DE;
+  --stage-bg: #E7E4DE;
+  --slide-bg: var(--bg);
+  --serif: 'Newsreader', Georgia, serif;
+  --sans: 'Instrument Sans', system-ui, sans-serif;
+  --pad: 112px;          /* margen lateral a 1920 px (64 px de la web × 1,75) */
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+.deck-stage, .slide { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; }
+.slide { font-size: 28px; line-height: 1.5; }
+h1, h2, h3, p, figure, ul, ol, dl, dd { margin: 0; padding: 0; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 300; letter-spacing: -.02em; text-wrap: balance; }
+p { text-wrap: pretty; }
+ul, ol { list-style: none; }
+
+/* === CROMO DE CADA DIAPOSITIVA: logo, título del documento, página === */
+.chrome { position: absolute; left: var(--pad); right: var(--pad); top: 56px; display: flex; justify-content: space-between; align-items: center; font-size: 22px; color: var(--mut); z-index: 3; }
+.chrome img { width: 132px; height: auto; display: block; }
+.chrome .doc { letter-spacing: .01em; }
+.foot { position: absolute; left: var(--pad); right: var(--pad); bottom: 52px; display: flex; justify-content: space-between; font-size: 20px; color: var(--mut); font-variant-numeric: tabular-nums; z-index: 3; }
+.foot .pg b { color: var(--ink); font-weight: 400; }
+
+/* === TIPOGRAFÍA === */
+.label { font-size: 22px; color: var(--mut); }
+.display { font-size: 168px; line-height: .98; }
+.h1 { font-size: 112px; line-height: 1.02; }
+.h2 { font-size: 76px; line-height: 1.06; }
+.h3 { font-size: 44px; line-height: 1.15; }
+.lead { font-family: var(--serif); font-weight: 300; font-size: 44px; line-height: 1.3; }
+.mut { color: var(--mut); }
+.num { font-variant-numeric: tabular-nums; }
+.u { text-decoration: underline; text-decoration-color: var(--yellow); text-decoration-thickness: 4px; text-underline-offset: 12px; }
+.sq { display: inline-block; width: 16px; height: 16px; background: var(--yellow); }
+
+/* === RETÍCULA DE 12 COLUMNAS A 1920 === */
+.grid { position: absolute; left: var(--pad); right: var(--pad); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 40px; }
+.rule { border-top: 1px solid var(--line); padding-top: 28px; }
+
+/* === IMÁGENES Y CAPTURAS === */
+.frame { position: relative; overflow: hidden; background: var(--frame); }
+.frame img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; object-fit: cover; object-position: top center; display: block; }
+.shot { box-shadow: 0 2px 6px rgba(26, 26, 24, .06), 0 24px 60px -24px rgba(26, 26, 24, .28); }
+.cap { margin-top: 18px; font-size: 20px; color: var(--mut); display: flex; justify-content: space-between; gap: 24px; }
+
+/* === ANIMACIÓN DE ENTRADA: cascada al activar la diapositiva === */
+.r { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform 1.1s var(--ease); }
+.slide.active .r { opacity: 1; transform: none; }
+.slide.active .r:nth-child(2), .slide.active .d2 { transition-delay: .08s; }
+.slide.active .r:nth-child(3), .slide.active .d3 { transition-delay: .16s; }
+.slide.active .r:nth-child(4), .slide.active .d4 { transition-delay: .24s; }
+.slide.active .r:nth-child(5), .slide.active .d5 { transition-delay: .32s; }
+.slide.active .r:nth-child(6), .slide.active .d6 { transition-delay: .40s; }
+.reveal-img { clip-path: inset(10% 6% 10% 6%); transition: clip-path 1.6s var(--ease); }
+.reveal-img img { transform: scale(1.12); transition: transform 1.9s var(--ease); }
+.slide.active .reveal-img { clip-path: inset(0 0 0 0); }
+.slide.active .reveal-img img { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .r { transform: none; }
+  .reveal-img { clip-path: none; }
+  .reveal-img img { transform: none; }
+}
+
+/* ===========================================
+   01 · PORTADA
+   =========================================== */
+.s-cover .cover-img { position: absolute; top: 0; right: 0; bottom: 0; width: 760px; }
+.s-cover .cover-txt { position: absolute; left: var(--pad); top: 300px; width: 940px; }
+.s-cover .cover-txt .label { margin-bottom: 48px; display: flex; align-items: center; gap: 16px; }
+.s-cover .cover-meta { position: absolute; left: var(--pad); bottom: 120px; display: flex; gap: 72px; font-size: 22px; }
+.s-cover .cover-meta div div:first-child { color: var(--mut); margin-bottom: 6px; }
+.s-cover .chrome { right: calc(760px + var(--pad)); }
+.s-cover .img-cap { position: absolute; right: 40px; bottom: 36px; font-size: 18px; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.4); z-index: 2; }
+
+/* ===========================================
+   02 · PUNTO DE PARTIDA
+   =========================================== */
+.s-start .shot-wrap { position: absolute; left: var(--pad); top: 210px; width: 1000px; }
+.s-start .shot-wrap .frame { aspect-ratio: 1440 / 900; }
+.s-start .facts { position: absolute; left: 1220px; right: var(--pad); top: 196px; }
+.s-start .facts h2 { margin-bottom: 32px; font-size: 62px; }
+.fact { display: grid; grid-template-columns: 64px 1fr; gap: 8px; padding: 17px 0; border-top: 1px solid var(--line); font-size: 23px; line-height: 1.4; }
+.fact .n { color: var(--mut); font-size: 20px; padding-top: 4px; font-variant-numeric: tabular-nums; }
+.fact b { font-weight: 500; }
+.fact.alert .n { color: var(--ink); }
+.fact.alert .n::before { content: ''; display: inline-block; width: 10px; height: 10px; background: var(--yellow); margin-right: 8px; vertical-align: 2px; }
+
+/* ===========================================
+   03 · LA IDEA
+   =========================================== */
+.s-idea .statement { position: absolute; left: var(--pad); top: 230px; width: 1450px; }
+.s-idea .principles { top: 640px; row-gap: 0; }
+.principle { grid-column: span 4; }
+.principle h3 { font-size: 40px; margin-bottom: 16px; }
+.principle p { font-size: 24px; color: var(--ink); max-width: 500px; }
+
+/* ===========================================
+   04-06 · PROTOTIPO (capturas reales de la web publicada)
+   =========================================== */
+.s-proto .proto-shot { position: absolute; left: var(--pad); top: 196px; width: 1180px; }
+.s-proto .proto-shot .frame { aspect-ratio: 1440 / 900; }
+.s-proto .proto-txt { position: absolute; left: 1400px; right: var(--pad); top: 196px; }
+.s-proto .proto-txt h2 { margin: 18px 0 36px; }
+.s-proto .proto-txt li { font-size: 25px; line-height: 1.4; padding: 18px 0; border-top: 1px solid var(--line); }
+.s-proto .proto-txt li:last-child { border-bottom: 1px solid var(--line); }
+.s-proto.detail .phone { position: absolute; left: 1000px; top: 330px; width: 250px; border-radius: 32px; padding: 10px; background: var(--ink); box-shadow: 0 30px 60px -30px rgba(26,26,24,.5); }
+.s-proto.detail .phone .frame { aspect-ratio: 390 / 844; border-radius: 23px; }
+
+/* ===========================================
+   07 · CALIDAD MEDIDA
+   =========================================== */
+.s-metrics .head { position: absolute; left: var(--pad); top: 210px; width: 1100px; }
+.s-metrics .scores { top: 520px; }
+.score { grid-column: span 3; border-top: 1px solid var(--line); padding-top: 28px; }
+.score .v { font-family: var(--serif); font-weight: 300; font-size: 168px; line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.score .k { font-size: 24px; margin-top: 12px; }
+.s-metrics .extra { top: 860px; font-size: 24px; }
+.s-metrics .extra > div { grid-column: span 3; }
+.s-metrics .extra .mut { font-size: 20px; margin-bottom: 4px; }
+
+/* ===========================================
+   08 · ALCANCE
+   =========================================== */
+.s-scope .head { position: absolute; left: var(--pad); top: 200px; width: 1300px; }
+.s-scope .cols { top: 500px; row-gap: 0; }
+.scope-col { grid-column: span 4; }
+.scope-col h3 { font-size: 40px; margin-bottom: 22px; display: flex; align-items: baseline; gap: 20px; }
+.scope-col h3 span { font-family: var(--sans); font-size: 20px; color: var(--mut); letter-spacing: 0; }
+.scope-col li { font-size: 24px; line-height: 1.4; padding: 15px 0; border-top: 1px solid var(--line); }
+
+/* ===========================================
+   09 · PLAN DE TRABAJO
+   =========================================== */
+.s-plan .head { position: absolute; left: var(--pad); top: 200px; width: 1300px; }
+.s-plan .weeks { top: 470px; column-gap: 0; }
+.wk { grid-column: span 3; padding: 0 36px 0 0; }
+.wk .bar { height: 4px; background: var(--line); margin-bottom: 28px; position: relative; }
+.wk .bar::after { content: ''; position: absolute; left: 0; top: 0; height: 4px; width: 0; background: var(--ink); transition: width 1.2s var(--ease); }
+.slide.active .wk .bar::after { width: 100%; }
+.slide.active .wk:nth-child(2) .bar::after { transition-delay: .25s; }
+.slide.active .wk:nth-child(3) .bar::after { transition-delay: .5s; }
+.slide.active .wk:nth-child(4) .bar::after { transition-delay: .75s; }
+.wk.last .bar::after { background: var(--yellow); }
+.wk .when { font-size: 20px; color: var(--mut); font-variant-numeric: tabular-nums; }
+.wk h3 { font-size: 44px; margin: 10px 0 20px; }
+.wk p { font-size: 24px; line-height: 1.45; }
+.wk .out { margin-top: 22px; font-size: 20px; color: var(--mut); }
+
+/* ===========================================
+   10 · INVERSIÓN
+   =========================================== */
+.s-price .head { position: absolute; left: var(--pad); top: 200px; width: 760px; }
+.s-price .main { position: absolute; left: var(--pad); top: 470px; width: 760px; }
+.s-price .amount { font-family: var(--serif); font-weight: 300; font-size: 200px; line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.s-price .amount small { font-size: 64px; letter-spacing: 0; }
+.s-price .main p { font-size: 24px; margin-top: 24px; max-width: 640px; }
+.s-price .table { position: absolute; left: 1020px; right: var(--pad); top: 190px; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line); font-size: 23px; }
+.row .t { display: block; }
+.row .s { display: block; font-size: 18px; color: var(--mut); margin-top: 4px; }
+.row .p { font-family: var(--serif); font-size: 32px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row.total { border-top: 2px solid var(--ink); }
+.table .group { font-size: 20px; color: var(--mut); margin: 26px 0 4px; }
+.table .group:first-child { margin-top: 0; }
+
+/* ===========================================
+   11 · CONDICIONES
+   =========================================== */
+.s-terms .head { position: absolute; left: var(--pad); top: 200px; width: 1300px; }
+.s-terms .terms { top: 470px; row-gap: 0; }
+.term { grid-column: span 6; display: grid; grid-template-columns: 300px 1fr; gap: 24px; padding: 26px 40px 26px 0; border-top: 1px solid var(--line); font-size: 25px; line-height: 1.45; }
+.term dt { color: var(--mut); font-size: 22px; padding-top: 2px; }
+
+/* ===========================================
+   12 · CIERRE
+   =========================================== */
+.s-close .close-txt { position: absolute; left: var(--pad); top: 270px; width: 1200px; }
+.s-close .close-txt .display { margin-bottom: 64px; }
+.s-close .steps { position: absolute; left: var(--pad); right: var(--pad); top: 760px; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 40px; }
+.s-close .steps li { border-top: 1px solid var(--line); padding-top: 24px; font-size: 25px; }
+.s-close .steps li span { display: block; font-size: 20px; color: var(--mut); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+
+/* ===========================================
+   CONTROLES FUERA DEL ESCENARIO (no forman parte del diseño)
+   =========================================== */
+.deck-controls { display: flex; gap: 6px; align-items: center; font: 500 13px/1 'Instrument Sans', sans-serif; color: #6F6D68; background: rgba(245, 243, 239, .9); backdrop-filter: blur(8px); padding: 8px 10px; border-radius: 999px; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px -12px rgba(0,0,0,.25); opacity: 0; transition: opacity .4s; }
+.deck-viewport:hover ~ .deck-controls, .deck-controls:hover, .deck-controls.show { opacity: 1; }
+.deck-controls button { border: 0; background: none; font: inherit; color: #1A1A18; padding: 6px 10px; cursor: pointer; border-radius: 999px; }
+.deck-controls button:hover { background: rgba(26, 26, 24, .07); }
+.deck-controls .count { min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; }
+.progress { position: fixed; left: 0; top: 0; height: 3px; background: #E8BE2E; z-index: 1001; transition: width .5s cubic-bezier(.16, 1, .3, 1); }
+
+/* === EDICIÓN EN LÍNEA (tecla E o esquina superior izquierda) === */
+.edit-hotzone { position: fixed; top: 0; left: 0; width: 80px; height: 80px; z-index: 10000; cursor: pointer; }
+.edit-toggle { position: fixed; top: 16px; left: 16px; z-index: 10001; border: 0; border-radius: 999px; padding: 10px 16px; font: 500 13px 'Instrument Sans', sans-serif; background: #1A1A18; color: #F5F3EF; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.editing [contenteditable="true"] { outline: 2px dashed rgba(232, 190, 46, .9); outline-offset: 6px; cursor: text; }
+.save-note { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 10001; font: 500 13px 'Instrument Sans', sans-serif; background: #1A1A18; color: #F5F3EF; padding: 10px 16px; border-radius: 999px; opacity: 0; transition: opacity .3s; pointer-events: none; }
+.save-note.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+<div class="deck-stage" id="deckStage">
+
+  <!-- =====================================================
+       01 · PORTADA
+       ===================================================== -->
+  <section class="slide s-cover" aria-label="Portada">
+    <div class="chrome"><img src="assets/logo.webp" alt="NAN Arquitectos"><span class="doc">Noviembre 2026</span></div>
+    <div class="cover-txt">
+      <p class="label r"><span class="sq"></span>Propuesta de rediseño web</p>
+      <h1 class="display r">Una web a la altura de la obra.</h1>
+    </div>
+    <div class="cover-meta r d4">
+      <div><div>Para</div><div>NAN Arquitectos · Pontevedra</div></div>
+      <div><div>Prototipo</div><div>nan-arquitectos.vercel.app</div></div>
+    </div>
+    <div class="frame cover-img reveal-img"><img src="assets/portada.jpg" alt="Restaurante Marna, proyecto de NAN Arquitectos"></div>
+    <span class="img-cap">Restaurante Marna · Pontevedra · 2025</span>
+  </section>
+
+  <!-- =====================================================
+       02 · PUNTO DE PARTIDA (hechos verificados en la web actual)
+       ===================================================== -->
+  <section class="slide s-start" aria-label="Punto de partida">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Punto de partida</span></div>
+    <figure class="shot-wrap r">
+      <div class="frame shot"><img src="assets/actual-home.jpg" alt="Captura de la web actual de NAN Arquitectos"></div>
+      <figcaption class="cap"><span>nanarquitectos.com, tal como se ve hoy</span><span>1440 × 900</span></figcaption>
+    </figure>
+    <div class="facts">
+      <h2 class="h2 r">La obra es buena. La web no la acompaña.</h2>
+      <div class="fact alert r"><span class="n">01</span><span><b>Spam de casinos dentro de la home</b>: decenas de enlaces ocultos en varios idiomas. Afecta al posicionamiento y a la confianza.</span></div>
+      <div class="fact r"><span class="n">02</span><span>WordPress con un tema de 2018, plugins y panel que hay que mantener al día.</span></div>
+      <div class="fact r"><span class="n">03</span><span>Las fotos se muestran a <b>500 × 350 px</b>, aunque en el servidor están los originales de 2400 px.</span></div>
+      <div class="fact r"><span class="n">04</span><span>Sin título principal (H1), casi sin textos alternativos y con el aviso de cookies tapando media pantalla.</span></div>
+    </div>
+    <div class="foot"><span>NAN Arquitectos · Propuesta web</span><span class="pg"><b>02</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       03 · LA IDEA
+       ===================================================== -->
+  <section class="slide s-idea" aria-label="La idea">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">La idea</span></div>
+    <div class="statement">
+      <p class="label r">Qué proponemos</p>
+      <h2 class="h1 r" style="margin-top:28px">La obra es la protagonista.<br>La interfaz se retira.</h2>
+    </div>
+    <div class="grid principles">
+      <div class="principle rule r"><h3>Imagen en calidad original</h3><p>Fotos a pantalla completa, nítidas en pantallas retina y livianas en el móvil gracias a formatos modernos.</p></div>
+      <div class="principle rule r d3"><h3>Cuatro puntos de entrada</h3><p>Proyectos, Estudio, Servicios y Contacto. Filtro por tipo de obra y un índice para quien busca rápido.</p></div>
+      <div class="principle rule r d4"><h3>Rápida y sin mantenimiento</h3><p>Sitio estático: sin base de datos ni plugins que actualizar, que es por donde suele entrar este tipo de spam.</p></div>
+    </div>
+    <div class="foot"><span>NAN Arquitectos · Propuesta web</span><span class="pg"><b>03</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       04 · PROTOTIPO · HOME
+       ===================================================== -->
+  <section class="slide s-proto" aria-label="Prototipo: inicio">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Prototipo · Inicio</span></div>
+    <figure class="proto-shot r">
+      <div class="frame shot reveal-img"><img src="assets/web-home.jpg" alt="Inicio de la nueva web"></div>
+      <figcaption class="cap"><span>nan-arquitectos.vercel.app</span><span>Escritorio · 1440 × 900</span></figcaption>
+    </figure>
+    <div class="proto-txt">
+      <p class="label r">01 · Inicio</p>
+      <h2 class="h2 r">Entrar y ver obra.</h2>
+      <ul class="r d3">
+        <li>Tres obras destacadas a gran tamaño, con nombre, lugar y año.</li>
+        <li>Obras seleccionadas en una retícula asimétrica, como una monografía.</li>
+        <li>Estudio, servicios, publicaciones y contacto en la misma página.</li>
+      </ul>
+    </div>
+    <div class="foot"><span>NAN Arquitectos · Propuesta web</span><span class="pg"><b>04</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       05 · PROTOTIPO · PROYECTOS
+       ===================================================== -->
+  <section class="slide s-proto" aria-label="Prototipo: proyectos">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Prototipo · Proyectos</span></div>
+    <figure class="proto-shot r">
+      <div class="frame shot reveal-img"><img src="assets/web-proyectos.jpg" alt="Listado de proyectos de la nueva web"></div>
+      <figcaption class="cap"><span>nan-arquitectos.vercel.app/proyectos</span><span>Escritorio · 1440 × 900</span></figcaption>
+    </figure>
+    <div class="proto-txt">
+      <p class="label r">02 · Proyectos</p>
+      <h2 class="h2 r">Los 73 proyectos, ordenados.</h2>
+      <ul class="r d3">
+        <li>Filtro por tipo: clínicas, hostelería, comercios, oficinas y viviendas.</li>
+        <li>Vista de retícula o índice ordenable por nombre, año y m².</li>
+        <li>Todo el contenido actual migrado: fotos, fichas y textos.</li>
+      </ul>
+    </div>
+    <div class="foot"><span>NAN Arquitectos · Propuesta web</span><span class="pg"><b>05</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       06 · PROTOTIPO · DETALLE + MÓVIL
+       ===================================================== -->
+  <section class="slide s-proto detail" aria-label="Prototipo: detalle de proyecto">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Prototipo · Detalle de proyecto</span></div>
+    <figure class="proto-shot r" style="width:1000px">
+      <div class="frame shot reveal-img"><img src="assets/web-detalle.jpg" alt="Página de detalle del Restaurante Marna"></div>
+      <figcaption class="cap"><span>/proyectos/marna-restaurante</span><span>Escritorio</span></figcaption>
+    </figure>
+    <div class="phone r d3"><div class="frame"><img src="assets/web-mobile.jpg" alt="Inicio de la nueva web en el móvil"></div></div>
+    <div class="proto-txt">
+      <p class="label r">03 · Detalle</p>
+      <h2 class="h2 r">Cada obra, su monografía.</h2>
+      <ul class="r d3">
+        <li>Imagen a sangre, ficha técnica (lugar, año, superficie) y memoria.</li>
+        <li>Galería con ritmo y visor a pantalla completa, con teclado y gestos.</li>
+        <li>Diseñada también para el móvil: misma calidad de imagen en pantallas pequeñas.</li>
+      </ul>
+    </div>
+    <div class="foot"><span>NAN Arquitectos · Propuesta web</span><span class="pg"><b>06</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       07 · CALIDAD MEDIDA (Lighthouse real sobre el prototipo)
+       ===================================================== -->
+  <section class="slide s-metrics" aria-label="Calidad técnica">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Calidad técnica</span></div>
+    <div class="head">
+      <p class="label r">Medido con Google Lighthouse sobre el prototipo · móvil · 21/11/2026</p>
+      <h2 class="h2 r" style="margin-top:24px">Rápida, accesible y fácil de encontrar.</h2>
+    </div>
+    <div class="grid scores">
+      <div class="score r"><div class="v">99</div><div class="k">Rendimiento</div></div>
+      <div class="score r"><div class="v">100</div><div class="k">Accesibilidad</div></div>
+      <div class="score r"><div class="v">100</div><div class="k">Buenas prácticas</div></div>
+      <div class="score r"><div class="v">100</div><div class="k">SEO</div></div>
+    </div>
+    <div class="grid extra">
+      <div class="r d5"><div class="mut">Carga de la imagen principal</div>≈ 2 segundos en móvil</div>
+      <div class="r d5"><div class="mut">Saltos de diseño al cargar</div>0</div>
+      <div class="r d6"><div class="mut">Imágenes</div>WebP de 640 a 2560 px</div>
+      <div class="r d6"><div class="mut">Seguridad</div>Sitio estático, sin panel</div>
+    </div>
+    <div class="foot"><span>Puntuación de 0 a 100 por categoría</span><span class="pg"><b>07</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       08 · ALCANCE
+       ===================================================== -->
+  <section class="slide s-scope" aria-label="Alcance">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Alcance</span></div>
+    <div class="head">
+      <p class="label r">Qué incluye</p>
+      <h2 class="h2 r" style="margin-top:24px">Del prototipo a la web publicada en su dominio.</h2>
+    </div>
+    <div class="grid cols">
+      <div class="scope-col r">
+        <h3>Diseño <span>01</span></h3>
+        <ul>
+          <li>Ajustes del diseño con el estudio</li>
+          <li>Inicio, proyectos, detalle, contacto y 404</li>
+          <li>Versión de escritorio y móvil</li>
+          <li>Dos rondas de revisión</li>
+        </ul>
+      </div>
+      <div class="scope-col r d3">
+        <h3>Contenido <span>02</span></h3>
+        <ul>
+          <li>Migración de los 73 proyectos</li>
+          <li>Fotos en la máxima calidad disponible</li>
+          <li>Textos de estudio, servicios y prensa</li>
+          <li>Redirecciones desde las URL actuales</li>
+        </ul>
+      </div>
+      <div class="scope-col r d4">
+        <h3>Puesta en marcha <span>03</span></h3>
+        <ul>
+          <li>Publicación en nanarquitectos.com</li>
+          <li>Certificado SSL y copias de seguridad</li>
+          <li>SEO técnico: títulos, sitemap, datos estructurados</li>
+          <li>Formulario de contacto y analítica sin cookies</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot"><span>NAN Arquitectos · Propuesta web</span><span class="pg"><b>08</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       09 · PLAN DE TRABAJO
+       ===================================================== -->
+  <section class="slide s-plan" aria-label="Plan de trabajo">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Plan de trabajo</span></div>
+    <div class="head">
+      <p class="label r">Cuatro semanas desde la aprobación</p>
+      <h2 class="h2 r" style="margin-top:24px">Con el prototipo hecho, se trabaja sobre algo real.</h2>
+    </div>
+    <div class="grid weeks">
+      <div class="wk r"><div class="bar"></div><div class="when">Semana 1</div><h3>Revisión</h3><p>Repasamos el prototipo con el estudio y cerramos los cambios de diseño.</p><div class="out">Entrega: diseño aprobado</div></div>
+      <div class="wk r"><div class="bar"></div><div class="when">Semana 2</div><h3>Contenido</h3><p>Fotos originales, textos que faltan y orden de los proyectos destacados.</p><div class="out">Entrega: contenido cerrado</div></div>
+      <div class="wk r"><div class="bar"></div><div class="when">Semana 3</div><h3>Desarrollo</h3><p>Ajustes finales, formulario, redirecciones y pruebas en móvil y navegadores.</p><div class="out">Entrega: web en pruebas</div></div>
+      <div class="wk last r"><div class="bar"></div><div class="when">Semana 4</div><h3>Publicación</h3><p>Cambio de dominio, alta en Google y una sesión para enseñar a mantenerla.</p><div class="out">Entrega: web publicada</div></div>
+    </div>
+    <div class="foot"><span>NAN Arquitectos · Propuesta web</span><span class="pg"><b>09</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       10 · INVERSIÓN (importes de ejemplo)
+       ===================================================== -->
+  <section class="slide s-price" aria-label="Inversión">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Inversión</span></div>
+    <div class="head">
+      <p class="label r">Inversión</p>
+      <h2 class="h2 r" style="margin-top:24px">Un precio cerrado.</h2>
+    </div>
+    <div class="main r d3">
+      <div class="amount">4.200 <small>€</small></div>
+      <p>Diseño, migración de contenido y puesta en marcha, según el alcance de la página 08. IVA no incluido.</p>
+    </div>
+    <div class="table">
+      <p class="group r">Desglose</p>
+      <div class="row r"><span><span class="t">Diseño y desarrollo</span><span class="s">Inicio, proyectos, detalle, contacto, móvil</span></span><span class="p">2.600 €</span></div>
+      <div class="row r"><span><span class="t">Migración de contenido</span><span class="s">73 proyectos, fotos, textos y redirecciones</span></span><span class="p">1.100 €</span></div>
+      <div class="row r"><span><span class="t">Puesta en marcha</span><span class="s">Dominio, SEO técnico, formulario, formación</span></span><span class="p">500 €</span></div>
+      <div class="row total r"><span class="t">Total</span><span class="p">4.200 €</span></div>
+      <p class="group r d5">Opcionales</p>
+      <div class="row r d5"><span><span class="t">Versión en gallego</span><span class="s">Traducción y selector ES / GL</span></span><span class="p">650 €</span></div>
+      <div class="row r d6"><span><span class="t">Panel para cargar proyectos</span><span class="s">El estudio publica obras sin depender de nadie</span></span><span class="p">1.100 €</span></div>
+      <div class="row r d6"><span><span class="t">Mantenimiento</span><span class="s">Alojamiento, copias, SSL y 1 h de cambios al mes</span></span><span class="p">45 € / mes</span></div>
+    </div>
+    <div class="foot"><span>Importes sin IVA</span><span class="pg"><b>10</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       11 · CONDICIONES
+       ===================================================== -->
+  <section class="slide s-terms" aria-label="Condiciones">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Condiciones</span></div>
+    <div class="head">
+      <p class="label r">Condiciones</p>
+      <h2 class="h2 r" style="margin-top:24px">Claras desde el principio.</h2>
+    </div>
+    <dl class="grid terms">
+      <div class="term r"><dt>Forma de pago</dt><dd>40 % al aprobar, 30 % con la web en pruebas y 30 % al publicar.</dd></div>
+      <div class="term r"><dt>Plazo</dt><dd>4 semanas desde la aprobación y la entrega del contenido.</dd></div>
+      <div class="term r d3"><dt>Revisiones</dt><dd>Dos rondas incluidas. Los cambios fuera de alcance se presupuestan aparte.</dd></div>
+      <div class="term r d3"><dt>Propiedad</dt><dd>El código, el dominio y el contenido son del estudio desde el pago final.</dd></div>
+      <div class="term r d4"><dt>Garantía</dt><dd>30 días de corrección de errores sin coste tras la publicación.</dd></div>
+      <div class="term r d4"><dt>Validez</dt><dd>Esta propuesta es válida durante 30 días desde su fecha.</dd></div>
+    </dl>
+    <div class="foot"><span>NAN Arquitectos · Propuesta web</span><span class="pg"><b>11</b> / 12</span></div>
+  </section>
+
+  <!-- =====================================================
+       12 · CIERRE
+       ===================================================== -->
+  <section class="slide s-close" aria-label="Siguiente paso">
+    <div class="chrome"><img src="assets/logo.webp" alt=""><span class="doc">Siguiente paso</span></div>
+    <div class="close-txt">
+      <h2 class="display r">El prototipo ya está en línea.</h2>
+      <p class="lead r"><span class="u">nan-arquitectos.vercel.app</span></p>
+    </div>
+    <ol class="steps">
+      <li class="r d3"><span>01</span>Recorran el prototipo desde el móvil y el ordenador.</li>
+      <li class="r d4"><span>02</span>Una reunión de 30 minutos para comentar cambios.</li>
+      <li class="r d5"><span>03</span>Con la aprobación, empezamos la semana siguiente.</li>
+    </ol>
+    <div class="foot"><span>Santiago · contacto</span><span class="pg"><b>12</b> / 12</span></div>
+  </section>
+
+</div>
+</div>
+
+<!-- Controles y edición: fuera del escenario 16:9 -->
+<div class="progress" id="progress"></div>
+<nav class="deck-controls" id="controls" aria-label="Navegación de diapositivas">
+  <button id="prevBtn" aria-label="Diapositiva anterior">←</button>
+  <span class="count" id="count">1 / 12</span>
+  <button id="nextBtn" aria-label="Diapositiva siguiente">→</button>
+</nav>
+<div class="edit-hotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Editar textos (E)">Editar</button>
+<div class="save-note" id="saveNote">Cambios guardados en este navegador</div>
+
+<script>
+/* ===========================================
+   PRESENTACIÓN: escala del escenario, navegación y progreso
+   =========================================== */
+class SlidePresentation {
+  constructor() {
+    this.slides = [...document.querySelectorAll('.slide')];
+    this.stage = document.getElementById('deckStage');
+    this.count = document.getElementById('count');
+    this.progress = document.getElementById('progress');
+    this.current = 0;
+    this.lock = false;
+    this.setupStageScale();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    document.getElementById('prevBtn').addEventListener('click', () => this.go(this.current - 1));
+    document.getElementById('nextBtn').addEventListener('click', () => this.go(this.current + 1));
+    const start = parseInt(location.hash.replace('#', ''), 10);
+    this.show(Number.isFinite(start) ? start - 1 : 0);
+  }
+  /* Escenario fijo 1920×1080 escalado entero; nunca se reacomoda */
+  setupStageScale() {
+    const scale = () => {
+      const f = Math.min(innerWidth / 1920, innerHeight / 1080);
+      const x = (innerWidth - 1920 * f) / 2;
+      const y = (innerHeight - 1080 * f) / 2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${f})`;
+    };
+    scale();
+    addEventListener('resize', scale);
+  }
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      if (e.target.isContentEditable) return;
+      if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); this.go(this.current + 1); }
+      if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); this.go(this.current - 1); }
+      if (e.key === 'Home') this.go(0);
+      if (e.key === 'End') this.go(this.slides.length - 1);
+    });
+  }
+  setupTouchNav() {
+    let x0 = 0, y0 = 0;
+    addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) this.go(this.current + (dx < 0 ? 1 : -1));
+    });
+  }
+  setupWheelNav() {
+    addEventListener('wheel', (e) => {
+      if (this.lock || Math.abs(e.deltaY) < 30 || document.body.classList.contains('editing')) return;
+      this.lock = true;
+      this.go(this.current + (e.deltaY > 0 ? 1 : -1));
+      setTimeout(() => (this.lock = false), 900);
+    }, { passive: true });
+  }
+  go(i) { if (i >= 0 && i < this.slides.length && i !== this.current) this.show(i); }
+  show(i) {
+    this.current = Math.max(0, Math.min(i, this.slides.length - 1));
+    this.slides.forEach((s, k) => {
+      s.classList.toggle('active', k === this.current);
+      s.classList.toggle('visible', k === this.current);
+      s.setAttribute('aria-hidden', k === this.current ? 'false' : 'true');
+    });
+    this.count.textContent = `${this.current + 1} / ${this.slides.length}`;
+    this.progress.style.width = `${((this.current + 1) / this.slides.length) * 100}%`;
+    history.replaceState(null, '', `#${this.current + 1}`);
+  }
+}
+const deck = new SlidePresentation();
+
+/* Controles visibles al mover el mouse */
+const controls = document.getElementById('controls');
+let ctrlTimer;
+addEventListener('mousemove', () => { controls.classList.add('show'); clearTimeout(ctrlTimer); ctrlTimer = setTimeout(() => controls.classList.remove('show'), 1800); });
+
+/* ===========================================
+   EDICIÓN EN LÍNEA: tecla E o esquina superior izquierda.
+   Guarda en localStorage; Ctrl+S descarga el HTML editado.
+   =========================================== */
+const editor = {
+  isActive: false,
+  key: 'nan-propuesta-edits',
+  targets: () => document.querySelectorAll('.slide h1, .slide h2, .slide h3, .slide p, .slide li, .slide dd, .slide dt, .slide .t, .slide .s, .slide .p, .slide .k, .slide .v, .slide .fact > span:last-child, .slide .doc'),
+  toggleEditMode() {
+    this.isActive = !this.isActive;
+    document.body.classList.toggle('editing', this.isActive);
+    document.getElementById('editToggle').classList.toggle('active', this.isActive);
+    document.getElementById('editToggle').textContent = this.isActive ? 'Listo' : 'Editar';
+    this.targets().forEach((el) => el.setAttribute('contenteditable', this.isActive ? 'true' : 'false'));
+    if (!this.isActive) this.save();
+  },
+  save() {
+    localStorage.setItem(this.key, JSON.stringify([...this.targets()].map((el) => el.innerHTML)));
+    const n = document.getElementById('saveNote');
+    n.classList.add('show'); setTimeout(() => n.classList.remove('show'), 1600);
+  },
+  load() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(this.key) || 'null');
+      if (saved) this.targets().forEach((el, i) => { if (saved[i] != null) el.innerHTML = saved[i]; });
+    } catch (e) {}
+  },
+  download() {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach((el) => el.removeAttribute('contenteditable'));
+    clone.querySelector('body').classList.remove('editing');
+    const blob = new Blob(['<!DOCTYPE html>\n' + clone.outerHTML], { type: 'text/html' });
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'propuesta-nan-arquitectos.html' });
+    a.click();
+  },
+};
+editor.load();
+const editToggle = document.getElementById('editToggle');
+const hotzone = document.querySelector('.edit-hotzone');
+let hideTimeout = null;
+editToggle.addEventListener('click', () => editor.toggleEditMode());
+hotzone.addEventListener('mouseenter', () => { clearTimeout(hideTimeout); editToggle.classList.add('show'); });
+hotzone.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!editor.isActive) editToggle.classList.remove('show'); }, 400); });
+editToggle.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+editToggle.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!editor.isActive) editToggle.classList.remove('show'); }, 400); });
+hotzone.addEventListener('click', () => editor.toggleEditMode());
+document.addEventListener('keydown', (e) => {
+  if ((e.key === 'e' || e.key === 'E') && !e.target.isContentEditable) editor.toggleEditMode();
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); editor.save(); editor.download(); }
+});
+</script>
+</body>
+</html>
