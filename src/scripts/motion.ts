@@ -29,7 +29,7 @@ const setMenu = (open: boolean) => {
 syncInert();
 mobile.addEventListener('change', () => { if (!mobile.matches) setMenu(false); syncInert(); });
 toggle?.addEventListener('click', () => setMenu(!isOpen()));
-document.querySelectorAll('[data-menu] a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+document.querySelectorAll('[data-menu] a, [data-menu] button').forEach((a) => a.addEventListener('click', () => setMenu(false)));
 document.addEventListener('keydown', (e) => e.key === 'Escape' && setMenu(false));
 
 if (!reduced) {
@@ -56,13 +56,50 @@ if (!reduced) {
     });
   });
 
+  /* Máscara sola (para imágenes que además llevan parallax) */
+  gsap.utils.toArray<HTMLElement>('[data-reveal="clip"]').forEach((el) => {
+    gsap.from(el, { clipPath: 'inset(10% 6% 10% 6%)', duration: 1.5, ease, scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+  });
+
+  /* Manifiesto: las palabras se encienden con el scroll */
+  gsap.utils.toArray<HTMLElement>('[data-words]').forEach((el) => {
+    el.innerHTML = el.textContent!.trim().split(/\s+/).map((w) => `<span class="w">${w}</span>`).join(' ');
+    gsap.fromTo(el.querySelectorAll('.w'), { opacity: 0.14 }, {
+      opacity: 1, stagger: 0.1, ease: 'none',
+      scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: true },
+    });
+  });
+
+  /* Parallax de capa: el elemento entero se desplaza a otra velocidad (solo pantallas grandes) */
+  gsap.matchMedia().add('(min-width: 761px)', () => {
+    gsap.utils.toArray<HTMLElement>('[data-speed]').forEach((el) => {
+      const s = Number(el.dataset.speed) || 0.2;
+      gsap.fromTo(el, { y: s * 120 }, { y: -s * 120, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+  });
+
+  /* Botones magnéticos */
+  if (window.matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
+      const xTo = gsap.quickTo(el, 'x', { duration: 0.6, ease: 'power3' });
+      const yTo = gsap.quickTo(el, 'y', { duration: 0.6, ease: 'power3' });
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        xTo((e.clientX - r.left - r.width / 2) * 0.25);
+        yTo((e.clientY - r.top - r.height / 2) * 0.35);
+      });
+      el.addEventListener('pointerleave', () => { xTo(0); yTo(0); });
+    });
+  }
+
   /* Parallax suave dentro del marco */
   gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
     const img = el.querySelector('img');
     if (!img) return;
-    gsap.set(img, { scale: 1.12 });
-    gsap.fromTo(img, { yPercent: -5 }, {
-      yPercent: 5, ease: 'none',
+    const k = Number(el.dataset.parallax) || 5;
+    gsap.set(img, { scale: 1 + k * 0.025 });
+    gsap.fromTo(img, { yPercent: -k }, {
+      yPercent: k, ease: 'none',
       scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
     });
   });

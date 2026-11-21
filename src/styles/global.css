@@ -101,3 +101,50 @@ a:hover .frame img, button:hover .frame img { transform: scale(1.03); }
   html:not(.force-motion)::view-transition-old(root),
   html:not(.force-motion)::view-transition-new(root) { animation-duration: 0.2s; }
 }
+
+/* ── Microinteracciones ───────────────────────────────── */
+.btn, .btn-ghost {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+  min-height: 52px; padding: 0 24px;
+  font-size: 14px; line-height: 1; white-space: nowrap;
+  background: var(--ink); color: var(--bg);
+  transition: color 0.45s var(--ease-out), transform 0.3s var(--ease-out), border-color 0.45s;
+}
+.btn-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.btn::before, .btn-ghost::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: var(--yellow); transform: scaleX(0); transform-origin: right;
+  transition: transform 0.6s var(--ease-out);
+}
+.btn-ghost::before { background: var(--ink); }
+.btn:hover { color: var(--ink); }
+.btn-ghost:hover { color: var(--bg); }
+.btn:hover::before, .btn-ghost:hover::before { transform: scaleX(1); transform-origin: left; }
+.btn:active, .btn-ghost:active, .chip:active, .opt:active { transform: scale(0.97); }
+.arr { display: inline-block; transition: transform 0.55s var(--ease-out); }
+a:hover .arr, button:hover .arr { transform: translateX(5px); }
+.arr-l { display: inline-block; transition: transform 0.55s var(--ease-out); }
+a:hover .arr-l, button:hover .arr-l { transform: translateX(-5px); }
+
+/* Subrayado que crece desde la izquierda */
+.ulink {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  padding-bottom: 2px; transition: background-size 0.6s var(--ease-out), color 0.3s;
+}
+.ulink:hover { background-size: 100% 1px; color: inherit; }
+
+/* Texto que se desliza en hover (dos copias apiladas) */
+.roll { display: inline-grid; overflow: hidden; vertical-align: bottom; }
+.roll > span { grid-area: 1 / 1; transition: transform 0.55s var(--ease-out); }
+.roll > span + span { transform: translateY(105%); }
+a:hover .roll > span, button:hover .roll > span { transform: translateY(-105%); }
+a:hover .roll > span + span, button:hover .roll > span + span { transform: translateY(0); }
+
+.h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(30px, 3.4vw, 48px); line-height: 1.12; letter-spacing: -0.01em; }
+.display { font-size: clamp(46px, 7.2vw, 104px); line-height: 1.02; letter-spacing: -0.02em; }
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.force-motion) .roll > span { transition: none; }
+  html:not(.force-motion) .btn::before, html:not(.force-motion) .btn-ghost::before { transition-duration: 0.01s; }
+}

@@ -1,0 +1,230 @@
+---
+import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { proyectos, foto } from '../data/proyectos';
+import { estudio, socios, revistas, prensa } from '../data/estudio';
+
+const hero = foto('oficina-nan-arquitectos', 0, 'L');
+const retrato = foto('oficina-nan-arquitectos', 0, 'P');
+const capFotos = [
+  foto('oficina-nan-arquitectos', 1, 'L'),
+  foto('clinica-dental-pablo-sieiro', 0, 'P'),
+  foto('pazo-da-buzaca', 2, 'L'),
+  foto('restaurante-nantes-en-madrid', 0, 'P'),
+  foto('hotel-rural-pazo-buzaca', 1, 'L'),
+];
+// Hemeroteca agrupada por año, de la más reciente a la más antigua
+const pubs = [...revistas.map((p) => ({ p, tipo: 'Revista' })), ...prensa.map((p) => ({ p, tipo: 'Digital' }))];
+const anios = [...new Set(pubs.map((x) => x.p[2]))].sort((a, b) => b - a);
+const existe = new Set(proyectos.map((p) => p.slug));
+---
+<Base title="Estudio" current="estudio" ogImage={hero.src} description="NAN Arquitectos: estudio de arquitectura y diseño nacido en 2013 en Pontevedra, formado por Alberto F. Reiriz Paz y Vicente Pillado Domato.">
+  <section class="st-hero pad grid12">
+    <h1 class="st-title display" data-st-title>Arquitectura y diseño desde 2013, en Pontevedra.</h1>
+    <div class="st-intro" data-reveal="text">
+      <p>{estudio.intro}</p>
+      <ul class="rasgos small">
+        {estudio.rasgos.map((r) => <li>{r}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <div class="st-bleed frame" data-reveal="clip" data-parallax="8">
+    <Image src={hero} alt="Oficina de NAN Arquitectos en Pontevedra" widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} loading="eager" />
+  </div>
+
+  <section class="manifiesto pad grid12" aria-label="Manifiesto">
+    <p class="mani-t" data-words>{estudio.manifiesto}</p>
+  </section>
+
+  <section class="socios pad grid12" aria-labelledby="socios-t">
+    <h2 id="socios-t" class="sr-only">Socios fundadores</h2>
+    <div class="socios-img frame" data-reveal="clip" data-parallax="6" data-speed="0.25">
+      <Image src={retrato} alt="Espacio de trabajo del estudio" widths={[640, 1024, 1400]} sizes="(max-width: 760px) 70vw, 30vw" format="webp" quality={72} />
+    </div>
+    <ul class="socios-list">
+      {socios.map((s) => (
+        <li data-reveal="text"><span class="socio-n">{s}</span><span class="small mut">Socio fundador</span></li>
+      ))}
+      <li class="socios-red small mut" data-reveal="text">Junto a una red de colaboradores especializados en áreas complementarias al diseño y la arquitectura.</li>
+    </ul>
+  </section>
+
+  <section class="caps pad grid12" aria-labelledby="caps-t" data-caps>
+    <h2 id="caps-t" class="sr-only">Cómo trabajamos</h2>
+    <div class="caps-media" aria-hidden="true">
+      <div class="caps-stick">
+        {capFotos.map((f, i) => (
+          <div class:list={['frame caps-f', { 'is-on': i === 0 }]} data-cap-f={i}>
+            <Image src={f} alt="" widths={[640, 1024, 1600]} sizes="40vw" format="webp" quality={72} />
+          </div>
+        ))}
+        <p class="caps-count small mut num"><span data-cap-n>01</span> / 05</p>
+      </div>
+    </div>
+    <ol class="caps-list">
+      {estudio.capitulos.map((c, i) => (
+        <li class="cap-item" data-cap={i}>
+          <div class="frame cap-inline" style="aspect-ratio: 4 / 3">
+            <Image src={capFotos[i]} alt="" widths={[640, 1024]} sizes="100vw" format="webp" quality={70} />
+          </div>
+          <h3 class="cap-t">{c.titulo}</h3>
+          <p>{c.texto}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="datos pad" aria-label="El estudio en datos">
+    <dl class="datos-dl">
+      <div><dt class="small mut">Fundación</dt><dd class="num">2013</dd></div>
+      <div><dt class="small mut">Proyectos publicados en la web</dt><dd class="num">{proyectos.length}</dd></div>
+      <div><dt class="small mut">Apariciones en prensa</dt><dd class="num">{pubs.length}</dd></div>
+      <div><dt class="small mut">Sede</dt><dd>Pontevedra</dd></div>
+    </dl>
+  </section>
+
+  <section class="hemeroteca pad" aria-labelledby="pub-t">
+    <div class="hem-head grid12">
+      <h2 id="pub-t" class="h2 hem-title">Publicaciones</h2>
+      <p class="hem-intro mut">Revistas de arquitectura e interiorismo y medios digitales que han publicado obras del estudio, como ArchDaily, Arqa, Architizer o Proyecto Contract.</p>
+    </div>
+    {anios.map((a) => (
+      <div class="year grid12">
+        <h3 class="year-n num">{a}</h3>
+        <ul class="year-list">
+          {pubs.filter((x) => x.p[2] === a).map(({ p: [obra, medio, , slug], tipo }) => {
+            const inner = <><span class="serif pub-o">{obra}</span><span class="pub-m">{medio}</span><span class="pub-t small mut">{tipo}</span></>;
+            return <li>{slug && existe.has(slug) ? <a href={`/proyectos/${slug}/`} class="pub-row is-link">{inner}<span class="arr pub-arr" aria-hidden="true">→</span></a> : <span class="pub-row">{inner}</span>}</li>;
+          })}
+        </ul>
+      </div>
+    ))}
+  </section>
+
+  <section class="st-cta pad grid12">
+    <p class="cta-t">¿Tiene un proyecto en mente?</p>
+    <div class="cta-actions">
+      <button class="btn" data-quote>Pedir presupuesto <span class="arr">→</span></button>
+      <a href="/servicios/" class="btn-ghost">Ver servicios</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { gsap, ScrollTrigger, reduced, ease } from '../scripts/motion.ts';
+
+  if (!reduced) gsap.from('[data-st-title]', { y: 40, opacity: 0, duration: 1.5, ease, delay: 0.15 });
+
+  // Capítulos: la imagen fija cambia según el capítulo que se lee
+  const figs = Array.from(document.querySelectorAll<HTMLElement>('[data-cap-f]'));
+  const n = document.querySelector('[data-cap-n]')!;
+  document.querySelectorAll<HTMLElement>('[data-cap]').forEach((el) => {
+    const i = Number(el.dataset.cap);
+    ScrollTrigger.create({
+      trigger: el, start: 'top 60%', end: 'bottom 60%',
+      onToggle: (st) => {
+        if (!st.isActive) return;
+        figs.forEach((f, k) => f.classList.toggle('is-on', k === i));
+        n.textContent = String(i + 1).padStart(2, '0');
+        el.parentElement!.querySelectorAll('[data-cap]').forEach((c) => c.classList.toggle('is-active', c === el));
+      },
+    });
+  });
+</script>
+
+<style>
+  .st-hero { padding-top: 120px; padding-bottom: 96px; row-gap: 40px; align-items: end; }
+  .st-title { grid-column: 1 / span 8; }
+  .st-intro { grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 24px; }
+  .rasgos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .rasgos li { padding: 6px 12px; box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow 0.3s, background-color 0.3s; }
+  .rasgos li:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+
+  .st-bleed { height: min(86vh, 900px); }
+
+  .manifiesto { padding-block: var(--sec); }
+  .mani-t { grid-column: 2 / span 10; font-family: var(--serif); font-weight: 300; font-size: clamp(34px, 5vw, 76px); line-height: 1.1; letter-spacing: -0.015em; text-wrap: balance; }
+  .mani-t :global(.w) { display: inline; }
+
+  .socios { row-gap: 40px; align-items: center; }
+  .socios-img { grid-column: 1 / span 4; aspect-ratio: 3 / 4; }
+  .socios-list { grid-column: 6 / span 7; list-style: none; margin: 0; padding: 0; }
+  .socios-list li { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 28px 0; border-top: 1px solid var(--line); }
+  .socio-n { display: block; font-family: var(--serif); font-weight: 300; font-size: clamp(34px, 4.6vw, 68px); line-height: 1.12; letter-spacing: -0.015em; transition: transform 0.7s var(--ease-out); }
+  .socios-list li:hover .socio-n { transform: translateX(12px); }
+  .socios-red { max-width: 44ch; }
+
+  .caps { padding-top: var(--sec); }
+  .caps-media { grid-column: 1 / span 5; }
+  .caps-stick { position: sticky; top: 12vh; height: 76vh; }
+  .caps-f { position: absolute; inset: 0 0 32px 0; opacity: 0; transition: opacity 0.9s var(--ease-out); }
+  .caps-f :global(img) { transform: scale(1.06); transition: transform 1.6s var(--ease-out); }
+  .caps-f.is-on { opacity: 1; }
+  .caps-f.is-on :global(img) { transform: scale(1); }
+  .caps-count { position: absolute; left: 0; bottom: 0; }
+  .caps-list { grid-column: 7 / span 5; list-style: none; margin: 0; padding: 0; }
+  .cap-item { min-height: 76vh; display: flex; flex-direction: column; justify-content: center; gap: 20px; font-size: 17px; line-height: 1.65; opacity: 0.32; transition: opacity 0.6s var(--ease-out); }
+  .cap-item.is-active { opacity: 1; }
+  .cap-t { font-size: clamp(28px, 2.8vw, 40px); line-height: 1.1; }
+  .cap-inline { display: none; }
+
+  .datos { padding-top: var(--sec); }
+  .datos-dl { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-block: 1px solid var(--line); }
+  .datos-dl div { padding: 24px 24px 28px 0; display: flex; flex-direction: column; gap: 8px; }
+  .datos-dl div + div { padding-left: 24px; border-left: 1px solid var(--line); }
+  .datos-dl dd { margin: 0; font-family: var(--serif); font-weight: 300; font-size: clamp(30px, 3vw, 44px); line-height: 1; }
+
+  .hemeroteca { padding-top: var(--sec); }
+  .hem-head { row-gap: 16px; padding-bottom: 56px; align-items: end; }
+  .hem-title { grid-column: 1 / span 6; }
+  .hem-intro { grid-column: 8 / span 5; }
+  .year { border-top: 1px solid var(--line); padding-top: 20px; padding-bottom: 32px; }
+  .year-n { grid-column: 1 / span 3; font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 4vw, 60px); line-height: 1; align-self: start; position: sticky; top: 24px; }
+  .year-list { grid-column: 4 / span 9; list-style: none; margin: 0; padding: 0; }
+  .pub-row { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 72px 24px; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); transition: padding 0.5s var(--ease-out), color 0.3s; }
+  .year-list li:last-child .pub-row { border-bottom: 0; }
+  .pub-o { font-size: 21px; line-height: 1.25; }
+  .pub-m { font-size: 14px; }
+  .pub-arr { justify-self: end; opacity: 0; transition: opacity 0.4s, transform 0.55s var(--ease-out); }
+  .is-link:hover { color: var(--ink); padding-left: 10px; }
+  .is-link:hover .pub-arr { opacity: 1; }
+
+  .st-cta { padding-block: var(--sec); row-gap: 32px; align-items: end; }
+  .cta-t { grid-column: 1 / span 7; font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 5.6vw, 84px); line-height: 1.02; letter-spacing: -0.02em; }
+  .cta-actions { grid-column: 9 / span 4; display: flex; flex-wrap: wrap; gap: 10px; }
+
+  @media (max-width: 1100px) {
+    .st-title { grid-column: 1 / -1; }
+    .st-intro { grid-column: 1 / span 8; }
+    .socios-img { grid-column: 1 / span 5; }
+    .socios-list { grid-column: 7 / span 6; }
+    .cta-t, .cta-actions { grid-column: 1 / -1; }
+  }
+  @media (max-width: 760px) {
+    .st-hero { padding-top: 48px; padding-bottom: 48px; row-gap: 28px; }
+    .st-intro { grid-column: 1 / -1; }
+    .st-bleed { height: 64vh; }
+    .mani-t { grid-column: 1 / -1; }
+    .socios-img { grid-column: 1 / span 3; }
+    .socios-list { grid-column: 1 / -1; }
+    .socios-list li { padding: 20px 0; }
+    .caps-media { display: none; }
+    .caps-list { grid-column: 1 / -1; }
+    .cap-item { min-height: 0; padding-bottom: 64px; opacity: 1; font-size: 15px; gap: 16px; }
+    .cap-inline { display: block; }
+    .datos-dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .datos-dl div, .datos-dl div + div { padding: 20px 12px 20px 0; border-left: 0; }
+    .datos-dl div:nth-child(even) { padding-left: 16px; border-left: 1px solid var(--line); }
+    .datos-dl div:nth-child(n + 3) { border-top: 1px solid var(--line); }
+    .hem-title, .hem-intro { grid-column: 1 / -1; }
+    .hem-head { padding-bottom: 32px; }
+    .year-n { grid-column: 1 / -1; position: static; font-size: 36px; padding-bottom: 8px; }
+    .year-list { grid-column: 1 / -1; }
+    .pub-row { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; }
+    .pub-o { font-size: 18px; }
+    .pub-m { grid-column: 1; grid-row: 2; color: var(--mut); font-size: 13px; }
+    .pub-t { grid-column: 2; grid-row: 1; }
+    .pub-arr { display: none; }
+  }
+</style>

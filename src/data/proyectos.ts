@@ -2,9 +2,11 @@ import type { ImageMetadata } from 'astro';
 import raw from './proyectos.json';
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/proyectos/*/*.jpg', { eager: true });
+// Planos opcionales: src/assets/proyectos/<slug>/planos/*.{jpg,png,webp}
+const planosFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/proyectos/*/planos/*.{jpg,jpeg,png,webp}', { eager: true });
 
-function fotos(slug: string): ImageMetadata[] {
-  return Object.entries(files)
+function fotos(slug: string, src = files): ImageMetadata[] {
+  return Object.entries(src)
     .filter(([path]) => path.includes(`/proyectos/${slug}/`))
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([, mod]) => mod.default);
@@ -23,12 +25,35 @@ interface Raw {
   superficie: string | null;
   m2: number | null;
   texto: string[];
+  /* ── Campos que gestionará el panel de administrador (todos opcionales) ── */
+  /** false = borrador, no se publica */
+  publicado?: boolean;
+  /** Orden en el listado (menor primero). Sin valor: orden de carga */
+  orden?: number;
+  /** Índice de la foto destacada dentro de `fotos` */
+  portadaFoto?: number;
+  /** Cómo se muestran las fotos en la página del proyecto */
+  galeria?: Galeria;
+  /** Qué bloques se muestran en la página del proyecto */
+  mostrar?: Partial<Visibilidad>;
 }
 
-export interface Proyecto extends Raw {
+export type Galeria = 'mosaico' | 'galeria' | 'sueltas';
+export const galerias: { id: Galeria; label: string }[] = [
+  { id: 'mosaico', label: 'Mosaico' },
+  { id: 'galeria', label: 'Galería deslizable' },
+  { id: 'sueltas', label: 'Imágenes sueltas' },
+];
+export interface Visibilidad { ficha: boolean; texto: boolean; galeria: boolean; planos: boolean; siguiente: boolean }
+const visibleDefault: Visibilidad = { ficha: true, texto: true, galeria: true, planos: true, siguiente: true };
+
+export interface Proyecto extends Omit<Raw, 'mostrar' | 'galeria'> {
   resumen: string;
   fotos: ImageMetadata[];
+  planos: ImageMetadata[];
   portada: ImageMetadata;
+  galeria: Galeria;
+  mostrar: Visibilidad;
 }
 
 const capital = (s: string) => (s === s.toLowerCase() ? s.replace(/(^|\s)\p{L}/gu, (c) => c.toUpperCase()) : s);
@@ -42,16 +67,22 @@ export function ciudad(p: Pick<Proyecto, 'lugar'>) {
 }
 
 export const proyectos: Proyecto[] = (raw as Raw[])
-  .map((p) => {
+  .filter((p) => p.publicado !== false)
+  .map((p, i) => ({ p, i }))
+  .sort((a, b) => (a.p.orden ?? 1e6 + a.i) - (b.p.orden ?? 1e6 + b.i))
+  .map(({ p }) => {
     const f = fotos(p.slug);
     return {
       ...p,
+      galeria: p.galeria ?? 'mosaico',
+      mostrar: { ...visibleDefault, ...p.mostrar },
+      planos: fotos(p.slug, planosFiles),
       nombre: capital(p.nombre.replace(/\s+/g, ' ').trim()),
       superficie: p.m2 ? `${new Intl.NumberFormat('es-ES').format(p.m2)} m²` : null,
       // Sin texto en la web original: no se inventa un resumen (queda vacío y la página omite el bloque)
       resumen: p.texto[0] ? primeraFrase(p.texto[0]) : '',
       fotos: f,
-      portada: f.find(isL) ?? f[0],
+      portada: (p.portadaFoto != null ? f[p.portadaFoto] : undefined) ?? f.find(isL) ?? f[0],
     };
   })
   .filter((p) => p.fotos.length > 0);
@@ -73,6 +104,12 @@ const pick = (slug: string, n = 0) => {
   const p = bySlug(slug);
   const h = p.fotos.filter(isL);
   return { proyecto: p, imagen: h[n] ?? h[0] ?? p.portada };
+};
+/** Foto n de un proyecto, opcionalmente filtrando por orientación (para páginas de Estudio y Servicios) */
+export const foto = (slug: string, n = 0, o?: 'L' | 'P') => {
+  const p = bySlug(slug);
+  const list = o ? p.fotos.filter((f) => (o === 'L') === isL(f)) : p.fotos;
+  return list[n] ?? list[0] ?? p.portada;
 };
 const vertical = (slug: string) => {
   const p = bySlug(slug);

@@ -6,6 +6,10 @@ import { proyectos, filtros, portada, ciudad, tipo } from '../../data/proyectos'
 const conteo = (cat: string | null) => (cat ? proyectos.filter((p) => p.categoria === cat).length : proyectos.length);
 const fmt = new Intl.NumberFormat('es-ES');
 const meta = (p: (typeof proyectos)[number]) => [tipo(p), ciudad(p), p.anio].filter(Boolean).join(' · ');
+// Mosaico: patrón de 9 piezas que encaja en 5 filas; 18 proyectos por página
+const PER = 18;
+const SHAPES = 'abcdefghi';
+const pages = Math.ceil(proyectos.length / PER);
 const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(p), width: 640, format: 'webp', quality: 72 })));
 ---
 <Base title="Proyectos" current="proyectos" description="Proyectos de NAN Arquitectos: clínicas, hostelería, comercios, oficinas y viviendas en Pontevedra y Galicia.">
@@ -30,19 +34,30 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
 
   <p class="sr-only" role="status" data-status></p>
   <section class="list pad" aria-label="Listado de proyectos">
-    <ul class="grid grid12" data-grid>
+    <ul class="grid grid12" data-grid data-per={PER}>
       {proyectos.map((p, i) => (
-        <li class="card" data-cat={p.categoria}>
+        <li class="card" data-cat={p.categoria} data-shape={SHAPES[i % 9]} data-m={i % 3 ? 's' : 'b'} hidden={i >= PER}>
           <a href={`/proyectos/${p.slug}/`}>
-            <div class="frame" data-reveal="img" style={`aspect-ratio:4 / 3;view-transition-name:p-${p.slug}`}>
-              <Image src={portada(p)} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 30vw" format="webp" quality={72} loading={i < 3 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+            <div class="frame" data-reveal="clip" data-parallax="5" style={`view-transition-name:p-${p.slug}`}>
+              <Image src={portada(p)} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, (max-width: 1100px) 60vw, 58vw" format="webp" quality={72} loading={i < 4 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
             </div>
-            <span class="serif cap">{p.nombre}</span>
-            <span class="small mut">{meta(p)}</span>
+            <span class="card-cap">
+              <span class="serif cap">{p.nombre}</span>
+              <span class="small">{meta(p)}</span>
+            </span>
           </a>
         </li>
       ))}
     </ul>
+    <nav class="pagination small num" aria-label="Páginas del listado" data-pages>
+      <button class="pg-step" data-page-step="-1" aria-label="Página anterior"><span class="arr-l">←</span><span class="pg-word">Anterior</span></button>
+      <span class="pg-nums" data-page-nums>
+        {Array.from({ length: pages }, (_, k) => (
+          <button class:list={['pg-num', { 'is-on': k === 0 }]} data-page={k} aria-label={`Página ${k + 1}`} aria-current={k === 0 ? 'page' : undefined}>{String(k + 1).padStart(2, '0')}</button>
+        ))}
+      </span>
+      <button class="pg-step" data-page-step="1" aria-label="Página siguiente"><span class="pg-word">Siguiente</span><span class="arr">→</span></button>
+    </nav>
 
     <div class="index grid12" data-index hidden>
       <div class="table">
@@ -81,14 +96,14 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
 </Base>
 
 <script>
-  import { gsap, reduced, ease } from '../../scripts/motion.ts';
+  import { gsap, ScrollTrigger, reduced, ease } from '../../scripts/motion.ts';
   import { Flip } from 'gsap/Flip';
   gsap.registerPlugin(Flip);
 
   const grid = document.querySelector<HTMLElement>('[data-grid]')!;
   const index = document.querySelector<HTMLElement>('[data-index]')!;
   const rowsEl = document.querySelector<HTMLElement>('[data-rows]')!;
-  const cards = Array.from(grid.querySelectorAll<HTMLElement>('.card'));
+  const cards = Array.from(grid.querySelectorAll<HTMLLIElement>('.card'));
   const rows = () => Array.from(rowsEl.querySelectorAll<HTMLElement>('li'));
   const total = document.querySelector('[data-total]')!;
   const caps: { cap: string; src: string }[] = JSON.parse(document.querySelector('[data-caps]')!.textContent!);
@@ -118,26 +133,59 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
   const status = document.querySelector('[data-status]')!;
   const say = (t: string) => { status.textContent = ''; requestAnimationFrame(() => (status.textContent = t)); };
 
+  /* Paginación del mosaico: cada página reparte las formas del patrón entre los proyectos visibles */
+  const PER = Number(grid.dataset.per);
+  const SHAPES = 'abcdefghi';
+  const pagesNav = document.querySelector<HTMLElement>('[data-pages]')!;
+  const numsEl = document.querySelector<HTMLElement>('[data-page-nums]')!;
+  let page = Math.max(0, Number(new URLSearchParams(location.search).get('p') ?? 1) - 1);
+  const match = (el: HTMLElement) => filter === 'all' || el.dataset.cat === filter;
+
+  function layout(animate: boolean) {
+    const vis = cards.filter(match);
+    const pages = Math.max(1, Math.ceil(vis.length / PER));
+    page = Math.min(page, pages - 1);
+    const shown = vis.slice(page * PER, page * PER + PER);
+    cards.forEach((c) => (c.hidden = !shown.includes(c)));
+    shown.forEach((c, k) => { c.dataset.shape = SHAPES[k % 9]; c.dataset.m = k % 3 ? 's' : 'b'; });
+    numsEl.innerHTML = Array.from({ length: pages }, (_, k) =>
+      `<button class="pg-num${k === page ? ' is-on' : ''}" data-page="${k}" aria-label="Página ${k + 1}"${k === page ? ' aria-current="page"' : ''}>${String(k + 1).padStart(2, '0')}</button>`).join('');
+    pagesNav.hidden = pages < 2;
+    pagesNav.querySelector<HTMLButtonElement>('[data-page-step="-1"]')!.disabled = page === 0;
+    pagesNav.querySelector<HTMLButtonElement>('[data-page-step="1"]')!.disabled = page === pages - 1;
+    const url = new URL(location.href);
+    if (page) url.searchParams.set('p', String(page + 1)); else url.searchParams.delete('p');
+    history.replaceState(null, '', url);
+    ScrollTrigger.refresh();
+    if (animate) {
+      if (reduced) gsap.fromTo(shown, { opacity: 0.3 }, { opacity: 1, duration: 0.3 });
+      else gsap.fromTo(shown, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.04, ease, clearProps: 'transform,opacity' });
+    }
+    return vis.length;
+  }
+  function goPage(k: number) {
+    page = k;
+    layout(true);
+    const top = document.querySelector<HTMLElement>('.bar')!;
+    const lenis = (window as any).__lenis;
+    if (lenis) lenis.scrollTo(top, { offset: -12 }); else top.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+  }
+  numsEl.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-page]'); if (b) goPage(Number(b.dataset.page)); });
+  pagesNav.querySelectorAll<HTMLElement>('[data-page-step]').forEach((b) => b.addEventListener('click', () => goPage(page + Number(b.dataset.pageStep))));
+  layout(false);
+
   document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) =>
     btn.addEventListener('click', () => {
       filter = btn.dataset.filter!;
       press('[data-filter]', btn);
-      const state = Flip.getState(cards);
-      const match = (el: HTMLElement) => filter === 'all' || el.dataset.cat === filter;
-      cards.forEach((c) => c.classList.toggle('is-hidden', !match(c)));
+      page = 0;
       rows().forEach((r) => r.classList.toggle('is-hidden', !match(r)));
-      const n = renumber();
+      renumber();
+      const n = grid.hidden ? rows().filter((r) => !r.classList.contains('is-hidden')).length : layout(true);
+      if (grid.hidden) layout(false);
       say(`${n} ${n === 1 ? 'proyecto' : 'proyectos'}${filter === 'all' ? '' : ` en ${btn.textContent!.replace(/\d+$/, '').trim()}`}`);
       const first = rows().find((r) => !r.classList.contains('is-hidden'));
       if (first) highlight(Number(first.dataset.i));
-      if (reduced) gsap.fromTo([...cards, ...rows()].filter((el) => !el.classList.contains('is-hidden')), { opacity: 0.3 }, { opacity: 1, duration: 0.3 });
-      else if (!grid.hidden) {
-        Flip.from(state, {
-          duration: 0.9, ease, absolute: true,
-          onEnter: (els) => gsap.fromTo(els, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8, ease }),
-          onLeave: (els) => gsap.to(els, { opacity: 0, duration: 0.3 }),
-        });
-      }
     }),
   );
 
@@ -146,8 +194,10 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
       press('[data-view]', btn);
       const isIndex = btn.dataset.view === 'index';
       grid.hidden = isIndex;
+      pagesNav.style.display = isIndex ? 'none' : '';
       index.hidden = !isIndex;
-      if (!reduced) gsap.from(isIndex ? rows() : cards, { opacity: 0, y: 16, duration: 0.8, stagger: 0.04, ease });
+      ScrollTrigger.refresh();
+      if (!reduced) gsap.from(isIndex ? rows() : cards.filter((c) => !c.hidden), { opacity: 0, y: 16, duration: 0.8, stagger: 0.04, ease });
     }),
   );
 
@@ -213,13 +263,35 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
   .chip.is-on { color: var(--ink); text-decoration: underline; text-decoration-color: var(--yellow); text-decoration-thickness: 2px; text-underline-offset: 6px; }
 
   .list { padding-top: 56px; padding-bottom: var(--sec); }
-  .grid { list-style: none; margin: 0; padding: 0; row-gap: 88px; align-items: start; }
-  .card { grid-column: span 4; }
-  .card.is-hidden, .rows li.is-hidden { display: none; }
-  .card a { display: flex; flex-direction: column; gap: 2px; }
-  .card a:hover { color: var(--ink); }
-  .card .frame { margin-bottom: 12px; }
+  /* Mosaico: 12 columnas, filas de alto fijo, patrón a–i que encaja en 5 filas */
+  .grid { list-style: none; margin: 0; padding: 0; gap: 10px; grid-auto-rows: clamp(190px, 19vw, 340px); grid-auto-flow: dense; }
+  .card { grid-column: span 4; grid-row: span 1; }
+  .card[data-shape='a'] { grid-column: span 7; grid-row: span 2; }
+  .card[data-shape='b'], .card[data-shape='c'] { grid-column: span 5; }
+  .card[data-shape='g'] { grid-column: span 5; grid-row: span 2; }
+  .card[data-shape='h'], .card[data-shape='i'] { grid-column: span 7; }
+  .rows li.is-hidden { display: none; }
+  .card a { position: relative; display: block; height: 100%; color: #fff; }
+  .card .frame { height: 100%; }
+  .card-cap {
+    position: absolute; inset: auto 0 0 0; padding: 48px 20px 16px;
+    display: flex; flex-direction: column; gap: 2px;
+    background: linear-gradient(to top, rgba(20, 20, 18, 0.62), transparent);
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
+    pointer-events: none;
+  }
+  .card a:hover .card-cap, .card a:focus-visible .card-cap { opacity: 1; transform: none; }
+  .card-cap .small { opacity: 0.82; }
+  @media (hover: none) { .card-cap { opacity: 1; transform: none; } }
   .cap { font-size: clamp(19px, 1.55vw, 22px); line-height: 1.25; }
+
+  .pagination { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .pg-nums { display: flex; flex-wrap: wrap; gap: 4px; }
+  .pagination button { min-width: 44px; height: 44px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; color: var(--mut); transition: color 0.3s, background-color 0.3s; }
+  .pagination button:hover:not(:disabled) { color: var(--ink); }
+  .pagination :global(.pg-num.is-on) { color: var(--bg); background: var(--ink); }
+  .pagination button:disabled { opacity: 0.3; cursor: default; }
 
   .table { grid-column: 1 / span 8; }
   .row { display: grid; grid-template-columns: 56px minmax(0, 1fr) 130px 160px 64px 72px; gap: 16px; align-items: baseline; }
@@ -241,7 +313,7 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
   .preview-img { aspect-ratio: 4 / 5; }
 
   @media (max-width: 1100px) {
-    .card { grid-column: span 6; }
+    .grid { grid-auto-rows: clamp(160px, 24vw, 280px); }
     .table { grid-column: 1 / span 12; }
     .preview { display: none; }
   }
@@ -253,8 +325,13 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(
     /* Indicio de que la tira sigue: borde que se desvanece mientras quede contenido a la derecha */
     .filters.has-more { mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent); }
     .list { padding-top: 32px; }
-    .grid { row-gap: 48px; }
-    .card { grid-column: 1 / -1; }
+    .grid { gap: 6px; grid-auto-rows: 30vw; }
+    .card, .card[data-shape] { grid-column: span 2; grid-row: span 2; }
+    .card[data-m='b'] { grid-column: 1 / -1; }
+    .card-cap { padding: 32px 12px 10px; }
+    .card-cap .cap { font-size: 16px; }
+    .card[data-m='s'] .card-cap .small { display: none; }
+    .pg-word { display: none; }
     .table { grid-column: 1 / -1; }
     .head { display: none; }
     .rows .row { grid-template-columns: 1fr auto; gap: 2px 12px; padding: 16px 0; }

@@ -1,0 +1,371 @@
+---
+/**
+ * Solicitud de presupuesto en 5 pasos. Se abre desde el botón flotante o desde cualquier [data-quote]
+ * (con data-quote-tipo="Vivienda" se salta el primer paso ya respondido).
+ * Envío: si existe PUBLIC_QUOTE_ENDPOINT (Formspree, Supabase Edge Function, etc.) se hace POST JSON;
+ * si no, se abre el correo del usuario con la solicitud redactada para info@nanarquitectos.com.
+ * Preguntas: tipo, alcance, lugar y tamaño, plazo y presupuesto orientativo, y datos de contacto.
+ */
+import { contacto } from '../data/estudio';
+
+const tipos = [
+  ['Vivienda', 'Casa, piso o reforma doméstica'],
+  ['Clínica o salud', 'Dental, fisioterapia, estética'],
+  ['Hostelería', 'Restaurante, cafetería, hotel'],
+  ['Comercio', 'Tienda, showroom, franquicia'],
+  ['Oficina', 'Despacho, sede, coworking'],
+  ['Otro', 'Exposición, equipamiento…'],
+];
+const alcances = ['Obra nueva', 'Reforma integral', 'Reforma parcial', 'Interiorismo sin obra'];
+const servicios = ['Proyecto de arquitectura', 'Interiorismo', 'Construcción llave en mano', 'Mobiliario a medida', 'Iluminación'];
+const superficies = ['Menos de 50 m²', '50–150 m²', '150–300 m²', 'Más de 300 m²', 'No lo sé'];
+const inmueble = ['En propiedad', 'En alquiler', 'Todavía buscando'];
+const plazos = ['Lo antes posible', 'En 1–3 meses', 'En 3–6 meses', 'Más adelante'];
+const presupuestos = ['Hasta 30.000 €', '30.000–80.000 €', '80.000–150.000 €', 'Más de 150.000 €', 'Prefiero hablarlo'];
+const vias = ['Llamada', 'Email', 'WhatsApp'];
+const pasos = ['Tipo de proyecto', 'Alcance', 'El espacio', 'Plazo y presupuesto', 'Contacto'];
+---
+<button class="fab" data-quote data-fab aria-haspopup="dialog">
+  <span class="fab-in" data-magnetic>
+    <span class="fab-dot" aria-hidden="true"></span>
+    <span class="roll"><span>Pedir presupuesto</span><span aria-hidden="true">Pedir presupuesto</span></span>
+  </span>
+</button>
+
+<dialog class="qz" data-qz aria-labelledby="qz-q1">
+  <form class="qz-form" data-qz-form novalidate>
+    <header class="qz-top small">
+      <p class="qz-where"><span class="num" data-qz-n>01</span><span class="mut"> / 05 · </span><span data-qz-name>{pasos[0]}</span></p>
+      <button type="button" class="qz-x" data-qz-close aria-label="Cerrar la solicitud"><span></span><span></span></button>
+    </header>
+    <div class="qz-bar" aria-hidden="true"><i data-qz-prog></i></div>
+
+    <div class="qz-body" data-qz-body>
+      <fieldset class="qz-step is-on" data-step data-auto>
+        <legend class="qz-q" id="qz-q1">¿Qué quiere proyectar?</legend>
+        <p class="qz-help mut">Elija la opción que más se acerque. Le llevará menos de un minuto.</p>
+        <div class="opts opts-cards">
+          {tipos.map(([t, d]) => (
+            <label class="opt opt-card"><input type="radio" name="tipo" value={t} required /><span class="opt-t">{t}</span><span class="opt-d small">{d}</span></label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset class="qz-step" data-step>
+        <legend class="qz-q">¿Qué tipo de intervención necesita?</legend>
+        <div class="opts">
+          {alcances.map((t) => <label class="opt"><input type="radio" name="alcance" value={t} required /><span class="opt-t">{t}</span></label>)}
+        </div>
+        <p class="qz-sub">¿En qué le podemos ayudar? <span class="mut">Puede marcar varias.</span></p>
+        <div class="opts">
+          {servicios.map((t) => <label class="opt"><input type="checkbox" name="servicios" value={t} /><span class="opt-t">{t}</span></label>)}
+        </div>
+      </fieldset>
+
+      <fieldset class="qz-step" data-step>
+        <legend class="qz-q">Háblenos del espacio</legend>
+        <label class="field"><span class="small mut">Ubicación</span><input type="text" name="ubicacion" placeholder="Pontevedra, Vigo, Madrid…" autocomplete="address-level2" /></label>
+        <p class="qz-sub">Superficie aproximada</p>
+        <div class="opts">{superficies.map((t) => <label class="opt"><input type="radio" name="superficie" value={t} /><span class="opt-t">{t}</span></label>)}</div>
+        <p class="qz-sub">¿Ya dispone del inmueble o terreno?</p>
+        <div class="opts">{inmueble.map((t) => <label class="opt"><input type="radio" name="inmueble" value={t} /><span class="opt-t">{t}</span></label>)}</div>
+      </fieldset>
+
+      <fieldset class="qz-step" data-step>
+        <legend class="qz-q">¿Cuándo le gustaría empezar?</legend>
+        <div class="opts">{plazos.map((t) => <label class="opt"><input type="radio" name="plazo" value={t} /><span class="opt-t">{t}</span></label>)}</div>
+        <p class="qz-sub">Presupuesto orientativo <span class="mut">Nos ayuda a proponer soluciones realistas.</span></p>
+        <div class="opts">{presupuestos.map((t) => <label class="opt"><input type="radio" name="presupuesto" value={t} /><span class="opt-t">{t}</span></label>)}</div>
+      </fieldset>
+
+      <fieldset class="qz-step" data-step>
+        <legend class="qz-q">¿Cómo le contactamos?</legend>
+        <p class="qz-sum small mut" data-qz-sum></p>
+        <div class="fields">
+          <label class="field"><span class="small mut">Nombre</span><input type="text" name="nombre" required autocomplete="name" /></label>
+          <label class="field"><span class="small mut">Email</span><input type="email" name="email" required autocomplete="email" /></label>
+          <label class="field"><span class="small mut">Teléfono <span class="opt-tag">opcional</span></span><input type="tel" name="telefono" autocomplete="tel" /></label>
+          <div class="field"><span class="small mut">Prefiere</span><div class="opts opts-tight">{vias.map((t, i) => <label class="opt"><input type="radio" name="via" value={t} checked={i === 0} /><span class="opt-t">{t}</span></label>)}</div></div>
+          <label class="field field-wide"><span class="small mut">Cuéntenos algo más <span class="opt-tag">opcional</span></span><textarea name="mensaje" rows="3" placeholder="Qué le gustaría conseguir, referencias, dudas…"></textarea></label>
+        </div>
+        <label class="check small"><input type="checkbox" name="privacidad" required /><span>Acepto la <a href="https://www.nanarquitectos.com/politica-de-privacidad/" target="_blank" rel="noopener" class="ulink">política de privacidad</a>. Responsable: {contacto.titular}. Finalidad: atender su solicitud.</span></label>
+      </fieldset>
+
+      <div class="qz-step qz-done" data-done tabindex="-1">
+        <svg class="done-mark" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" /><path d="M15 27l7 7 15-16" /></svg>
+        <p class="qz-q" data-done-t>Solicitud enviada</p>
+        <p class="qz-help mut" data-done-d>Gracias. Revisaremos su proyecto y le contactaremos en 24–48 h laborables.</p>
+        <div class="done-alt small">
+          <a class="btn" href={contacto.nuevos.wa} target="_blank" rel="noopener">Escribir por WhatsApp <span class="arr">→</span></a>
+          <a class="btn-ghost" href={contacto.nuevos.href}>Llamar al {contacto.nuevos.tel}</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="qz-err small" data-qz-err role="alert"></p>
+    <footer class="qz-nav" data-qz-nav>
+      <button type="button" class="qz-back small" data-qz-back><span class="arr-l">←</span> Atrás</button>
+      <span class="qz-skip small mut" data-qz-skip>Puede saltar las preguntas que no sepa</span>
+      <button type="submit" class="btn" data-qz-next><span data-qz-next-t>Continuar</span> <span class="arr">→</span></button>
+    </footer>
+  </form>
+</dialog>
+
+<script>
+  import { gsap, reduced, ease } from '../scripts/motion.ts';
+
+  const dlg = document.querySelector<HTMLDialogElement>('[data-qz]')!;
+  const form = dlg.querySelector<HTMLFormElement>('[data-qz-form]')!;
+  const steps = Array.from(dlg.querySelectorAll<HTMLElement>('[data-step]'));
+  const done = dlg.querySelector<HTMLElement>('[data-done]')!;
+  const names = ['Tipo de proyecto', 'Alcance', 'El espacio', 'Plazo y presupuesto', 'Contacto'];
+  const $ = <T extends Element = HTMLElement>(s: string) => dlg.querySelector<T>(s)!;
+  const err = $('[data-qz-err]');
+  const nextT = $('[data-qz-next-t]');
+  const back = $<HTMLButtonElement>('[data-qz-back]');
+  const fab = document.querySelector<HTMLElement>('[data-fab]')!;
+  let cur = 0;
+  let busy = false;
+
+  function paint() {
+    $('[data-qz-n]').textContent = String(Math.min(cur, 4) + 1).padStart(2, '0');
+    $('[data-qz-name]').textContent = cur > 4 ? 'Listo' : names[cur];
+    gsap.to($('[data-qz-prog]'), { scaleX: cur > 4 ? 1 : (cur + 1) / 5, duration: reduced ? 0 : 0.7, ease });
+    back.style.visibility = cur === 0 || cur > 4 ? 'hidden' : 'visible';
+    nextT.textContent = cur === 4 ? 'Enviar solicitud' : 'Continuar';
+    $('[data-qz-nav]').hidden = cur > 4;
+    $('[data-qz-skip]').style.visibility = cur === 2 || cur === 3 ? 'visible' : 'hidden';
+    if (cur === 4) {
+      const d = new FormData(form);
+      $('[data-qz-sum]').textContent = ['tipo', 'alcance', 'ubicacion', 'superficie', 'plazo'].map((k) => d.get(k)).filter(Boolean).join(' · ');
+    }
+  }
+
+  function show(i: number, dir = 1) {
+    const from = cur > 4 ? done : steps[cur];
+    const to = i > 4 ? done : steps[i];
+    cur = i;
+    err.textContent = '';
+    paint();
+    if (from === to) return;
+    const enter = () => {
+      from.classList.remove('is-on');
+      to.classList.add('is-on');
+      const first = to.querySelector<HTMLElement>('input:not([type=hidden]), textarea') ?? to;
+      if (reduced) { first.focus({ preventScroll: true }); return; }
+      gsap.fromTo(to, { opacity: 0, x: 36 * dir }, { opacity: 1, x: 0, duration: 0.55, ease, onComplete: () => first.focus({ preventScroll: true }) });
+      gsap.fromTo(to.querySelectorAll('.opt, .field, .qz-sub, .check'), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.025, ease, delay: 0.05 });
+    };
+    if (reduced) enter();
+    else gsap.to(from, { opacity: 0, x: -24 * dir, duration: 0.22, ease: 'power2.in', onComplete: enter });
+  }
+
+  function valid() {
+    const bad = Array.from(steps[cur].querySelectorAll<HTMLInputElement>('input[required], textarea[required]')).find((el) =>
+      el.type === 'radio' ? !form.querySelector(`input[name="${el.name}"]:checked`) : !el.checkValidity());
+    if (!bad) return true;
+    err.textContent = bad.type === 'radio' ? 'Elija una opción para continuar.' : bad.name === 'email' ? 'Revise el email: falta o no es válido.' : bad.name === 'privacidad' ? 'Para enviar la solicitud debe aceptar la política de privacidad.' : 'Complete su nombre para continuar.';
+    if (!reduced) gsap.fromTo(steps[cur], { x: -6 }, { x: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
+    bad.focus();
+    return false;
+  }
+
+  async function send() {
+    const d = new FormData(form);
+    const data: Record<string, string> = {};
+    d.forEach((v, k) => (data[k] = data[k] ? `${data[k]}, ${v}` : String(v)));
+    const endpoint = import.meta.env.PUBLIC_QUOTE_ENDPOINT as string | undefined;
+    if (endpoint) {
+      busy = true;
+      nextT.textContent = 'Enviando…';
+      try {
+        const r = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...data, origen: location.pathname }) });
+        if (!r.ok) throw new Error(String(r.status));
+      } catch {
+        busy = false;
+        nextT.textContent = 'Enviar solicitud';
+        err.textContent = 'No se pudo enviar. Inténtelo de nuevo o escríbanos a info@nanarquitectos.com.';
+        return;
+      }
+      busy = false;
+    } else {
+      const labels: Record<string, string> = { tipo: 'Tipo', alcance: 'Intervención', servicios: 'Servicios', ubicacion: 'Ubicación', superficie: 'Superficie', inmueble: 'Inmueble', plazo: 'Plazo', presupuesto: 'Presupuesto', nombre: 'Nombre', email: 'Email', telefono: 'Teléfono', via: 'Prefiere', mensaje: 'Mensaje' };
+      const body = Object.entries(labels).filter(([k]) => data[k]).map(([k, l]) => `${l}: ${data[k]}`).join('\n');
+      location.href = `mailto:info@nanarquitectos.com?subject=${encodeURIComponent(`Solicitud de presupuesto · ${data.tipo ?? ''}`)}&body=${encodeURIComponent(body)}`;
+      $('[data-done-t]').textContent = 'Solicitud lista para enviar';
+      $('[data-done-d]').textContent = 'Se abrió su correo con la solicitud redactada: solo tiene que pulsar Enviar. Si lo prefiere, también puede escribirnos por WhatsApp o llamarnos.';
+    }
+    show(5);
+    if (!reduced) {
+      gsap.fromTo(done.querySelector('circle'), { strokeDashoffset: 151 }, { strokeDashoffset: 0, duration: 0.9, ease });
+      gsap.fromTo(done.querySelector('path'), { strokeDashoffset: 40 }, { strokeDashoffset: 0, duration: 0.6, ease, delay: 0.5 });
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (busy || !valid()) return;
+    if (cur < 4) show(cur + 1);
+    else send();
+  });
+  back.addEventListener('click', () => cur > 0 && show(cur - 1, -1));
+  // Paso 1: elegir una opción avanza solo
+  steps[0].addEventListener('change', () => window.setTimeout(() => cur === 0 && show(1), reduced ? 0 : 260));
+
+  function open(tipo?: string) {
+    if (cur > 4) { form.reset(); show(0); }
+    if (tipo) {
+      const r = form.querySelector<HTMLInputElement>(`input[name="tipo"][value="${tipo}"]`);
+      if (r) { r.checked = true; if (cur === 0) show(1); }
+    }
+    paint();
+    dlg.showModal();
+    document.documentElement.classList.add('qz-open');
+    (window as any).__lenis?.stop();
+    if (!reduced) {
+      gsap.fromTo($('.qz-form'), { opacity: 0, y: 40, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease });
+      gsap.fromTo(steps[cur].querySelectorAll('.opt, .field, .qz-sub'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.03, ease, delay: 0.15 });
+    }
+  }
+  function close() {
+    if (reduced) return dlg.close();
+    gsap.to($('.qz-form'), { opacity: 0, y: 24, duration: 0.25, ease: 'power2.in', onComplete: () => dlg.close() });
+  }
+  dlg.addEventListener('close', () => { document.documentElement.classList.remove('qz-open'); (window as any).__lenis?.start(); gsap.set($('.qz-form'), { clearProps: 'all' }); });
+  dlg.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+  $('[data-qz-close]').addEventListener('click', close);
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
+  document.addEventListener('click', (e) => {
+    const t = (e.target as HTMLElement).closest<HTMLElement>('[data-quote]');
+    if (!t) return;
+    e.preventDefault();
+    open(t.dataset.quoteTipo);
+  });
+
+  // Botón flotante: aparece tras el primer pantallazo y se oculta sobre el pie y en el menú mobile
+  const foot = document.querySelector('.site-footer');
+  let pastHero = false, overFoot = false;
+  const sync = () => fab.classList.toggle('is-in', pastHero && !overFoot);
+  const onScroll = () => { pastHero = window.scrollY > window.innerHeight * 0.35; sync(); };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  if (foot) new IntersectionObserver(([e]) => { overFoot = e.isIntersecting; sync(); }).observe(foot);
+  onScroll();
+</script>
+
+<style>
+  /* Botón flotante */
+  .fab {
+    position: fixed; right: max(16px, calc(var(--pad) - 24px)); bottom: 20px; z-index: 40;
+    padding: 12px; /* área magnética */
+    opacity: 0; transform: translateY(16px); pointer-events: none;
+    transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
+  }
+  .fab.is-in { opacity: 1; transform: none; pointer-events: auto; }
+  :global(.menu-open) .fab { opacity: 0; pointer-events: none; }
+  .fab-in {
+    display: inline-flex; align-items: center; gap: 12px;
+    height: 52px; padding: 0 22px 0 18px; border-radius: 999px;
+    background: var(--ink); color: var(--bg); font-size: 14px;
+    box-shadow: 0 10px 30px -12px rgba(26, 26, 24, 0.5);
+    transition: background-color 0.4s, color 0.4s;
+  }
+  .fab:hover .fab-in { background: var(--yellow); color: var(--ink); }
+  .fab:active .fab-in { scale: 0.96; }
+  .fab-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); }
+  .fab:hover .fab-dot { background: var(--ink); }
+  .fab-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--yellow); animation: pulse 2.4s var(--ease-out) infinite; }
+  @keyframes pulse { 0% { transform: scale(0.6); opacity: 1; } 80%, 100% { transform: scale(1.8); opacity: 0; } }
+
+  /* Diálogo */
+  .qz {
+    width: min(760px, calc(100vw - 32px)); max-width: none; max-height: min(860px, calc(100dvh - 32px));
+    padding: 0; border: 0; background: transparent; color: var(--ink); overflow: visible;
+  }
+  .qz::backdrop { background: rgba(21, 21, 19, 0.55); backdrop-filter: blur(6px); }
+  .qz-form {
+    display: flex; flex-direction: column; max-height: inherit; min-height: min(620px, calc(100dvh - 32px));
+    background: var(--bg); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.45);
+  }
+  .qz-top { display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; }
+  .qz-x { position: relative; width: 44px; height: 44px; margin-right: -10px; }
+  .qz-x span { position: absolute; left: 12px; top: 21px; width: 20px; height: 1.5px; background: currentColor; transition: transform 0.5s var(--ease-out); }
+  .qz-x span:first-child { transform: rotate(45deg); }
+  .qz-x span:last-child { transform: rotate(-45deg); }
+  .qz-x:hover span:first-child { transform: rotate(135deg); }
+  .qz-x:hover span:last-child { transform: rotate(45deg); }
+  .qz-bar { height: 2px; background: var(--line); }
+  .qz-bar i { display: block; height: 100%; background: var(--yellow); transform-origin: left; transform: scaleX(0.2); }
+
+  .qz-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 40px 28px 16px; }
+  .qz-step { display: none; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .qz-step.is-on { display: block; }
+  .qz-q { padding: 0; font-family: var(--serif); font-weight: 300; font-size: clamp(30px, 4vw, 44px); line-height: 1.08; letter-spacing: -0.01em; }
+  .qz-help { margin-top: 12px; max-width: 46ch; }
+  .qz-sub { margin: 32px 0 12px; font-size: 14px; }
+  .qz-sub .mut { margin-left: 6px; }
+
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .qz-sub + .opts { margin-top: 0; }
+  .opts-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 32px; }
+  .opt { position: relative; display: inline-flex; flex-direction: column; gap: 4px; padding: 12px 18px; cursor: pointer; box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow 0.35s var(--ease-out), background-color 0.35s, color 0.35s, transform 0.3s var(--ease-out); }
+  .opt:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+  .opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .opt-t { font-size: 15px; }
+  .opt-card { padding: 18px 18px 16px; min-height: 104px; justify-content: space-between; }
+  .opt-card .opt-t { font-family: var(--serif); font-size: 22px; line-height: 1.15; }
+  .opt-d { color: var(--mut); transition: color 0.35s; }
+  .opt:has(input:checked) { background: var(--ink); color: var(--bg); box-shadow: inset 0 0 0 1px var(--ink); }
+  .opt:has(input:checked) .opt-d { color: var(--night-mut); }
+  .opt:has(input:focus-visible) { outline: 1.5px solid var(--ink); outline-offset: 3px; }
+  .opt-card::after { content: ''; position: absolute; top: 16px; right: 16px; width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); transform: scale(0); transition: transform 0.45s var(--ease-out); }
+  .opt-card:has(input:checked)::after { transform: scale(1); }
+  .opts-tight { margin-top: 4px; }
+  .opts-tight .opt { padding: 10px 14px; }
+
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; margin-top: 28px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-wide { grid-column: 1 / -1; }
+  .qz-step > .field { margin-top: 32px; }
+  .opt-tag { opacity: 0.7; }
+  .field input, .field textarea {
+    font: inherit; font-size: 16px; color: var(--ink); background: transparent;
+    border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 10px 0; resize: vertical;
+    transition: border-color 0.35s;
+  }
+  .field input:focus, .field textarea:focus { outline: none; border-bottom-color: var(--ink); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--stone); }
+  .qz-sum { margin-top: 10px; }
+  .check { display: flex; gap: 12px; align-items: flex-start; margin-top: 24px; color: var(--mut); cursor: pointer; }
+  .check input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--ink); flex: none; }
+
+  .qz-done { text-align: left; padding-top: 24px; }
+  .done-mark { width: 56px; height: 56px; margin-bottom: 28px; fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  .done-mark circle { stroke-dasharray: 151; stroke: var(--yellow); stroke-width: 2; }
+  .done-mark path { stroke-dasharray: 40; }
+  .done-alt { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+
+  .qz-err { min-height: 1.5em; padding: 0 28px; color: #a1361f; }
+  .qz-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 28px 24px; }
+  .qz-back { display: inline-flex; gap: 8px; align-items: center; padding: 14px 4px; color: var(--mut); transition: color 0.3s; }
+  .qz-back:hover { color: var(--ink); }
+  .qz-skip { flex: 1; text-align: center; }
+
+  @media (max-width: 760px) {
+    .fab { right: 4px; bottom: 4px; }
+    .fab-in { height: 48px; padding: 0 18px 0 16px; font-size: 13px; }
+    .qz { width: 100vw; max-height: 100dvh; height: 100dvh; margin: 0; }
+    .qz-form { min-height: 100dvh; max-height: 100dvh; }
+    .qz-top { padding: 12px 20px; }
+    .qz-body { padding: 28px 20px 12px; }
+    .opts-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 24px; }
+    .opt-card { min-height: 92px; padding: 14px; }
+    .opt-card .opt-t { font-size: 19px; }
+    .fields { grid-template-columns: 1fr; }
+    .qz-skip { display: none; }
+    .qz-nav { padding: 10px 20px calc(16px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
+    .qz-err { padding: 0 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html:not(.force-motion)) .fab-dot::after { animation: none; }
+  }
+</style>

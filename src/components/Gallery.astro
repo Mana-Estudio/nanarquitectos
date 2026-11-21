@@ -1,0 +1,177 @@
+---
+/**
+ * Galería de un proyecto. El modo (`layout`) lo elige el cliente desde el panel de administrador:
+ *  - mosaico: retícula densa con poco aire y parallax dentro de cada foto
+ *  - galeria: tira horizontal deslizable (scroll-snap, botones y gestos)
+ *  - sueltas: composición editorial asimétrica con mucho aire
+ * Cada foto es un botón [data-open] con su versión grande en data-full: el visor la lee del DOM.
+ */
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { Galeria } from '../data/proyectos';
+
+interface Props { fotos: ImageMetadata[]; layout: Galeria; titulo: string; label?: string; contain?: boolean }
+const { fotos, layout, titulo, label = 'Galería', contain = false } = Astro.props;
+const isL = (f: ImageMetadata) => f.width > f.height;
+const total = fotos.length;
+
+type Item = { img: ImageMetadata; col: string; m: string; ar?: string; cls?: string };
+let items: Item[] = [];
+
+if (layout === 'sueltas') {
+  // Retícula editorial: cada hueco pide una orientación; si no queda ninguna así, la foto conserva su proporción
+  const slots = [
+    { col: '1 / -1', ar: '16 / 9', o: 'L', m: '1 / -1' },
+    { col: '1 / span 5', ar: '3 / 4', o: 'P', m: '1 / span 3' },
+    { col: '7 / span 6', ar: '4 / 3', o: 'L', m: '2 / span 3' },
+    { col: '5 / span 4', ar: '4 / 5', o: 'P', m: '1 / -1' },
+    { col: '1 / span 8', ar: '3 / 2', o: 'L', m: '1 / -1' },
+  ];
+  const libres = [...fotos];
+  const take = (o: string) => {
+    const k = libres.findIndex((f) => (o === 'L') === isL(f));
+    return k >= 0 ? { img: libres.splice(k, 1)[0], fits: true } : libres.length ? { img: libres.shift()!, fits: false } : null;
+  };
+  let alt = 0;
+  for (const s of slots) {
+    const t = take(s.o);
+    if (!t) break;
+    if (t.fits) items.push({ ...s, img: t.img });
+    else items.push({ ...s, col: isL(t.img) ? s.col : alt++ % 2 ? '7 / span 5' : '2 / span 5', ar: `${t.img.width} / ${t.img.height}`, img: t.img });
+  }
+  // Lo que sobra: a sangre si es horizontal, en pareja si no
+  libres.forEach((img, i) => items.push(isL(img) && i === libres.length - 1
+    ? { img, col: '1 / -1', m: '1 / -1', ar: '21 / 9', cls: 'is-bleed' }
+    : { img, col: i % 2 ? '7 / span 6' : '1 / span 6', m: '1 / -1', ar: `${img.width} / ${img.height}` }));
+} else if (layout === 'mosaico') {
+  // La primera horizontal manda; las verticales ocupan dos filas en columnas angostas
+  let firstL = true;
+  items = fotos.map((img) => {
+    if (isL(img) && firstL) { firstL = false; return { img, col: 'span 8', m: 'span 4', cls: 'm-big' }; }
+    return isL(img) ? { img, col: 'span 6', m: 'span 4', cls: 'm-l' } : { img, col: 'span 4', m: 'span 2', cls: 'm-p' };
+  });
+} else {
+  items = fotos.map((img) => ({ img, col: '', m: '', ar: `${img.width} / ${img.height}` }));
+}
+
+const full = await Promise.all(items.map(({ img }) => getImage({ src: img, width: Math.min(2400, img.width), format: 'webp', quality: 82 })));
+const n = (i: number) => String(i + 1).padStart(2, '0');
+const sizes = (col: string) => (col === '1 / -1' ? '100vw' : `(max-width: 760px) 100vw, ${Math.round((Number(col.match(/span (\d+)/)?.[1] ?? 6) / 12) * 100)}vw`);
+---
+{layout === 'galeria' ? (
+  <section class="g-strip" aria-label={label} data-strip>
+    <div class="strip-track" data-strip-track tabindex="0">
+      {items.map((g, i) => (
+        <figure class="strip-item" style={`aspect-ratio:${g.ar}`}>
+          <button class="g-open" data-open data-full={full[i].src} aria-label={`Ampliar imagen ${i + 1} de ${total}`}>
+            <div class="frame">
+              <Image src={g.img} alt={`${titulo}, imagen ${i + 1} de ${total}`} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 90vw, 60vw" format="webp" quality={74} />
+            </div>
+          </button>
+        </figure>
+      ))}
+    </div>
+    <div class="strip-bar pad small num">
+      <span class="mut"><span data-strip-i>01</span> / {n(total - 1)}</span>
+      <span class="strip-prog" aria-hidden="true"><i data-strip-prog></i></span>
+      <span class="strip-btns">
+        <button data-strip-prev aria-label="Imagen anterior"><span class="arr-l">←</span></button>
+        <button data-strip-next aria-label="Imagen siguiente"><span class="arr">→</span></button>
+      </span>
+    </div>
+  </section>
+) : (
+  <section class:list={['pad grid12', layout === 'mosaico' ? 'g-mosaic' : 'g-loose', { 'is-contain': contain }]} aria-label={label}>
+    {items.map((g, i) => (
+      <figure class:list={['g-fig', g.cls]} style={`--col:${g.col};--mcol:${g.m}`}>
+        <button class="g-open" data-open data-full={full[i].src} aria-label={`Ampliar imagen ${i + 1} de ${total}`}>
+          <div class="frame" data-reveal={layout === 'mosaico' || g.cls === 'is-bleed' ? 'clip' : 'img'} data-parallax={layout === 'mosaico' && !contain ? '4' : g.cls === 'is-bleed' ? '5' : undefined} style={g.ar ? `aspect-ratio:${g.ar}` : undefined}>
+            <Image src={g.img} alt={`${titulo}, imagen ${i + 1} de ${total}`} widths={[640, 1024, 1600, 2400]} sizes={sizes(g.col)} format="webp" quality={74} />
+          </div>
+        </button>
+        {layout === 'sueltas' && <figcaption class="small mut num">{n(i)}</figcaption>}
+      </figure>
+    ))}
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-strip]').forEach((s) => {
+    const track = s.querySelector<HTMLElement>('[data-strip-track]')!;
+    const figs = Array.from(track.children) as HTMLElement[];
+    const idx = s.querySelector('[data-strip-i]')!;
+    const prog = s.querySelector<HTMLElement>('[data-strip-prog]')!;
+    const cur = () => {
+      const x = track.scrollLeft;
+      return figs.reduce((best, f, i) => (Math.abs(f.offsetLeft - track.offsetLeft - x) < Math.abs(figs[best].offsetLeft - track.offsetLeft - x) ? i : best), 0);
+    };
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      prog.style.transform = `scaleX(${max > 0 ? Math.max(0.04, track.scrollLeft / max) : 1})`;
+      idx.textContent = String(cur() + 1).padStart(2, '0');
+    };
+    const go = (d: number) => {
+      const f = figs[Math.min(figs.length - 1, Math.max(0, cur() + d))];
+      track.scrollTo({ left: f.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+    };
+    track.addEventListener('scroll', update, { passive: true });
+    track.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); });
+    s.querySelector('[data-strip-prev]')!.addEventListener('click', () => go(-1));
+    s.querySelector('[data-strip-next]')!.addEventListener('click', () => go(1));
+    // Arrastre con ratón (en táctil ya desliza solo)
+    let down = false, x0 = 0, l0 = 0, moved = false;
+    track.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; down = true; moved = false; x0 = e.clientX; l0 = track.scrollLeft; track.classList.add('is-drag'); });
+    window.addEventListener('pointermove', (e) => { if (!down) return; const dx = e.clientX - x0; if (Math.abs(dx) > 4) moved = true; track.scrollLeft = l0 - dx; });
+    window.addEventListener('pointerup', () => { if (!down) return; down = false; track.classList.remove('is-drag'); if (moved) go(0); });
+    track.addEventListener('click', (e) => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+    update();
+  });
+</script>
+
+<style>
+  .g-open { display: block; width: 100%; cursor: zoom-in; }
+  .g-fig { grid-column: var(--col); display: flex; flex-direction: column; gap: 12px; margin: 0; }
+
+  /* Mosaico: retícula densa, filas de alto fijo, las fotos cubren su celda */
+  .g-mosaic { gap: 10px; grid-auto-rows: clamp(150px, 17vw, 300px); grid-auto-flow: dense; }
+  .g-mosaic .g-fig { grid-row: span 2; }
+  .g-mosaic .m-big { grid-row: span 3; }
+  .g-mosaic .g-open, .g-mosaic .frame { height: 100%; }
+  .g-mosaic.is-contain .frame { background: #fff; }
+  .g-mosaic.is-contain .frame :global(img) { object-fit: contain; padding: 16px; }
+
+  /* Sueltas: composición con aire */
+  .g-loose { row-gap: 120px; align-items: end; }
+  .is-bleed { grid-column: 1 / -1; margin-inline: calc(var(--pad) * -1); }
+
+  /* Galería deslizable */
+  .g-strip { overflow: hidden; }
+  .strip-track {
+    display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    padding-inline: var(--pad); scroll-padding-inline: var(--pad); scrollbar-width: none; cursor: grab;
+  }
+  .strip-track::-webkit-scrollbar { display: none; }
+  .strip-track.is-drag { cursor: grabbing; scroll-snap-type: none; }
+  .strip-track.is-drag .g-open { pointer-events: none; }
+  .strip-item { flex: none; height: clamp(320px, 68vh, 760px); margin: 0; scroll-snap-align: start; }
+  .strip-item .g-open, .strip-item .frame { height: 100%; }
+  .strip-item :global(img) { -webkit-user-drag: none; user-select: none; }
+  .strip-bar { display: flex; align-items: center; gap: 24px; padding-top: 20px; }
+  .strip-prog { flex: 1; height: 1px; background: var(--line); overflow: hidden; }
+  .strip-prog i { display: block; height: 100%; background: var(--ink); transform-origin: left; transform: scaleX(0.04); transition: transform 0.2s linear; }
+  .strip-btns { display: flex; gap: 4px; }
+  .strip-btns button { width: 44px; height: 44px; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--line); transition: background-color 0.3s, color 0.3s; }
+  .strip-btns button:hover { background: var(--ink); color: var(--bg); }
+
+  @media (max-width: 1100px) {
+    .g-mosaic { grid-auto-rows: clamp(130px, 22vw, 260px); }
+  }
+  @media (max-width: 760px) {
+    .g-fig { grid-column: var(--mcol); }
+    .g-mosaic { gap: 6px; grid-auto-rows: 34vw; }
+    .g-mosaic .m-big { grid-row: span 2; }
+    .g-loose { row-gap: 40px; }
+    .strip-item { height: 62vh; max-height: 520px; }
+    .strip-bar { gap: 16px; }
+  }
+</style>

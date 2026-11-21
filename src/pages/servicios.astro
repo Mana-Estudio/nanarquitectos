@@ -1,0 +1,191 @@
+---
+import Base from '../layouts/Base.astro';
+import { Image, getImage } from 'astro:assets';
+import { foto } from '../data/proyectos';
+import { servicios, proceso } from '../data/estudio';
+
+const fotos = servicios.map((s) => foto(...s.foto));
+const thumbs = await Promise.all(fotos.map((f) => getImage({ src: f, width: 560, format: 'webp', quality: 70 })));
+const tipos = ['Vivienda', 'Clínica o salud', 'Hostelería', 'Comercio', 'Oficina'];
+---
+<Base title="Servicios" current="servicios" ogImage={fotos[0].src} description="Arquitectura, interiorismo, construcción llave en mano, mobiliario e iluminación: NAN Arquitectos acompaña el proyecto desde el diseño hasta la entrega.">
+  <section class="sv-hero pad grid12">
+    <div class="sv-head">
+      <h1 class="display" data-sv-title>Del primer boceto a la entrega de llaves.</h1>
+      <p class="sv-lead">No solo realizamos proyectos: también los ejecutamos. Diseño, gestión de presupuestos y obra, con un único interlocutor.</p>
+    </div>
+    <nav class="sv-index" aria-label="Servicios" data-index>
+      {servicios.map((s, i) => (
+        <a href={`#${s.id}`} class="sv-link" data-thumb={thumbs[i].src}>
+          <span class="sv-name">{s.nombre}</span>
+          <span class="sv-frase small mut">{s.frase}</span>
+          <span class="arr sv-arr" aria-hidden="true">↓</span>
+        </a>
+      ))}
+    </nav>
+    <div class="sv-float" aria-hidden="true" data-float><img alt="" data-float-img /></div>
+  </section>
+
+  {servicios.map((s, i) => (
+    <section class:list={['sv-ch pad grid12', i % 2 ? 'is-r' : 'is-l']} id={s.id} aria-labelledby={`${s.id}-t`}>
+      <div class="sv-img frame" data-reveal="clip" data-parallax="7">
+        <Image src={fotos[i]} alt={`${s.nombre}: obra de NAN Arquitectos`} widths={[640, 1024, 1600, 2400]} sizes="(max-width: 760px) 100vw, 66vw" format="webp" quality={72} />
+      </div>
+      <div class="sv-txt">
+        <h2 id={`${s.id}-t`} class="sv-t" data-reveal="text">{s.nombre}</h2>
+        <p class="sv-f serif" data-reveal="text">{s.frase}</p>
+        <div class:list={['sv-body', { 'is-long': s.textos.length > 3 }]} data-reveal="text">
+          {s.textos.map((t) => <p>{t}</p>)}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="proc pad" aria-labelledby="proc-t" data-proc>
+    <div class="proc-head grid12">
+      <h2 id="proc-t" class="h2 proc-title">Cómo trabajamos</h2>
+      <p class="proc-intro mut">Nuestra misión es que el cliente no se tenga que preocupar en ningún momento del proceso.</p>
+    </div>
+    <div class="proc-line" aria-hidden="true"><i data-proc-line></i></div>
+    <ol class="proc-list">
+      {proceso.map((p, i) => (
+        <li data-proc-step>
+          <span class="proc-n num">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="proc-t">{p.t}</h3>
+          <p class="small mut">{p.d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="sv-cta pad grid12">
+    <h2 class="cta-t">Cuéntenos qué quiere proyectar.</h2>
+    <div class="cta-side">
+      <p class="mut">Elija el tipo de proyecto y le haremos unas pocas preguntas para preparar un presupuesto ajustado.</p>
+      <div class="cta-tipos">
+        {tipos.map((t) => <button class="tipo" data-quote data-quote-tipo={t}><span>{t}</span><span class="arr" aria-hidden="true">→</span></button>)}
+        <button class="tipo" data-quote><span>Otro tipo de proyecto</span><span class="arr" aria-hidden="true">→</span></button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { gsap, reduced, ease } from '../scripts/motion.ts';
+
+  if (!reduced) gsap.from('[data-sv-title]', { y: 40, opacity: 0, duration: 1.5, ease, delay: 0.15 });
+
+  // Índice: miniatura que sigue al cursor (solo con ratón)
+  const float = document.querySelector<HTMLElement>('[data-float]')!;
+  const fimg = document.querySelector<HTMLImageElement>('[data-float-img]')!;
+  if (!reduced && window.matchMedia('(hover: hover)').matches) {
+    const xTo = gsap.quickTo(float, 'x', { duration: 0.7, ease: 'power3' });
+    const yTo = gsap.quickTo(float, 'y', { duration: 0.7, ease: 'power3' });
+    const idx = document.querySelector<HTMLElement>('[data-index]')!;
+    idx.addEventListener('pointermove', (e) => { xTo(e.clientX + 24); yTo(e.clientY - 120); });
+    idx.querySelectorAll<HTMLElement>('[data-thumb]').forEach((a) => {
+      a.addEventListener('pointerenter', () => {
+        fimg.src = a.dataset.thumb!;
+        gsap.to(float, { opacity: 1, scale: 1, duration: 0.5, ease });
+      });
+    });
+    idx.addEventListener('pointerleave', () => gsap.to(float, { opacity: 0, scale: 0.85, duration: 0.4, ease }));
+  }
+
+  // Proceso: la línea avanza con el scroll y cada paso se enciende al alcanzarlo
+  const steps = Array.from(document.querySelectorAll<HTMLElement>('[data-proc-step]'));
+  if (!reduced) {
+    gsap.fromTo('[data-proc-line]', { scaleX: 0 }, {
+      scaleX: 1, ease: 'none',
+      scrollTrigger: {
+        trigger: '[data-proc]', start: 'top 70%', end: 'bottom 70%', scrub: true,
+        onUpdate: (st) => steps.forEach((s, i) => s.classList.toggle('is-on', st.progress >= i / steps.length + 0.02)),
+      },
+    });
+  } else steps.forEach((s) => s.classList.add('is-on'));
+</script>
+
+<style>
+  .sv-hero { padding-top: 120px; row-gap: 64px; }
+  .sv-head { grid-column: 1 / span 9; display: flex; flex-direction: column; gap: 32px; }
+  .sv-lead { max-width: 52ch; font-size: 18px; }
+  .sv-index { grid-column: 1 / -1; border-top: 1px solid var(--ink); }
+  .sv-link {
+    display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) 32px; gap: 24px; align-items: baseline;
+    padding: 22px 0; border-bottom: 1px solid var(--line);
+    transition: padding 0.6s var(--ease-out), color 0.3s;
+  }
+  .sv-link:hover { color: var(--ink); padding-left: 20px; }
+  .sv-name { font-family: var(--serif); font-weight: 300; font-size: clamp(30px, 3.6vw, 54px); line-height: 1.05; }
+  .sv-arr { justify-self: end; opacity: 0.35; transition: opacity 0.3s, transform 0.55s var(--ease-out); }
+  .sv-link:hover .sv-arr { opacity: 1; transform: translateY(5px); }
+  .sv-float { position: fixed; left: 0; top: 0; z-index: 30; width: 240px; aspect-ratio: 4 / 3; overflow: hidden; pointer-events: none; opacity: 0; scale: 0.85; background: var(--frame); }
+  .sv-float img { width: 100%; height: 100%; object-fit: cover; }
+
+  .sv-ch { padding-top: var(--sec); row-gap: 40px; align-items: start; scroll-margin-top: 24px; }
+  .sv-img { grid-column: 1 / span 8; aspect-ratio: 3 / 2; }
+  .sv-txt { grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 20px; padding-top: 8px; }
+  .is-r .sv-img { grid-column: 5 / span 8; grid-row: 1; }
+  .is-r .sv-txt { grid-column: 1 / span 4; grid-row: 1; }
+  .sv-t { font-size: clamp(44px, 5.4vw, 80px); line-height: 1; letter-spacing: -0.02em; }
+  .sv-f { font-weight: 300; font-size: clamp(20px, 1.7vw, 24px); line-height: 1.3; }
+  .sv-body { display: flex; flex-direction: column; gap: 16px; font-size: 15px; line-height: 1.65; }
+  /* Textos largos: bajan a dos columnas bajo la imagen */
+  .sv-ch:has(.is-long) .sv-txt { display: contents; }
+  .sv-ch:has(.is-long) .sv-t, .sv-ch:has(.is-long) .sv-f { grid-column: 9 / span 4; }
+  .is-r:has(.is-long) .sv-t, .is-r:has(.is-long) .sv-f { grid-column: 1 / span 4; }
+  .sv-ch:has(.is-long) .sv-t { grid-row: 1; align-self: start; }
+  .sv-ch:has(.is-long) .sv-f { grid-row: 1; align-self: end; }
+  .sv-body.is-long { grid-column: 1 / -1; display: block; columns: 3; column-gap: var(--gap); padding-top: 16px; }
+  .sv-body.is-long p { break-inside: avoid; margin-bottom: 16px; }
+
+  .proc { padding-top: var(--sec); }
+  .proc-head { row-gap: 16px; padding-bottom: 56px; align-items: end; }
+  .proc-title { grid-column: 1 / span 6; }
+  .proc-intro { grid-column: 8 / span 5; }
+  .proc-line { height: 1px; background: var(--line); }
+  .proc-line i { display: block; height: 100%; background: var(--ink); transform-origin: left; }
+  .proc-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); }
+  .proc-list li { position: relative; padding-top: 28px; display: flex; flex-direction: column; gap: 10px; opacity: 0.35; transition: opacity 0.6s var(--ease-out); }
+  .proc-list li::before { content: ''; position: absolute; top: -4px; left: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--bg); box-shadow: inset 0 0 0 1px var(--stone); transition: background-color 0.4s, box-shadow 0.4s; }
+  .proc-list li.is-on { opacity: 1; }
+  .proc-list li.is-on::before { background: var(--yellow); box-shadow: inset 0 0 0 1px var(--yellow); }
+  .proc-n { font-size: 13px; color: var(--mut); }
+  .proc-t { font-size: clamp(26px, 2.4vw, 36px); line-height: 1.1; }
+  .proc-list p { max-width: 30ch; }
+
+  .sv-cta { padding-block: var(--sec); row-gap: 32px; }
+  .cta-t { grid-column: 1 / span 6; font-size: clamp(40px, 5.2vw, 80px); line-height: 1.02; letter-spacing: -0.02em; }
+  .cta-side { grid-column: 8 / span 5; display: flex; flex-direction: column; gap: 24px; }
+  .cta-tipos { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+  .tipo { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line); text-align: left; font-family: var(--serif); font-size: 22px; transition: padding 0.5s var(--ease-out), background-color 0.4s, color 0.4s; }
+  .tipo:hover { padding-inline: 16px; background: var(--ink); color: var(--bg); }
+
+  @media (max-width: 1100px) {
+    .sv-head { grid-column: 1 / -1; }
+    .sv-img, .is-r .sv-img { grid-column: 1 / -1; grid-row: auto; }
+    .sv-txt, .is-r .sv-txt { grid-column: 1 / span 9; grid-row: auto; }
+    .sv-ch:has(.is-long) .sv-t, .sv-ch:has(.is-long) .sv-f, .is-r:has(.is-long) .sv-t, .is-r:has(.is-long) .sv-f { grid-column: 1 / span 9; grid-row: auto; }
+    .sv-body.is-long { columns: 2; }
+    .cta-t, .cta-side { grid-column: 1 / -1; }
+  }
+  @media (max-width: 760px) {
+    .sv-hero { padding-top: 48px; row-gap: 40px; }
+    .sv-lead { font-size: 16px; }
+    .sv-link { grid-template-columns: minmax(0, 1fr) 24px; gap: 4px 12px; padding: 16px 0; }
+    .sv-frase { grid-column: 1; grid-row: 2; }
+    .sv-arr { grid-row: 1; grid-column: 2; }
+    .sv-float { display: none; }
+    .sv-ch { row-gap: 20px; }
+    .sv-img { aspect-ratio: 4 / 3; }
+    .sv-txt, .is-r .sv-txt, .sv-ch:has(.is-long) .sv-t, .sv-ch:has(.is-long) .sv-f, .is-r:has(.is-long) .sv-t, .is-r:has(.is-long) .sv-f { grid-column: 1 / -1; }
+    .sv-body.is-long { columns: 1; padding-top: 0; }
+    .proc-title, .proc-intro { grid-column: 1 / -1; }
+    .proc-head { padding-bottom: 32px; }
+    .proc-line { display: none; }
+    .proc-list { grid-template-columns: 1fr; gap: 0; border-left: 1px solid var(--line); margin-left: 4px; }
+    .proc-list li { padding: 0 0 36px 24px; }
+    .proc-list li::before { top: 4px; left: -5px; }
+    .tipo { font-size: 19px; }
+  }
+</style>
