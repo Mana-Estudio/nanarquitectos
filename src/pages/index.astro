@@ -1,14 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
-import { heroSlides, obrasHome, ciudad } from '../data/proyectos';
+import { heroSlides, obrasHome, ciudad, tipo, publicaciones } from '../data/proyectos';
 
+// Textos tomados de nanarquitectos.com (Estudio y Gestión de obra)
 const servicios = [
-  { name: 'Arquitectura', desc: 'Obra nueva y rehabilitación de viviendas y edificios. Proyecto básico y de ejecución, licencias y tramitación.' },
-  { name: 'Interiorismo', desc: 'Reformas integrales, mobiliario a medida y selección de materiales, iluminación y acabados.' },
-  { name: 'Clínicas y oficinas', desc: 'Distribución funcional, normativa sanitaria y accesibilidad para consultas, clínicas y espacios de trabajo.' },
-  { name: 'Hostelería y comercio', desc: 'Restaurantes, tiendas y espacios de eventos con identidad propia, pensados para la operación diaria.' },
-  { name: 'Dirección de obra', desc: 'Seguimiento en obra, coordinación de gremios y control de plazos y costes.' },
+  { name: 'Arquitectura', desc: 'Proyectos integrales de arquitectura para viviendas, oficinas y locales comerciales, con diseño contemporáneo, juego de volúmenes y eficiencia energética.' },
+  { name: 'Interiorismo', desc: 'Diseño e interiorismo bajo la máxima personalización: cada proyecto es diferente y se trabaja junto al cliente para entender sus necesidades concretas.' },
+  { name: 'Construcción', desc: 'Técnicas de construcción adecuadas a cada proyecto, en concordancia con un diseño de instalaciones energéticamente eficiente y de bajo coste de mantenimiento.' },
+  { name: 'Mobiliario', desc: 'Piezas hechas a medida y un amplio muestrario de fabricantes y distribuidores, tanto en el ámbito doméstico como en el espacio comercial.' },
+  { name: 'Iluminación', desc: 'La luz como parte de la arquitectura: integrada desde el proyecto, igual que el mobiliario, para alcanzar espacios con identidad.' },
 ];
 const total = String(heroSlides.length).padStart(2, '0');
 ---
@@ -19,7 +20,7 @@ const total = String(heroSlides.length).padStart(2, '0');
     <div class="hero-media" data-hero>
       {heroSlides.map((s, i) => (
         <figure class:list={['slide', { 'is-active': i === 0 }]} data-slide data-name={s.proyecto.nombre} data-meta={`${ciudad(s.proyecto)} · ${s.proyecto.anio}`} data-href={`/proyectos/${s.proyecto.slug}/`} aria-hidden={i === 0 ? undefined : 'true'}>
-          <Image src={s.imagen} alt={s.proyecto.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} format="avif" quality={70} />
+          <Image src={s.imagen} alt={s.proyecto.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} format="webp" quality={70} />
         </figure>
       ))}
     </div>
@@ -45,11 +46,11 @@ const total = String(heroSlides.length).padStart(2, '0');
       {obrasHome.map((o) => (
         <a href={`/proyectos/${o.proyecto.slug}/`} class="work" style={`--col:${o.col};--mt:${o.mt}`}>
           <div class="frame" data-reveal="img" style={`aspect-ratio:${o.ar};view-transition-name:p-${o.proyecto.slug}`}>
-            <Image src={o.imagen} alt={o.proyecto.titulo} widths={[640, 1024, 1600, 2400]} sizes={o.col === '1 / -1' ? '100vw' : '(max-width: 760px) 100vw, 60vw'} format="avif" quality={72} />
+            <Image src={o.imagen} alt={o.proyecto.titulo} widths={[640, 1024, 1600, 2400]} sizes={o.col === '1 / -1' ? '100vw' : '(max-width: 760px) 100vw, 60vw'} format="webp" quality={72} />
           </div>
           <p class="work-cap">
             <span class="serif cap">{o.proyecto.nombre}</span>
-            <span class="small mut">{o.proyecto.categoria} · {ciudad(o.proyecto)} · {o.proyecto.anio}</span>
+            <span class="small mut">{tipo(o.proyecto)} · {ciudad(o.proyecto)} · {o.proyecto.anio}</span>
           </p>
         </a>
       ))}
@@ -59,9 +60,20 @@ const total = String(heroSlides.length).padStart(2, '0');
   <section class="block pad" id="estudio" aria-labelledby="estudio-label">
     <div class="grid12 rule" data-reveal="text">
       <h2 id="estudio-label" class="label small mut">Estudio</h2>
-      <p class="text h2 lead">Hacemos arquitectura para que la vida ocurra dentro. Pocos materiales, luz natural y proporciones medidas; cuidamos cada detalle hasta que deja de notarse.</p>
-      <p class="col-a">NAN es un estudio de arquitectura e interiorismo con sede en Pontevedra desde 2013. Proyectamos clínicas, restaurantes, comercios, oficinas y viviendas en Galicia, y acompañamos cada encargo desde el primer boceto hasta la entrega de llaves.</p>
+      <p class="text h2 lead">Una arquitectura racional y sincera, que busca el equilibrio entre la funcionalidad, el diseño y la sostenibilidad para que sus espacios no resulten indiferentes.</p>
+      <p class="col-a">NAN Arquitectos es un estudio de arquitectura y diseño nacido en 2013, con sede en Pontevedra. Sus propuestas se caracterizan por el diseño contemporáneo, el dominio de la iluminación, el juego de volúmenes, el contraste de materiales y la eficiencia energética.</p>
       <p class="col-b small mut">Alberto F. Reiriz Paz<br />Vicente Pillado Domato</p>
+    </div>
+  </section>
+
+  <section class="block pad" id="publicaciones" aria-labelledby="pub-label">
+    <div class="grid12 rule">
+      <h2 id="pub-label" class="label small mut">Publicaciones</h2>
+      <ul class="text pubs" data-reveal="text">
+        {publicaciones.map(([obra, medio]) => (
+          <li><span class="serif">{obra}</span><span class="small mut">{medio}</span></li>
+        ))}
+      </ul>
     </div>
   </section>
 
@@ -177,6 +189,9 @@ const total = String(heroSlides.length).padStart(2, '0');
   .col-a { grid-column: 4 / span 4; margin-top: 48px; }
   .col-b { grid-column: 9 / span 3; margin-top: 48px; align-self: end; }
 
+  .pubs { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: var(--gap); }
+  .pubs li { break-inside: avoid; display: flex; flex-direction: column; gap: 2px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .pubs .serif { font-size: 20px; line-height: 1.25; }
   .svc-head { padding-bottom: 56px; }
   .svc { list-style: none; margin: 0; padding: 0; }
   .svc li { row-gap: 10px; padding-block: 36px; border-top: 1px solid var(--line); align-items: baseline; }
@@ -205,6 +220,7 @@ const total = String(heroSlides.length).padStart(2, '0');
     .col-a, .col-b { margin-top: 24px; }
     .contact-body { gap: 24px; }
     .svc-head { padding-bottom: 28px; }
+    .pubs { columns: 1; }
     .svc li { padding-block: 22px; }
     .svc-num { grid-column: 1 / span 1; }
     .svc-name, .svc-desc { grid-column: 2 / span 3; }

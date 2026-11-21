@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { proyectos, portada, ciudad, filtros } from '../../data/proyectos';
+import { proyectos, portada, ciudad, filtros, tipo } from '../../data/proyectos';
 
 export function getStaticPaths() {
   return proyectos.map((p, i) => ({
@@ -45,13 +45,16 @@ if (sangre && !sangre.fits) galeria.push({ col: '7 / span 6', ar: `${sangre.img.
 const vistas = [...galeria.map((g) => g.img), ...(bleed ? [bleed] : [])];
 const full = await Promise.all(vistas.map((img) => getImage({ src: img, width: Math.min(2400, img.width), format: 'webp', quality: 82 })));
 const plural = filtros.find((f) => f.cat === p.categoria)?.label ?? 'Proyectos';
-const [t1, t2, t3] = p.texto;
+const resumenEnTexto = p.texto[0] && p.texto[0].startsWith(p.resumen);
+const cuerpo = p.texto.map((t, i) => (i === 0 && resumenEnTexto ? t.slice(p.resumen.length).trim() : t)).filter(Boolean);
+const nota = cuerpo.length > 2 ? cuerpo[cuerpo.length - 1] : null;
+const principal = nota ? cuerpo.slice(0, -1) : cuerpo;
 const n = (i: number) => String(i + 1).padStart(2, '0');
 ---
 <Base title={p.titulo} description={p.resumen} ogImage={hero.src} current="proyectos">
   <article>
     <div class="frame p-hero" style={`view-transition-name:p-${p.slug}`}>
-      <Image src={hero} alt={p.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading="eager" fetchpriority="high" format="avif" quality={72} />
+      <Image src={hero} alt={p.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading="eager" fetchpriority="high" format="webp" quality={72} />
     </div>
 
     <section class="pad grid12 head">
@@ -62,12 +65,12 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
       <div class="ficha" data-reveal="text">
         <dl class="keys">
           <div><dt>Lugar</dt><dd class="serif">{ciudad(p)}</dd></div>
-          <div><dt>Año</dt><dd class="serif num">{p.anio}</dd></div>
-          <div><dt>Superficie</dt><dd class="serif num">{p.superficie}</dd></div>
+          <div><dt>Año</dt><dd class="serif num">{p.anio ?? '—'}</dd></div>
+          <div><dt>Superficie</dt><dd class="serif num">{p.superficie ?? '—'}</dd></div>
         </dl>
         <dl class="rows">
           <div><dt>Proyecto</dt><dd>{p.titulo}</dd></div>
-          <div><dt>Tipo</dt><dd>{p.categoria}</dd></div>
+          <div><dt>Tipo</dt><dd>{tipo(p)}</dd></div>
           <div><dt>Ubicación</dt><dd>{p.lugar}</dd></div>
           <div><dt>Equipo</dt><dd>NAN Arquitectos</dd></div>
         </dl>
@@ -77,9 +80,8 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
     <section class="pad grid12 body">
       <div class="text" data-reveal="text">
         <p class="lead serif">{p.resumen}</p>
-        <p>{t1}</p>
-        <p>{t2}</p>
-        {t3 && <p class="t3-mobile">{t3}</p>}
+        {principal.map((t) => <p>{t}</p>)}
+        {nota && <p class="t3-mobile">{nota}</p>}
       </div>
     </section>
 
@@ -88,20 +90,20 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
         <figure style={`--col:${g.col};--mcol:${g.m}`}>
           <button class="g-open" data-open={i} aria-label={`Ver foto ${n(i)} a pantalla completa`}>
             <div class="frame" data-reveal="img" style={`aspect-ratio:${g.ar}`}>
-              <Image src={g.img} alt={`${p.nombre}, foto ${n(i)}`} widths={[640, 1024, 1600, 2400]} sizes={g.col === '1 / -1' ? '100vw' : '(max-width: 760px) 100vw, 60vw'} format="avif" quality={74} />
+              <Image src={g.img} alt={`${p.nombre}, foto ${n(i)}`} widths={[640, 1024, 1600, 2400]} sizes={g.col === '1 / -1' ? '100vw' : '(max-width: 760px) 100vw, 60vw'} format="webp" quality={74} />
             </div>
           </button>
           <figcaption class="small mut num">{n(i)}</figcaption>
         </figure>
       ))}
-      {t3 && <p class="note serif" data-reveal="text"><span>{t3}</span></p>}
+      {nota && nota.length < 420 && <p class="note serif" data-reveal="text"><span>{nota}</span></p>}
     </section>
 
     {bleed && (
       <>
         <button class="bleed g-open" data-open={galeria.length} aria-label={`Ver foto ${n(galeria.length)} a pantalla completa`}>
           <div class="frame" data-parallax>
-            <Image src={bleed} alt={`${p.nombre}, foto ${n(galeria.length)}`} widths={[828, 1280, 1920, 2560]} sizes="100vw" format="avif" quality={72} />
+            <Image src={bleed} alt={`${p.nombre}, foto ${n(galeria.length)}`} widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} />
           </div>
         </button>
         <p class="pad small mut num bleed-cap">{n(galeria.length)}</p>
@@ -112,7 +114,7 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
       <div class="next-text">
         <span class="small mut">Siguiente proyecto</span>
         <a href={`/proyectos/${next.slug}/`} class="next-name">{next.nombre}</a>
-        <span class="small mut">{next.categoria} · {ciudad(next)} · {next.anio} · {next.superficie}</span>
+        <span class="small mut">{[tipo(next), ciudad(next), next.anio, next.superficie].filter(Boolean).join(' · ')}</span>
         <div class="next-links">
           <a href={`/proyectos/${next.slug}/`}>Ver proyecto →</a>
           <a href="/proyectos/" class="mut">Todos los proyectos</a>
@@ -120,7 +122,7 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
       </div>
       <a href={`/proyectos/${next.slug}/`} class="next-img" tabindex="-1" aria-hidden="true">
         <div class="frame" style="aspect-ratio:3 / 2">
-          <Image src={portada(next)} alt="" widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 50vw" format="avif" quality={70} />
+          <Image src={portada(next)} alt="" widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 50vw" format="webp" quality={70} />
         </div>
       </a>
     </section>

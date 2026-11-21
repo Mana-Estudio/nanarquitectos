@@ -1,15 +1,17 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { Image } from 'astro:assets';
-import { proyectos, filtros, portada, ciudad } from '../../data/proyectos';
+import { Image, getImage } from 'astro:assets';
+import { proyectos, filtros, portada, ciudad, tipo } from '../../data/proyectos';
 
 const conteo = (cat: string | null) => (cat ? proyectos.filter((p) => p.categoria === cat).length : proyectos.length);
 const fmt = new Intl.NumberFormat('es-ES');
+const meta = (p: (typeof proyectos)[number]) => [tipo(p), ciudad(p), p.anio].filter(Boolean).join(' · ');
+const previews = await Promise.all(proyectos.map((p) => getImage({ src: portada(p), width: 640, format: 'webp', quality: 72 })));
 ---
 <Base title="Proyectos" current="proyectos" description="Proyectos de NAN Arquitectos: clínicas, hostelería, comercios, oficinas y viviendas en Pontevedra y Galicia.">
   <section class="intro pad grid12">
     <h1 class="title">Proyectos<sup class="num" data-total>{proyectos.length}</sup></h1>
-    <p class="intro-text">Clínicas, restaurantes, comercios, oficinas y viviendas en Galicia. Obra construida, fotografiada en uso.</p>
+    <p class="intro-text">Clínicas, restaurantes, comercios, oficinas y viviendas en Galicia y Madrid, desde 2013.</p>
   </section>
 
   <div class="bar" role="toolbar" aria-label="Filtros y vista">
@@ -32,10 +34,10 @@ const fmt = new Intl.NumberFormat('es-ES');
         <li class="card" data-cat={p.categoria}>
           <a href={`/proyectos/${p.slug}/`}>
             <div class="frame" data-reveal="img" style={`aspect-ratio:4 / 3;view-transition-name:p-${p.slug}`}>
-              <Image src={portada(p)} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 33vw" format="avif" quality={72} loading={i < 3 ? 'eager' : 'lazy'} />
+              <Image src={portada(p)} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 33vw" format="webp" quality={72} loading={i < 3 ? 'eager' : 'lazy'} />
             </div>
             <span class="serif cap">{p.nombre}</span>
-            <span class="small mut">{p.categoria} · {ciudad(p)} · {p.anio}</span>
+            <span class="small mut">{meta(p)}</span>
           </a>
         </li>
       ))}
@@ -52,15 +54,15 @@ const fmt = new Intl.NumberFormat('es-ES');
         </div>
         <ol class="rows" data-rows>
           {proyectos.map((p, i) => (
-            <li data-cat={p.categoria} data-nombre={p.nombre} data-anio={p.anio} data-m2={p.m2} data-i={i}>
+            <li data-cat={p.categoria} data-nombre={p.nombre} data-anio={p.anio ?? 0} data-m2={p.m2 ?? 0} data-i={i}>
               <a href={`/proyectos/${p.slug}/`} class="row" data-hover={i}>
                 <span class="nr mut num"><i class="mark"></i><span data-nr>{String(i + 1).padStart(2, '0')}</span></span>
                 <span class="serif rname">{p.nombre}</span>
-                <span class="d">{p.categoria}</span>
+                <span class="d">{tipo(p)}</span>
                 <span class="d">{ciudad(p)}</span>
-                <span class="num yr">{p.anio}</span>
-                <span class="num right d">{fmt.format(p.m2)}</span>
-                <span class="m small mut">{p.categoria} · {ciudad(p)} · {fmt.format(p.m2)} m²</span>
+                <span class="num yr">{p.anio ?? '—'}</span>
+                <span class="num right d">{p.m2 ? fmt.format(p.m2) : '—'}</span>
+                <span class="m small mut">{[tipo(p), ciudad(p), p.m2 && `${fmt.format(p.m2)} m²`].filter(Boolean).join(' · ')}</span>
               </a>
             </li>
           ))}
@@ -68,15 +70,13 @@ const fmt = new Intl.NumberFormat('es-ES');
       </div>
       <aside class="preview" aria-hidden="true">
         <div class="frame preview-img">
-          {proyectos.map((p, i) => (
-            <Image src={portada(p)} alt="" widths={[480, 800]} sizes="25vw" format="avif" quality={70} class:list={{ 'is-on': i === 0 }} data-prev={i} loading="lazy" />
-          ))}
+          <img src={previews[0].src} alt="" data-prev-img loading="lazy" decoding="async" />
         </div>
         <span class="small mut" data-prev-cap>{proyectos[0].nombre} · {ciudad(proyectos[0])}</span>
       </aside>
     </div>
   </section>
-  <script type="application/json" data-caps set:html={JSON.stringify(proyectos.map((p) => `${p.nombre} · ${ciudad(p)}`))} />
+  <script type="application/json" data-caps set:html={JSON.stringify(proyectos.map((p, i) => ({ cap: `${p.nombre} · ${ciudad(p)}`, src: previews[i].src })))} />
 </Base>
 
 <script>
@@ -90,7 +90,7 @@ const fmt = new Intl.NumberFormat('es-ES');
   const cards = Array.from(grid.querySelectorAll<HTMLElement>('.card'));
   const rows = () => Array.from(rowsEl.querySelectorAll<HTMLElement>('li'));
   const total = document.querySelector('[data-total]')!;
-  const caps: string[] = JSON.parse(document.querySelector('[data-caps]')!.textContent!);
+  const caps: { cap: string; src: string }[] = JSON.parse(document.querySelector('[data-caps]')!.textContent!);
   let filter = 'all';
 
   function press(sel: string, btn: HTMLElement) {
@@ -157,12 +157,18 @@ const fmt = new Intl.NumberFormat('es-ES');
   );
 
   /* Vista previa fija: la obra de la fila señalada */
-  const prevImgs = Array.from(document.querySelectorAll<HTMLElement>('[data-prev]'));
+  const prevImg = document.querySelector<HTMLImageElement>('[data-prev-img]')!;
   const prevCap = document.querySelector('[data-prev-cap]')!;
   function highlight(i: number) {
-    prevImgs.forEach((im) => im.classList.toggle('is-on', Number(im.dataset.prev) === i));
     rows().forEach((r) => r.classList.toggle('is-marked', Number(r.dataset.i) === i));
-    prevCap.textContent = caps[i];
+    prevCap.textContent = caps[i].cap;
+    if (prevImg.src.endsWith(caps[i].src)) return;
+    const next = new Image();
+    next.onload = () => {
+      prevImg.src = caps[i].src;
+      if (!reduced) gsap.fromTo(prevImg, { opacity: 0.4 }, { opacity: 1, duration: 0.35 });
+    };
+    next.src = caps[i].src;
   }
   rowsEl.querySelectorAll<HTMLElement>('[data-hover]').forEach((a) => {
     const i = Number(a.dataset.hover);
@@ -219,8 +225,6 @@ const fmt = new Intl.NumberFormat('es-ES');
 
   .preview { grid-column: 10 / span 3; position: sticky; top: 24px; display: flex; flex-direction: column; gap: 12px; }
   .preview-img { aspect-ratio: 4 / 5; }
-  .preview-img :global(img) { opacity: 0; transition: opacity 0.35s ease; }
-  .preview-img :global(img.is-on) { opacity: 1; }
 
   @media (max-width: 1100px) {
     .card { grid-column: span 6; }

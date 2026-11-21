@@ -1,0 +1,1194 @@
+[
+ {
+  "slug": "exposicion-a-cidade-e-a-pegada",
+  "nombre": "Exposición A cidade é a pegada",
+  "titulo": "Exposición A cidade é a pegada",
+  "categoria": "Otros",
+  "destacado": false,
+  "lugar": "Pontevedra",
+  "anio": null,
+  "superficie": null,
+  "m2": null,
+  "texto": [
+   "NAN Arquitectos participa en A cidade é a pegada, una exposición organizada por el Ayuntamiento de Pontevedra que explora cómo la ciudad deja huella en quienes la habitan con salas dedicadas al río, a sus personajes históricos, la infancia y la arquitectura.",
+   "El estudio desarrolla el contenido y el diseño de la sala dedicada a la arquitectura y el urbanismo,  creando maquetas de edificios representativos del desarrollismo pontevedrés, reuniendo planos históricos y fotografías de rincones de la ciudad, generando una mirada nueva a través de un panel de fotografías de la actualidad y un elemento indicativo de la evolución del urbanismo de la ciudad. Una mirada que invita a descubrir cómo los espacios construidos forman parte de nuestra memoria y experiencia cotidiana.",
+   "Comisario da exposición: Alfredo Olmedo Portela",
+   "Co-comisario sala río: Eduardo Outeiro Ferreño",
+   "Co-comisaria sala personaxes: Milagros Bará Viñas",
+   "Co-comisario sala infancia: Norberto Olmedo Portela"
+  ]
+ },
+ {
+  "slug": "vivienda-forcarei",
+  "nombre": "Vivienda Forcarei",
+  "titulo": "Vivienda Forcarei",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Pontevedra",
+  "anio": null,
+  "superficie": null,
+  "m2": null,
+  "texto": []
+ },
+ {
+  "slug": "centro-de-salud-deportiva-y-podologia",
+  "nombre": "centro de salud deportiva y podología",
+  "titulo": "Centro de salud deportiva y podología Pedro Lago",
+  "categoria": "Clínica",
+  "destacado": true,
+  "lugar": "Vilagarcía de Arousa",
+  "anio": 2025,
+  "superficie": "250 m2",
+  "m2": 250.0,
+  "texto": [
+   "Este centro de salud deportiva y podología, concebido con la pureza estética de NAN, combina innovación, funcionalidad y una identidad visual única.",
+   "El proyecto se estructura en volúmenes independientes que albergan las áreas de tratamiento y un quirófano con tecnología de vanguardia. En su base, el vidrio actúa como guiño sutil al pie, eje conceptual de la propuesta.",
+   "La identidad deportiva se refleja en el pavimento amortiguado de PVC, que integra una pista de atletismo para transmitir dinamismo y energía. La paleta cromática, dominada por grises y matices cálidos, refuerza la imagen corporativa y aporta serenidad.",
+   "La iluminación, protagonista en el recorrido, guía al visitante con líneas continuas y luz difusa en las zonas de trabajo, evitando sombras. La señalética retroiluminada facilita la orientación y aporta un toque distintivo al conjunto.",
+   "Un espacio que no solo cuida del cuerpo, sino que envuelve al visitante en una experiencia arquitectónica coherente, contemporánea y estimulante."
+  ]
+ },
+ {
+  "slug": "marna-restaurante",
+  "nombre": "Marna Restaurante",
+  "titulo": "Restaurante MARNA",
+  "categoria": "Hostelería",
+  "destacado": true,
+  "lugar": "Pontevedra",
+  "anio": 2025,
+  "superficie": "200 m2",
+  "m2": 200.0,
+  "texto": [
+   "El restaurante Marna se inspira en la estética y valores de la tradición franciscana. El color marrón, símbolo del hábito de los hermanos menores, domina el espacio en maderas y revestimientos, creando un ambiente cálido y sobrio.",
+   "La barra, revestida en microcemento beige, se eleva como un altar contemporáneo, actuando como el centro simbólico y funcional del lugar. Celosías de madera, inspiradas en los confesionarios, dividen y conectan sutilmente los espacios, aportando intimidad y evocación espiritual.",
+   "La iluminación cálida, el uso de materiales nobles y una atmósfera contenida hacen de Marna un espacio de contemplación y encuentro, donde la experiencia gastronómica se convierte en un ritual moderno."
+  ]
+ },
+ {
+  "slug": "clinica-mercedes-fayos-fons",
+  "nombre": "Clínica Mercedes Fayos Fons",
+  "titulo": "Clínica de ortodoncia Mercedes Fayos Fons",
+  "categoria": "Clínica",
+  "destacado": true,
+  "lugar": "Pontevedra",
+  "anio": 2024,
+  "superficie": "200 m2",
+  "m2": 200.0,
+  "texto": [
+   "Este proyecto de interiorismo parte de un concepto claro: diseñar una clínica especializada en ortodoncia que transmita transparencia, fluidez y cercanía, tanto hacia sus pacientes como hacia el entorno urbano en el que se inserta. La clínica se plantea como un espacio abierto al exterior, que elimina las barreras visuales y físicas para generar confianza y bienestar desde el primer contacto.",
+   "Fluidez espacial a través de volúmenes y membranas",
+   "El diseño interior se articula mediante un juego de volúmenes puros y membranas translúcidas que definen los distintos usos sin aislarlos completamente. Estas divisiones permiten que la luz natural fluya por todo el espacio, generando una atmósfera ligera y continua, donde es posible intuir el funcionamiento interno de la clínica sin comprometer la privacidad de los usuarios. Esta estrategia espacial potencia la legibilidad del programa funcional y mejora la orientación de los pacientes.",
+   "La elección de los materiales responde a un equilibrio entre la percepción de limpieza y tecnología, fundamental en un espacio sanitario, y la necesidad de crear un ambiente acogedor y cercano.",
+   "El aluminio, utilizado en revestimientos y detalles constructivos, aporta una imagen de alta tecnología, precisión y asepsia. Su acabado metálico y frío refuerza la idea de limpieza rigurosa y profesionalidad.",
+   "En contraposición, la madera natural de roble se introduce en mobiliario y revestimientos parciales para aportar calidez y confort sensorial, generando un ambiente que humaniza el tratamiento médico y disminuye la ansiedad del paciente."
+  ]
+ },
+ {
+  "slug": "carlos-pons",
+  "nombre": "Carlos Pons",
+  "titulo": "Centro de belleza Carlos Pons",
+  "categoria": "Comercio",
+  "destacado": true,
+  "lugar": "Pontevedra",
+  "anio": 2025,
+  "superficie": "220 m2",
+  "m2": 220.0,
+  "texto": [
+   "En nuestro diseño, hemos incorporado elementos que buscan crear un espacio funcional, flexible y visualmente inspirador. A continuación, describimos los principales componentes y materiales que conforman este proyecto:",
+   "Las rocas: Estos elementos diferenciadores actúan como expositores y mostradores de cobro, tanto en la tienda como en el salón de belleza. Han sido construidos con materiales resistentes y de carácter, como el acero, que aporta durabilidad y un toque moderno. Su presencia no solo cumple una función práctica, sino que también aporta carácter y personalidad al espacio, sirviendo como puntos focales que atraen la atención y facilitan la interacción con los clientes.",
+   "Los puestos: Se han diseñado bloques simples que organizan de manera eficiente los diferentes usos y funcionalidades de los espacios. Estos puestos están construidos con materiales que combinan funcionalidad y estética, como el acero y la madera de roble, creando un contraste interesante y armonioso. Su sencillez permite una distribución clara y ordenada, facilitando la circulación y el acceso a los servicios ofrecidos.",
+   "Las cortinas: Inspiradas conceptualmente en el movimiento y la voluminosidad del cabello, estas cortinas fluyen suavemente, organizando los recorridos dentro del espacio. Además, ofrecen una flexibilidad notable, permitiendo configurar los ambientes según las necesidades de cada momento, creando espacios dinámicos y adaptables.",
+   "Las paredes: Han sido construidas con mortero, un material que aporta textura y un acabado sobrio, complementando los otros elementos y materiales del espacio. La elección del mortero ayuda a crear un ambiente cálido y acogedor, además de facilitar la integración con los otros componentes de acero y madera. Este enfoque busca fusionar funcionalidad con una estética inspirada en la belleza y el movimiento, logrando un ambiente acogedor, versátil y lleno de carácter, donde los materiales refuerzan la identidad del espacio.",
+   "La luz: Se integra en el perímetro del local una línea de luz empotrada en el pavimento, que aporta una luz ambiental cálida y envolvente. Esta iluminación baja contribuye a definir los recorridos y acentuar el carácter del espacio de forma sutil. El ambiente se refuerza mediante apliques verticales distribuidos en los paramentos, que aportan ritmo visual y acompañan el recorrido del usuario. Además, los puestos de trabajo de peluquería y maquillaje se iluminan de forma cenital y frontal, asegurando una luz funcional, nítida y precisa, indispensable para las tareas que se realizan. Esta combinación de capas lumínicas permite generar una atmósfera equilibrada, confortable y coherente con la identidad del proyecto."
+  ]
+ },
+ {
+  "slug": "reforma-vivienda-en-o-grove",
+  "nombre": "Reforma vivienda en O Grove",
+  "titulo": "Rehabilitación de vivienda CC",
+  "categoria": "Vivienda",
+  "destacado": true,
+  "lugar": "O Grove",
+  "anio": 2024,
+  "superficie": "150 m2",
+  "m2": 150.0,
+  "texto": []
+ },
+ {
+  "slug": "vivienda-parche",
+  "nombre": "Vivienda parche",
+  "titulo": "Vivienda Parche",
+  "categoria": "Vivienda",
+  "destacado": true,
+  "lugar": "Pontevedra",
+  "anio": 2024,
+  "superficie": "150 m2",
+  "m2": 150.0,
+  "texto": [
+   "Iniciamos este proyecto con un importante aspecto a tener en cuenta, ya que se buscaba tener un espacio diáfano con funciones singulares como la de tener un amplio estudio de trabajo versátil donde la propietaria pudiese realizar su actividad profesional. Entendimos que este aspecto era importante y tratamos de integrar este espacio dentro de un conjunto de vivienda con una imagen muy heterogénea pero muy marcada y con mucha personalidad.",
+   "La vivienda consta de 3 habitaciones, un salón/comedor/cocina, 3 baños y un estudio de trabajo.",
+   "La idea es que en cualquier estancia de la vivienda tengamos una estética común a todo el conjunto, utilizando la misma paleta de materiales en todos los habitáculos. Para esto, utilizamos el pavimento existente combinado con elementos nuevos y se incorpora un aire clásico a todo el conjunto tiñendo la madera en un color oscuro y aportando notas de color en el mobiliario con amarillo pastel, azul celeste, granate y verde inglés para las puertas de todas las estancias, siendo una gama muy utilizada en la obra de la propietaria y haciendo recordar grandes obras de Le Corbusier o Robert Mallet-Stevens.",
+   "La zona de estudio de trabajo se convierte en espacio protagonista dentro de todo el conjunto del proyecto. Formalmente esto se traduce en una gran librería que forma un bloque que se une con la cocina y unas mesas con ruedas que puedan configurarse de diferentes maneras con el fin de ser versátiles dando múltiples situaciones de trabajo tanto colaborativo como individual.",
+   "Entendimos que la pre existencia con la que nos encontramos era muy interesante a nivel arquitectónico, ya que era un edificio de los años 60, clásico y con una estructura metálica que raramente se encuentra. Por este motivo intentamos ser muy conservadores y respetuosos con el esquema y los materiales con los que nos encontramos y tratamos de introducir elementos que dialogasen de una manera fluida con lo existente.",
+   "La distribución del apartamento se hizo completamente nueva, por eso nos encontramos con el problema de los “vacíos” en donde se ubicaban los tabiques de la distribución anterior y superficies que tuvimos que readaptar para esconder instalaciones, algo que tratamos de convertir en virtud dentro del conjunto. Para este fin se ideó la colocación de un material que sirviese de hilo conductor a toda la intervención. Nos pareció apropiado la colocación de un cerámico 10×10 negro que contrastase de manera contundente con respecto a la madera y al terrazo rojo que nos encontramos en los pavimentos tan típico de la construcción de estos años. Se utiliza este material 10×10 a modo de “parche” lo que le da una lectura clara y sincera al conjunto de la intervención que se ha realizado. En los paramentos verticales jugamos con un zócalo del cerámico 10×10, con el fin de darle continuidad al suelo combinado con madera de la misma tonalidad que los pavimentos, donde ocultamos iluminación indirecta, cálida, con la idea de poder generar atmósferas más relajadas cuando se pretenda. Por lo tanto la iluminación también es un aspecto a destacar dentro del proyecto, marcando aquellos elementos arquitectónicos que consideramos más interesantes (panelados, estanterías,…) y generando diferentes ambientes dependiendo de la cantidad y tipo de luminaria que accionamos, el momento del día en el que vivamos y la actividad que se vaya a realizar."
+  ]
+ },
+ {
+  "slug": "campana-bakery",
+  "nombre": "Campaña bakery",
+  "titulo": "Pastelería Campaña",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Gutiérrez Mellado, Pontevedra",
+  "anio": 2024,
+  "superficie": "20 m2",
+  "m2": 20.0,
+  "texto": [
+   "Un espacio reducido destinado a punto de venta de pastelería y de café.",
+   "El cliente es una empresa ya establecida en otra ciudad donde sus productos son populares y con un elevado éxito de ventas.",
+   "La idea es la de poner en valor el producto que se va a distribuir. Que este producto sea el protagonista y que visualmente sea agradable para el cliente.",
+   "También consideramos importante que el espacio transmita tradición, por eso los materiales utilizados nos trasladan a estos valores, un ladrillo de barro macizo y un mostrador hecho de mortero de cal que se asocian a la arquitectura tradicional y al material utilizado en la producción de estos productos, como la harina.",
+   "Buscar que el local sea lo más homogéneo posible para evitar que la suma de materiales se confunda con el producto en venta. Para ello, el material principal es el que se extiende por el suelo y las paredes jugando con un mostrador/expositor que ocupa el espacio de escaparate y da servicio interior. La iluminación principal es una proyección del espacio de mostrador en forma de Z reforzado por la iluminación en las baldas de forma que toda la atención se centre en el producto."
+  ]
+ },
+ {
+  "slug": "pumper-take-away",
+  "nombre": "Pumper take away",
+  "titulo": "Pumper take away",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Pontevedra",
+  "anio": 2024,
+  "superficie": "15 m2",
+  "m2": 15.0,
+  "texto": [
+   "Proyecto de take away de panadería y cafetería en un espacio mínimo.",
+   "La imagen es una continuación estética del espacio ya diseñado anteriormente por nuestro estudio para estos promotores, la cafetería matriz.",
+   "La idea es continuar en este espacio tan reducido con unos valores de sostenibilidad de la filosofía Pumper, a través de los materiales y de un diseño minimalista.",
+   "El reto es conjugar en un habitáculo tan pequeño todas las funciones necesarias de venta y exposición con el aspecto limpio y minimalista que se busca como imagen.",
+   "Un conjunto que busca un aspecto muy homogéneo en todos sus elementos. La sostenibilidad y la tradición son los mensajes que queremos trasmitir, para ellos se trabaja con morteros y se combinan con madera para trasladarnos a la idea de la leña, elemento protagonista en cualquier panadería de antaño.",
+   "Se busca también una iluminación limpia y minimalista. Procuramos un espacio bien iluminado evitando la formación de sombras y buscando una luz nítida. Los elementos de iluminación son formas geométricas sin ningún tipo de ornamentación."
+  ]
+ },
+ {
+  "slug": "vivienda-resille",
+  "nombre": "vivienda resille",
+  "titulo": "Vivienda en Resille",
+  "categoria": "Vivienda",
+  "destacado": true,
+  "lugar": "Bueu",
+  "anio": 2024,
+  "superficie": "150 m2",
+  "m2": 150.0,
+  "texto": []
+ },
+ {
+  "slug": "ayuntamiento-pontevedra",
+  "nombre": "ayuntamiento PONTEVEDRA",
+  "titulo": "Reforma de dependencias municipales, ayuntamiento Pontevedra",
+  "categoria": "Oficina",
+  "destacado": true,
+  "lugar": "Calle Michelena 30, Pontevedra",
+  "anio": 2020,
+  "superficie": "530 m2",
+  "m2": 530.0,
+  "texto": [
+   "Debido a la pandemia instalada en nuestro país a principios de 2020, se toma la decisión por parte del gobierno municipal de adecuar sus instalaciones a la nueva normalidad. Como consecuencia de esta situación se pretende, ante todo, garantizar la seguridad tanto de los trabajadores como de los usuarios externos a las instalaciones. Buscamos así soluciones de salubridad que minimicen el impacto del virus en las relaciones y gestiones que se vayan a realizar dentro del ayuntamiento. Para ello tratamos de encontrar las mejores opciones tanto de diseño, como técnicas.",
+   "Un ejemplo de ello, es la ventilación forzada para evitar lo máximo posible la estancia del virus en el espacio. Así generamos un falso techo metálico donde ubicamos las instalaciones de ventilación y de climatización.",
+   "Por otro lado, procuramos la utilización de materiales de fácil limpieza, sin ornamentación que dificulten su mantenimiento. Estos materiales también van buscando el confort de todos los usuarios, por eso se han utilizado atenuantes acústicos en el techo para minimizar la reverberación. En general, hemos buscado materiales fríos y neutros para dar una imagen tecnológica al proyecto pero a la vez contrarrestando este efecto con la combinación de madera para humanizar ambientes como los puestos de trabajo o las salas de espera y los espacios de reunión.",
+   "Mediante el diseño optimizamos circulaciones y estancias donde las distancias de seguridad sean las mayores posibles. Separamos las circulaciones de tránsito de las de estancia creando una nueva entrada y unas cabinas que actúan de filtro para recibir a las personas. Así hay una entrada, con cita previa, en la zona de padrón y registro y otra entrada de tránsito hacia las oficinas municipales situadas en las plantas superiores del edificio.",
+   "En las zonas de atención al público, buscamos que los visitantes se den la espalda para evitar riesgos de contagio. Para los trabajadores hemos creado espacios de trabajo o boxes donde están completamente cerrados y protegidos por mamparas mientras se encuentran sentados pero facilitando que se pueden comunicar entre ellos y con los ciudadanos que acudan a realizar sus gestiones.",
+   "En cuanto al concepto, la idea base es crear una serie de cajas que contengan funciones. Por un lado, los boxes de trabajo y por otro, las garitas. El techo a diferentes niveles, soportado por grandes pilares de hormigón, también asemejan a su vez a cajas abiertas. El propio espacio es, en definitiva, un juego de cajas que dialogan entre sí y que se yuxtaponen de manera que crean diferentes ambientes que nos ayudan a generar circulaciones y espacios de separación. Estos habitáculos o la generación de estos, se ven favorecidos por el volumen del continente."
+  ]
+ },
+ {
+  "slug": "pazo-da-buzaca",
+  "nombre": "Pazo da Buzaca",
+  "titulo": "Espacio para eventos en Pazo da Buzaca",
+  "categoria": "Comercio",
+  "destacado": true,
+  "lugar": "Moraña, Pontevedra",
+  "anio": 2022,
+  "superficie": "4000 m2",
+  "m2": 4000.0,
+  "texto": [
+   "La actuación está concentrada en el Pazo existente y los espacios en torno al mismo. Todo el conjunto comprende la edificación de un Pazo, jardines, espacios exteriores de acceso, piscina y pabellón de eventos.",
+   "La principal función a la que está destinada el complejo es a la celebración de eventos, especialmente bodas. Para ello, hubo que adecuar todo el espacio exterior y el pabellón a una estética más contemporánea que acompañase la imagen de marca del promotor y facilitase la conexión entre los distintos espacios.",
+   "El hilo conductor de toda la actuación es la topografía del entorno, esto se transmite en planos inclinados que se introducen en la fachada y la accesibilidad mediante escaleras y rampas en el espacio exterior.",
+   "La fachada del pabellón es cubierta por una membrana de aluminio microperforado que le aporta un importante volumen de planos inclinados y al mismo tiempo no limita la visibilidad ni la luz de dentro a fuera y viceversa. La luz natural, especialmente sobre la fachada, y el paisajismo también tienen relevancia dentro del proyecto.",
+   "Dentro del pabellón dos volúmenes dorados configuran espacios de transición y al mismo tiempo ordenan el resto de la superficie, aportando una lectura sencilla del mismo. En el interior de la zona de eventos se opta por un pavimento continúo evitando juntas y trasmitiendo elegancia en contraste con las mesas de los comensales gracias al aspecto homogéneo y neutro que aporta.",
+   "La iluminación es tratada con especial detalle. Un cielo de guirnaldas es el componente principal que aporta un aire festivo a este interior. Esta luz base que aportan las guirnaldas se refuerza con proyectores que destacan las mesas de los comensales. Una iluminación indirecta en el perímetro genera una luz ambiente que completa el espacio."
+  ]
+ },
+ {
+  "slug": "clinica-ame",
+  "nombre": "Clínica AME",
+  "titulo": "Clínica dental AME",
+  "categoria": "Clínica",
+  "destacado": true,
+  "lugar": "Rosalía de Castro 27, Vigo",
+  "anio": 2024,
+  "superficie": "120 m2",
+  "m2": 120.0,
+  "texto": [
+   "La clínica Ame de Vigo donde los grises y los azules se mezclan con curvas y partes rectilíneas para dotar de una gran personalidad a este espacio.",
+   "Una sala de espera configurada por varias circunferencias da paso a un bloque de madera que acoge varias estancias con diferentes funciones para el desarrollo de la clínica.",
+   "El local tiene una configuración longitudinal, por lo que se van distribuyendo las funciones como una sucesión ordenada.",
+   "Primero tenemos la sala de espera con la recepción donde se recibe al paciente y se asesora al cliente, si es necesario se accede al despacho privado inmediatamente detrás de la recepción.",
+   "Tras la recepción hemos introducido una gran “L” donde se ubican despacho, gabinetes de trabajo y esterilización. Esta “L” está revestida de un material diferente, en este caso madera de roble en su aspecto natural para aportar calidez al conjunto, dentro de esta nos encontramos un color de pavimento diferenciador del espacio, no de material, porque se busca la continuidad de todo el suelo, pero si diferenciar los espacios a través de los colores.",
+   "Enfrentada a esta pieza de madera nos encontramos con espacios de espera, almacenaje y cuarto de baño que complementan la clínica en cuestión de funciones. Esta parte está revestida de un paneleado de madera gris que ilumina de una manera indirecta al pasillo de acceso a la clínica."
+  ]
+ },
+ {
+  "slug": "comervia",
+  "nombre": "comervia",
+  "titulo": "Comervia",
+  "categoria": "Comercio",
+  "destacado": true,
+  "lugar": "Poio, Pontevedra",
+  "anio": 2024,
+  "superficie": "650 m2",
+  "m2": 650.0,
+  "texto": []
+ },
+ {
+  "slug": "pumper-bakery",
+  "nombre": "Pumper Bakery",
+  "titulo": "Pumper Bakery",
+  "categoria": "Comercio",
+  "destacado": true,
+  "lugar": "Sagasta 22, Pontevedra",
+  "anio": 2023,
+  "superficie": "120 m2",
+  "m2": 120.0,
+  "texto": [
+   "El local a actuar era ya un espacio en funcionamiento y con mucho éxito, el objeto de la intervención era ampliar y actualizar el local.",
+   "Nuestros clientes querían ampliar el espacio y aportar una imagen homogénea al mismo.",
+   "Se pretendía realizar una intervención contenida conservando mucho de lo pre – existente, pero realizando una transformación sustancial.",
+   "La solución fue superficial, aportando color y textura en todos los paramentos. Esto unido a un cambio de iluminación y de mobiliario hizo que el cambio fuera muy importante.",
+   "La filosofía de la empresa es la de ser muy sostenible, preocupada con el medio ambiente y con un producto saludable. Por lo tanto, la imagen que se quería transmitir debía ir en consonancia con estos valores. Intentamos de esta manera que los usuarios de la marca tuviesen la sensación de estar en un sitio singular y comprometido.",
+   "Para ello se optó por introducir “masas” de color que recorriesen todos los planos, aportando texturas diferentes en variados acabados. Por ejemplo, en la cara exterior de la barra se introdujo un ranurado que lo convierte en un elemento diferenciador."
+  ]
+ },
+ {
+  "slug": "calefon-headquarters",
+  "nombre": "Calefón Headquarters",
+  "titulo": "Calefón Headquarters",
+  "categoria": "Oficina",
+  "destacado": false,
+  "lugar": "Santiago de Compostela",
+  "anio": 2023,
+  "superficie": "2200 m2",
+  "m2": 2200.0,
+  "texto": []
+ },
+ {
+  "slug": "finca-sativa",
+  "nombre": "Finca Sativa",
+  "titulo": "Finca Sativa",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Aguete, Marín, Pontevedra",
+  "anio": 2021,
+  "superficie": "140 m2",
+  "m2": 140.0,
+  "texto": []
+ },
+ {
+  "slug": "flow-estudio-de-yoga-y-movimiento",
+  "nombre": "FLOW estudio de yoga y movimiento",
+  "titulo": "Flow – yoga y movimiento",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Eduardo Pondal 18, Pontevedra",
+  "anio": 2020,
+  "superficie": "146 m2",
+  "m2": 146.0,
+  "texto": [
+   "Dicen que el yoga es la unión del cuerpo y la mente. Nuestro trabajo era buscar un lugar donde esto fuera posible. Crear un espacio cómodo y flexible para practicar deporte a la vez que un ambiente cálido y de calma para la meditación.",
+   "El espacio inicial era un lienzo en blanco, una planta larga y estrecha que decidimos dividir en tres secciones según el programa de necesidades. El elemento organizador es un módulo situado en la parte central del local formado por tabiques de ladrillo visto que dibujan un recorrido quebrado en planta y dan fluidez al espacio de circulación. Es aquí donde se alberga la parte del programa destinada a servicios: los aseos, los vestuarios y el almacenaje. A su vez, este elemento delimita los dos espacios principales, uno utilizado como tetería y recepción en el frente del local y otro destinado a la práctica de yoga en el fondo, consiguiendo una continuidad espacial donde cada área se conecta a la anterior y a su vez a la siguiente de manera natural. Para conseguir el ambiente buscado utilizamos una serie de materiales y técnicas constructivas que dan calidez y sencillez al espacio. Por ello decidimos usar los materiales en su estado más natural. La madera, el hormigón con sus imperfecciones y el ladrillo combinados con las instalaciones a la vista y las griferías sin terminar. Así, la esencia del lugar se encuentra en la propia naturaleza y la paz que eso transmite.",
+   "Buscamos con el diseño reflejar la filosofía del yoga por lo que el mobiliario juega un papel fundamental. Por ejemplo, la barra continua del espacio de tetería crea un entorno de relación y confianza, y las estanterías hechas a medida para guardar el material en el aula transmiten orden y limpieza. También la conexión directa con el sol es primordial en la práctica del yoga por lo que utilizamos esa simbología en la forma e iluminación de los espejos situados en las zonas más representativas del local.",
+   "Igual de importante es la iluminación en el proyecto. Se intenta potenciar la entrada de luz natural en las zonas en contacto con el exterior con grandes ventanales y se complementa con una iluminación artificial estudiada adecuada para cada uno de los diferentes ambientes.",
+   "En definitiva, el proyecto simboliza un recorrido donde, al entrar, el usuario deja atrás el acelerado ritmo de vida y va conectando poco a poco con el espacio a través del cuerpo y la mente."
+  ]
+ },
+ {
+  "slug": "tourmalet-culture-cycliste",
+  "nombre": "Tourmalet Culture Cycliste",
+  "titulo": "Tourmalet Culture Cycliste",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Rúa do progreso, Sanxenxo (Pontevedra-Galicia / España).",
+  "anio": 2022,
+  "superficie": "48 m2",
+  "m2": 48.0,
+  "texto": [
+   "El objeto del proyecto es crear un espacio destinado a la venta de bicicletas y accesorios.",
+   "El concepto principal en el que nos basamos para la creación del espacio es el de un velódromo que ayude a marcar las circulaciones, se apoyen todas las funciones de la tienda y se distribuya el material a exponer.",
+   "Un gran mueble como elemento central que alberga el mostrador y espacio de exposición es el elemento principal del proyecto reforzado por un hueco en el falso techo en el que se muestra el forjado desnudo haciendo el negativo del mostrador. También se introduce una luminaria suspendida que acompaña en su forma al mobiliario y en el suelo se dibujan unas líneas de colores que simulan las calles por donde circulan los ciclistas.",
+   "El mostrador organiza todo el espacio de la tienda, funciona como eje vertebrador de todas las funciones. Realizado en un material metálico, como guiño al material predominante en la realización de las bicicletas.",
+   "Al ser un espacio pequeño todo está medido con gran precisión para optimizar de la mejor manera el espacio, por lo tanto, se han diseñado a medida espacios para bicicletas, calzado, calcetines, accesorios, ….",
+   "Es buscada la homogeneidad dentro de todo el espacio de tal manera que el producto a exponer gane protagonismo. Para ello, acompañando a las tonalidades metálicas naturales, los paños restantes se pintan de gris. Al igual que el suelo, que se busca un pavimento continuo con acabado en hormigón gris."
+  ]
+ },
+ {
+  "slug": "vivienda-herreros",
+  "nombre": "Vivienda Herreros",
+  "titulo": "Vivienda particular",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Rúa dos ferreiros, Pontevedra",
+  "anio": 2022,
+  "superficie": "120 m2",
+  "m2": 120.0,
+  "texto": [
+   "Un apartamento para una persona soltera y sus dos hijos.",
+   "Nuestro cliente adquiere una vivienda antigua en el centro de Pontevedra y consciente de su potencial pretende una reforma integral del mismo.",
+   "El promotor tiene una sensibilidad especial, ya que es una persona vinculada al mundo del arte y con una gran afición por la literatura. El diseño y la arquitectura por lo tanto son materias en las que se desenvuelve con seguridad.",
+   "Para su vivienda las premisas a seguir es que sea un espacio singular y sobrio, así como atemporal para que la reforma sea lo más duradera posible en el tiempo y envejezca bien.",
+   "Espacialmente la planta es bastante sencilla, se busca una zona de entrada donde integrar el espacio de salón/cocina y a continuación, mediante un pequeño pasillo, llegar a la zona de noche donde se ubican dormitorios, lavandería y cuartos de baño.",
+   "Después de la distribución en planta se opta por diseñar e integrar casi por completo el mobiliario, así se generan muebles en salón, se diseña la cocina y las habitaciones son actuaciones donde no se adquiere ningún mueble, simplemente se diseña el espacio acompañado de su mobiliario a medida. Igualmente ocurre en los cuartos de baño, donde un material cerámico de gran formato hace que todos los paramentos sean iguales, eliminando también plato de ducha, consiguiendo así una imagen muy fuerte y consistente."
+  ]
+ },
+ {
+  "slug": "clinica-adriana-diaz",
+  "nombre": "Clínica Adriana Díaz",
+  "titulo": "Clínica Dental Adriana Díaz García",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Calle Frai Juan Navarrete,3,1º (Pontevedra-Galicia / España).",
+  "anio": 2015,
+  "superficie": "62 m2",
+  "m2": 62.0,
+  "texto": [
+   "El principal problema en este proyecto era encajar un programa muy extenso en una superficie muy reducida, apenas 62 m2. Tenía 3 zonas diferenciadas por sus usos: una primera de recepción con cuartos de baño, una segunda con instalaciones, depósito, diagnóstico y despacho, y una tercera con 2 gabinetes.",
+   "Nuestra propuesta fue la de dividir estos 3 espacios con un sencillo gesto. 2 piezas en forma de trapecio que se separan o se unen y que contienen la zona de instalaciones y jerarquizan todo el resto del espacio.",
+   "Lo que se busca con este sutil gesto es crear un espacio diáfano con pocas divisiones, de manera que se produzca una fácil comprensión de todas sus funciones.",
+   "La parte principal del proyecto es donde se encuentran los gabinetes, por este motivo están situados en la zona de ventanas hacia el exterior, hacia la calle.",
+   "Los materiales empleados juegan un papel muy importante a nivel compositivo, se han escogido dependiendo de las zonas o funciones. Estos son en su mayoría aluminio y madera de pino.",
+   "La pieza central principal está realizada en aluminio, este material está buscado con la idea de trasmitir una sensación de limpieza y asepsia que debe de tener una clínica dental. Un gran volumen metálico que se contrae o dilata de manera a formar las diferentes estancias de la clínica."
+  ]
+ },
+ {
+  "slug": "finca-sativa-2",
+  "nombre": "Finca Sativa",
+  "titulo": "Finca Sativa",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Aguete, Marín, Pontevedra",
+  "anio": 2021,
+  "superficie": "140 m2",
+  "m2": 140.0,
+  "texto": []
+ },
+ {
+  "slug": "vivienda-la-ruibal",
+  "nombre": "Vivienda La Ruibal",
+  "titulo": "Reforma de vivienda en Pontevedra",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "La Ruibal 14, Pontevedra",
+  "anio": 2022,
+  "superficie": "450 m2",
+  "m2": 450.0,
+  "texto": []
+ },
+ {
+  "slug": "proxima-vivienda-en-loira",
+  "nombre": "Próxima vivienda en Loira",
+  "titulo": "Vivienda Loira",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Loira, Marín – Pontevedra",
+  "anio": 2021,
+  "superficie": "125 m2",
+  "m2": 125.0,
+  "texto": []
+ },
+ {
+  "slug": "proxima-vivienda-en-poio",
+  "nombre": "Próxima vivienda en Poio",
+  "titulo": "Vivienda en Poio",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Poio – Pontevedra",
+  "anio": 2021,
+  "superficie": "122 m2",
+  "m2": 122.0,
+  "texto": []
+ },
+ {
+  "slug": "proxima-vivienda-en-seixo",
+  "nombre": "Próxima vivienda en Seixo",
+  "titulo": "Vivienda en Seixo",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Seixo, Marín – Pontevedra",
+  "anio": 2021,
+  "superficie": "100 m2",
+  "m2": 100.0,
+  "texto": []
+ },
+ {
+  "slug": "proxima-vivienda-en-salcedo",
+  "nombre": "Próxima vivienda en Salcedo",
+  "titulo": "Vivienda unifamiliar Salcedo",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Salcedo, Pontevedra",
+  "anio": 2021,
+  "superficie": "170 m2",
+  "m2": 170.0,
+  "texto": []
+ },
+ {
+  "slug": "apartamentos-turisticos-san-antonino",
+  "nombre": "Apartamentos turísticos San Antoniño",
+  "titulo": "Apartamentos turísticos San Antoniño",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "San Antoniño, Pontevedra",
+  "anio": 2022,
+  "superficie": "90 m2",
+  "m2": 90.0,
+  "texto": []
+ },
+ {
+  "slug": "misto-cafe",
+  "nombre": "Misto Café",
+  "titulo": "Misto Café Bar",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Rúa Marquesa 3, Pontevedra",
+  "anio": 2022,
+  "superficie": "65 m2",
+  "m2": 65.0,
+  "texto": [
+   "Un mixto, cerilla o “misto” en gallego como hilo conductor de nuestra propuesta.",
+   "La imagen gráfica aportada por el cliente nos da pie a integrar los colores corporativos en el interiorismo. El color naranja del fósforo, que aparece en la cabeza del misto en todas sus aplicaciones, se proyecta de forma esquemática en el techo del local donde la cabeza se sitúa en la zona de entrada generando así un espacio circular para posteriormente enlazar en sentido longitudinal con el palo de la cerilla a modo de pasillo adosado a unas mesas de estancia más prolongada.",
+   "El concepto del café bar es bastante claro. Una cocina funcionando todo el día con platos ligeros de estilo vegetariano y un café de especialidad de muy alta calidad.",
+   "Es decir, un espacio pequeño, con una carta corta, pero con un producto de mucha calidad, tanto en sus elaboraciones como en el producto que se ofrece.",
+   "Para ello lo que se busca es una imagen rompedora y actual. La cafetería empieza desde la fachada, y no es un tópico, si no que en la propia fachada hay dos bancos a los que adosamos dos mesas y el material cerámico utilizado te traslada al interior del local. Para este material cerámico buscamos un elemento muy identitario como es la junta en naranja corporativo de la marca.",
+   "Para el pavimento se utiliza hormigón. Un material continuo que se extiende por toda la superficie del local sin cortes de materiales y que actúa como un lienzo sobre el resto de elementos que se introducen en el proyecto."
+  ]
+ },
+ {
+  "slug": "sana-sana-pilates",
+  "nombre": "Sana Sana Pilates",
+  "titulo": "Centro de fisioterapia y pilates Sana Sana",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Avenida de Galicia nº30 (Porriño-Galicia / España).",
+  "anio": 2016,
+  "superficie": "110 m2",
+  "m2": 110.0,
+  "texto": [
+   "Tras el éxito de nuestro primer proyecto para la clínica de fisioterapia, estética y pilates Sana Sana, nuestros clientes se ven en la necesidad de ampliar sus instalaciones para impartir más clases grupales de diversas modalidades de yoga y pilates en un bajo cercano.",
+   "Para ello continuamos con las ideas del proyecto anterior donde se buscaba que el espacio supusiese un plus, contribuyese a conseguir la relajación y concentración necesaria para la práctica de estas actividades. Para ello se trabajan las formas, los materiales y la iluminación de manera que les produzcan a los ocupantes sensaciones de sosiego y de calma.",
+   "El programa es sencillo: un espacio de recepción, diversas salas de actividades y unos pequeños vestuarios. Éste se organiza mediante un espacio fluido que se contrae y dilata en función del uso y donde cada uno de los componentes arquitectónicos, incluso iluminación e instalaciones, enfatizan esta idea de movimiento y calma. Movimiento reforzado con la decisión de dejar las diferentes instalaciones vistas, con el juego de líneas aparentemente anárquicas que se crean en su desarrollo, para conseguir una sensación de fluidez que refuerce la percepción de recogimiento y aislamiento que se vive en las estancias a las que da servicio este espacio. Calma por la sinceridad de los materiales y la luz que las envuelven.",
+   "Espacio servidor y servido forman un continuo arquitectónico y estético. Se trata de un proyecto donde cobra relevancia un espacio servidor sin mermar la calidad arquitectónica de los espacios a los que sirve. Donde la calidez de la madera contrasta con la desnudez y aparente frialdad del resto de materiales.",
+   "En la fachada se pretende respetar al máximo los huecos existentes y simplemente se envuelve con una piel que uniformiza y da privacidad, consiguiendo una imagen contundente y dual: semiopaca durante el día, semitransparente durante la noche. Para ello se recubre de chapa microperforada ondulada con la que se consigan efectos de luz, y se puedan apreciar los huecos existentes tanto hacia dentro, como hacia el exterior.",
+   "El resultado es máquina donde se observan todos sus entresijos como si fuese un ejercicio de transparencia y sinceridad hacia los usuarios."
+  ]
+ },
+ {
+  "slug": "m19",
+  "nombre": "M19",
+  "titulo": "Espacio para eventos Michelena 19",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Michelena 19, Pontevedra",
+  "anio": 2023,
+  "superficie": "200 m2",
+  "m2": 200.0,
+  "texto": []
+ },
+ {
+  "slug": "hotel-rural-pazo-buzaca",
+  "nombre": "Hotel rural Pazo Buzaca",
+  "titulo": "Hotel rural en Pazo da Buzaca",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Moraña, Pontevedra",
+  "anio": 2022,
+  "superficie": "700 m2",
+  "m2": 700.0,
+  "texto": []
+ },
+ {
+  "slug": "clinica-dental-sanosa",
+  "nombre": "Clínica dental Sanosa",
+  "titulo": "Clínica dental SANOSA",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Eduardo Pondal 26, Pontevedra",
+  "anio": 2021,
+  "superficie": "100 m2",
+  "m2": 100.0,
+  "texto": []
+ },
+ {
+  "slug": "clinica-dental-mira",
+  "nombre": "Clínica dental Mira",
+  "titulo": "Mira dental clinic – Belgravia group",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Prospect Mira, Moscow",
+  "anio": 2021,
+  "superficie": "350 m2",
+  "m2": 350.0,
+  "texto": []
+ },
+ {
+  "slug": "oficinas-frain",
+  "nombre": "Oficinas Frain",
+  "titulo": "Frain Headquarters",
+  "categoria": "Oficina",
+  "destacado": false,
+  "lugar": "Rúa dos canteiros, Lugo",
+  "anio": 2021,
+  "superficie": "870 m2",
+  "m2": 870.0,
+  "texto": [
+   "Debido a la expansión de esta empresa, se requieren nuestros servicios para proyectar unas oficinas dentro de una nave industrial que se encuentra en construcción.",
+   "La edificación consta de dos plantas y el programa es bastante variado. Por un lado, la planta baja acoge espacios de entrada con recepción de trabajadores, un espacio de office para usuarios de la zona de mercancías de la nave y unos vestuarios con duchas.",
+   "Por otro lado, en la segunda planta ya, nos encontramos con el espacio de oficina. Filtrado por una sala de espera/recepción que nos redirecciona a diferentes espacios que configuran la distribución; Despachos ejecutivos, despacho del CEO, “open office”, Office, salas de reuniones….",
+   "La nave está construida con piezas de hormigón prefabricadas y un muro cortina de vidrio en la fachada principal.",
+   "Nuestra idea fue la de no desvincularnos de este sistema constructivo y dialogar con los elementos existentes.",
+   "Al trabajar con estos elementos existentes, optamos por trabajar con tonos neutros y con tonos similares al gris del hormigón, para generar homogeneidad dentro del espacio. Esto lo conseguimos combinando “islas” de forjado visto con sus respectivas instalaciones. Confrontándolos con volúmenes de cartón yeso sobrios y en color blanco que generan un contraste interesante."
+  ]
+ },
+ {
+  "slug": "vivienda-en-ardan",
+  "nombre": "Vivienda en Ardán",
+  "titulo": "Vivienda unifamiliar Ardán",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Marín, Pontevedra",
+  "anio": 2021,
+  "superficie": "230 m2",
+  "m2": 230.0,
+  "texto": []
+ },
+ {
+  "slug": "la-esencia-take-away",
+  "nombre": "La Esencia Take Away",
+  "titulo": "La Esencia Take Away",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Rúa da historia, 12 (Pontevedra-Galicia / España).",
+  "anio": 2021,
+  "superficie": "98 m2",
+  "m2": 98.0,
+  "texto": [
+   "“Comida casera para llevar” es la premisa de partida de este nuevo proyecto en Pontevedra.",
+   "Partiendo de cero, uniendo dos pequeños locales completamente vacío, se busca crear un espacio destinado a la elaboración y venta de comida, sin renunciar a la posibilidad de degustar allí puntualmente también.",
+   "La primera decisión tomada fue la de distribuir las diferentes zonas en un mismo espacio, abierto, sin compartimentar. Dejar la cocina a la vista para hacer partícipe al cliente del proceso de elaboración de la comida, hacerlo sentir como en casa.",
+   "Debido a la limitada superficie de la que disponemos, se propone integrar parte del mobiliario en la fachada. Así, los ventanales que comunican visualmente con el exterior quedan enmarcados por una subestructura, generando unas bancadas que servirán de asiento a quien prefiera la consumición en el propio local.",
+   "La distribución de la planta en un espacio único, nos lleva a diferenciar los usos con la utilización de distintos materiales, que delimiten las áreas y contrasten entre ellos. Se crea así, una línea, coincidente con el mostrador, que divide el local en dos zonas: la del cliente y la del trabajador. Para la primera usamos una serie de materiales que proporcionan calidez y crean un ambiente más rústico. La madera en el mobiliario y el techo junto con el elemento cerámico que recubre paredes y suelo, dan ese toque de la cocina tradicional que se busca reflejar en el proyecto. Contrastando con esto, la cocina se plantea como un fondo completamente negro, cuidadosamente iluminado, sobre el que destacan los materiales metálicos de los electrodomésticos y el mobiliario para convertirlos en focos de atención. El pavimento continuo y el alicatado con brillo de esta zona dan, además, sensación de limpieza y orden en la cocina.",
+   "Estas dos zonas diferenciadas principalmente por sus materiales, colores y texturas también cuentan con distintas alturas. La primera, como zona de paso en relación con el exterior, se presenta con un techo alto, creando un espacio más dinámico, dotándolo de mayor amplitud. La segunda, en cambio, como espacio de trabajo, queda más recogida con un techo más bajo."
+  ]
+ },
+ {
+  "slug": "sculpture-clinic-medico-estetica",
+  "nombre": "Sculpture clinic médico estética",
+  "titulo": "Sculpture clinic médico estética",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Calle Espronceda 43, Madrid",
+  "anio": 2020,
+  "superficie": "140 m2",
+  "m2": 140.0,
+  "texto": []
+ },
+ {
+  "slug": "rehabilitacion-ponteareas",
+  "nombre": "Rehabilitación Ponteareas",
+  "titulo": "Rehabilitación Ponteareas",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Ponteareas. Pontevedra",
+  "anio": 2021,
+  "superficie": "370 m2",
+  "m2": 370.0,
+  "texto": []
+ },
+ {
+  "slug": "clinica-dental-blazquez-maidagan",
+  "nombre": "Clínica dental Blázquez Maidagan",
+  "titulo": "Clínica dental Blázquez Maidagan",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Calle San Luis, 4, Valladolid",
+  "anio": 2020,
+  "superficie": "146 m2",
+  "m2": 146.0,
+  "texto": []
+ },
+ {
+  "slug": "centro-deportivo-fisio-e-motion",
+  "nombre": "Centro deportivo Fisio E-motion",
+  "titulo": "Centro deportivo Fisio E·Motion",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Don Ramón de la Cruz 113 (Madrid, España)",
+  "anio": 2019,
+  "superficie": "68 m2",
+  "m2": 68.0,
+  "texto": []
+ },
+ {
+  "slug": "vivienda-echegaray",
+  "nombre": "Vivienda Echegaray",
+  "titulo": "Vivienda Echegaray",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Calle Marqués de Riestra 10, 36002 Pontevedra (España)",
+  "anio": 2019,
+  "superficie": "137 m2",
+  "m2": 137.0,
+  "texto": [
+   "Un hogar versátil para toda la familia, una familia de 4 personas.",
+   "Pareja con dos hijos buscaban una distribución que cubriese sus ámbitos privados y de relación entre ellos.",
+   "El apartamento nos ofrecía muchas posibilidades, ya que era completamente exterior con tres fachadas a ocupar, además es muy luminoso gracias a que está en la parte más alta del edificio.",
+   "El programa es muy sencillo y las exigencias no son muy elevadas. Básicamente, un espacio de salón cocina, dos habitaciones – estudio para cada uno de los hijos, una habitación principal con baño y un espacio de lavandería con espacio de almacenamiento.",
+   "A nivel formal se distribuye en tres zonas:",
+   "Estos dormitorios son habitáculos amplios y completos donde los niños tienen su lugar de estudio y descanso. La estética responde al criterio utilizado para el resto de la casa donde la estructura de hormigón vista y los acabados en tonos claros adquieren su protagonismo."
+  ]
+ },
+ {
+  "slug": "vivienda-salgueirinos",
+  "nombre": "Vivienda Salgueiriños",
+  "titulo": "Vivienda Salgueiriños",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Av. De Vigo 2 semisótano (Pontevedra-Galicia / España).",
+  "anio": 2015,
+  "superficie": "85 m2",
+  "m2": 85.0,
+  "texto": [
+   "Rehabilitar una vivienda para alquilar. Esta fue la premisa con la que trabajamos.",
+   "Nuestra intención fue la de dar una imagen homogénea de diseño contemporáneo a toda la vivienda.",
+   "Buscando amplitud en el espacio principal de la vivienda, se derriba el tabique que separaba el salón de la cocina. Por otro lado se diseñó este espacio tratando de unirlo para que fuera más consistente. Se realizó un espacio de estancia con sofá y mueble de apoyo donde ubicar también la televisión, una sala de estar. Ésta se unió con una mesa de comedor que a su vez dialoga con la isla de la cocina. Este espacio sirve como acceso al resto de las estancias eliminando así cualquier pasillo y ganando amplitud.",
+   "En todas las estancias de la casa la madera tiene un gran protagonismo, bien sea en suelo o en el mobiliario que se incorpora en habitaciones, salón y cuarto de baño.",
+   "Se trabajó la luz artificial como concepto de diseño con el fin de buscar un espacio más cálido. Se buscan algunos puntos de iluminación indirecta y una iluminación focal en aquellos puntos donde se considera necesario. Buscamos una temperatura de color de la luz que fuese cálida, unos 2700 ºK.",
+   "En las habitaciones buscamos la mayor sencillez posible, con un elemento de almacenamiento que forma la entrada a todas estas estancias y con un pequeño escritorio de apoyo. El armario está completamente abierto, es decir, no tiene puertas, buscando la sensación de orden y amplitud acentuada por la iluminación que integramos en los armarios."
+  ]
+ },
+ {
+  "slug": "reforma-restaurante-taberna-do-trasno",
+  "nombre": "Reforma restaurante Taberna do Trasno",
+  "titulo": "Reforma restaurante “Taberna do Trasno”",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Rúa do príncipe, nº10, Cambados (Pontevedra).",
+  "anio": null,
+  "superficie": "105 m2",
+  "m2": 105.0,
+  "texto": [
+   "Una gran parra de uvas en una noche de verano, esa es la mejor definición para este proyecto de restaurante.",
+   "Este establecimiento ya funcionaba con un gran éxito. Gracias al nivel de exigencia de sus propietarios, siempre estaba lleno y los platos eran muy aceptados entre sus comensales, pero le faltaban varios aspectos que ellos consideraban importantes.",
+   "Como es un restaurante basado en el producto de proximidad, buenos caldos, pescados, mariscos y carnes, frescos y de la zona, decidimos basarnos en el producto más típico de la zona que es el Albariño.",
+   "Es muy típico en la zona encontrar una mesa debajo de una parra de uvas donde comer o merendar en los días de verano. Decidimos trasladar esta idea al restaurante. Concebimos una parra gigante en la que introducir a nuestros comensales, una vegetación que sube por las paredes y se descuelga del techo.",
+   "La vegetación aporta mucha calidez a los espacios y decidimos complementar esta parra con muebles separadores de palmeras y una luz cálida general y con luz de acento en los bancos perimetrales que fuese hilo conductor para todos estos elementos.",
+   "Optamos por buscar una estrategia conjunta para este problema, por nuestra parte consideramos que el mobiliario ocupaba mucha superficie dentro del espacio y estaba mal distribuido. Buscamos la manera de meter mobiliario más pequeño en el restaurante ajustando a este espacio las vajillas y el menaje a utilizar sin que esto supusiese una rebaja en las raciones. También distribuimos de una manera ordenada todo el equipamiento, dotando el espacio de un banco perimetral y unos bancos tipo “dinner”, que son muy versátiles para juntar y separar mesas todas de la misma dimensión."
+  ]
+ },
+ {
+  "slug": "clinica-dental-pablo-sieiro",
+  "nombre": "Clínica Dental Pablo Sieiro",
+  "titulo": "Clínica dental Dr. Pablo Sieiro",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Av. De Castelao 25, Cangas del Morrazo (Galicia / España).",
+  "anio": 2014,
+  "superficie": "49 m2",
+  "m2": 49.0,
+  "texto": [
+   "El proyecto se presenta con 2 dificultades añadidas en un primer momento.",
+   "Por un lado ajustar el programa a una superficie muy limitada de 50 m2, lo que nos obliga que ante un proyecto tan compartimentado optimizar los espacios comunes de manera a que podamos ganar superficie de espacio de trabajo. Además, queríamos evitar espacios muy reducidos y, al tener dos fachadas exteriores, explotarlas de manera que descongestione todo el espacio del que disponíamos.",
+   "Por otro lado teníamos la dificultad de tener que trabajar en un edificio con un alto valor  patrimonial, después de dialogar con las administraciones responsables, se optó por una solución que nos ayudase a destacar nuestra fachada pero siempre respetando la pre-existencia. Para ello optamos por una solución de rastreles permeables para no ser demasiado agresivos con el alzado. Su división responde a la composición de los huecos y las proporciones de vivienda tradicional gallega. Se optó por el color blanco para dar continuidad al color predominante en el interior, y así anticipar la estética con la que nos vamos a encontrar.",
+   "En el interior del local las principales opciones son diferenciar espacios trabajando con diferentes materiales y luz (tanto natural, como artificial).",
+   "Intervenir en el patrimonio de una manera responsable cuando se trata de implantar elementos asociados a la vanguardia de la tecnología se presentó como el mayor reto a nivel conceptual. Se buscó tratar este aspecto sin ocultar ningún elemento y tratándolos de una manera sutil.",
+   "Una piel de acero retroliluminada nos indica a través de su volumen las zonas operativas de la clínica uniéndolas a la pared de piedra pre – existente. Ligando así función y  elemento patrimonial, conciliando aspectos a priori antagónicos."
+  ]
+ },
+ {
+  "slug": "reforma-vivienda-corbaceiras",
+  "nombre": "Reforma vivienda Corbaceiras",
+  "titulo": "Reforma Vivienda en As Corbaceiras",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Pontevedra",
+  "anio": 2015,
+  "superficie": null,
+  "m2": null,
+  "texto": [
+   "El punto de partida del proyecto de reforma de esta vivienda fue el deseo de exponer la colección de arte de los propietarios, que se encontraba ahogada en una arquitectura anticuada, de colores demasiado intensos, que no dejaba apreciar las pinturas, oscura y de largos y anodinos pasillos.",
+   "Bajo esta premisa de que las obras de arte sean las protagonistas, se proyecta una arquitectura con tonos neutros a la vez que cálida, donde los únicos adornos son los cuadros, la luz y la expresividad de los diferentes materiales como la madera.",
+   "El proyecto de iluminación fue una de las principales bazas para alcanzar el ansiado resultado. El espacio fluye con la luz buscando una organización funcional más abierta e intensificando el foco en los puntos más atractivos. Incluso algunos espacios, como el pasillo, se iluminan sólo a través de los cuadros.",
+   "En la entrada se vuelve a la configuración original para crear una zona de estar que prolongue visualmente el espacio de la cocina y haga de extensión del comedor cuando sea necesario. El resto se reorganiza, para aprovechar mejor los espacios, se ‘limpia’, y con ello se consiguen unos espacios sencillos, sosegados."
+  ]
+ },
+ {
+  "slug": "clinica-fisioterapia-sana-sana",
+  "nombre": "Clínica Fisioterapia Sana Sana",
+  "titulo": "Clínica fisioterapia SanaSana",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "Av. De Galicia nº20 (Porriño-Galicia / Spain).",
+  "anio": 2017,
+  "superficie": "220 m2",
+  "m2": 220.0,
+  "texto": [
+   "Nuestros clientes necesitaban expandir su negocio y trasladarse a un local con mayor superficie. La premisa fue ampliar las salas de fisioterapia y también los servicios de la clínica con un espacio específico para tratamientos de belleza y prácticas deportivas (principalmente pilates).",
+   "El proyecto fue pensado para dar a los usuarios una experiencia donde el espacio proporcione algo más que la propia terapia.  La forma y la luz se crearon para transmitir paz y calma, sentimientos muy importantes cuando se reciben tales terapias.",
+   "Hay pequeños elementos que ayudan a transmitir estas ideas. El corredor principal se rompió para crear áreas de espera, frente a la oficina, la entrada a los vestuarios y la sala de pilates. Estas formas crean movimientos que refuerzan la percepción de aislamiento dentro de las habitaciones.",
+   "Este es un proyecto donde se hace relevante el espacio sin comprometer la calidad arquitectónica de los espacios servidos.",
+   "Los espacios están desnudos para dar relevancia a la madera, la fábrica de ladrillo y la iluminación. Las instalaciones vistas en techos y dispuestas ordenadamente refuerzan la idea de sinceridad.",
+   "La fachada se revistió con un panel microperforado para dar una imagen uniforme a la superficie del local. Este panel permite obtener diferentes efectos de luz y transparencias, destacando los huecos y los macizos de fachada."
+  ]
+ },
+ {
+  "slug": "gabinete-juridico-peregrina",
+  "nombre": "Gabinete Jurídico Peregrina",
+  "titulo": "Gabinete jurídico “Peregrina”",
+  "categoria": "Oficina",
+  "destacado": false,
+  "lugar": "C.Peregrina 14, Pontevedra",
+  "anio": 2017,
+  "superficie": "32 m2",
+  "m2": 32.0,
+  "texto": [
+   "El programa era sencillo, un gabinete de procuradores en el que poder recibir a clientes en un espacio reducido.",
+   "Optamos por diseñar un único cuerpo que completase las necesidades más importantes a nivel profesional. De esta manera, introdujimos un elemento a través del cual girase todo el proyecto, una gran mesa de trabajo. Ésta alberga los puestos con los ordenadores y, al mismo tiempo, en otra zona de la misma, el espacio de reuniones.",
+   "El volumen se presentaba con una serie de planos inclinados y de forma irregular que decidimos aprovechar para implantar el proyecto. Aprovechando la tabiquería existente introdujimos planos de las mismas características aunque cambiando el material para remarcar su función, estamos hablando de la zona de almacenaje y aseo.",
+   "El espacio es diáfano, sin ningún tipo de división, simplemente se oculta el cuarto de baño y almacén, pero se hace de una manera integradora. Introduciendo una pieza escultórica que se diluye en los planos inclinados que proceden del techo.",
+   "Los materiales empleados son fundamentalmente madera de pino y madera lacada de color blanco. Se procuró con la utilización de estos materiales jugar en blancos con los tabiques existentes y con la madera natural contrastar para dar protagonismo a los elementos que se introducen.",
+   "A pesar de ser un proyecto pequeño, se lleva a cabo un gran esfuerzo de diseño, se puede apreciar principalmente en la mesa central y en el volumen que envuelve el aseo."
+  ]
+ },
+ {
+  "slug": "reforma-optica-lafuente",
+  "nombre": "Reforma óptica LaFuente",
+  "titulo": "Reforma óptica LaFuente",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Marqués de Riestra, 10 (Pontevedra-Galicia / España).",
+  "anio": 2019,
+  "superficie": "59 m2",
+  "m2": 59.0,
+  "texto": [
+   "Un espacio donde el producto sea el protagonista.",
+   "El conjunto existente nos muestra una carencia importante de espacio de exposición. La mecánica de venta consistía en que el personal encargado de la óptica mostrase las monturas. La pretensión es que, sin perder esa atención personalizada, el cliente pueda ver y tocar el producto. Que tenga libertad para moverse libremente por la tienda y pueda acudir al personal especializado para consultar alguna duda o para pedir un producto más específico.",
+   "Por otro lado, la imagen era muy antigua con una elección de colores y materiales poco adecuados y desactualizados. El proyecto estaba realizado sin ningún tipo de patrón ni concepto que aportase un hilo conductor.",
+   "Nuestra opción fue la de dar una imagen fuerte y contundente.",
+   "Revestimos los paramentos verticales tanto interiores como exteriores de cerámico brillante negro, lo que le da un aspecto muy homogéneo. La idea de optar por este color fue la de oscurecer el ambiente para hacer destacar el producto con la luz artificial por medio de unas estanterías perimetrales que soportan, exponen el producto y lo ubican para que esté al alcance de todos.",
+   "El local se muestra como un “deslizar” continuo de monturas que recorren todo el espacio, incluido el escaparate. La idea es que estos elementos se conviertan en los protagonistas del local apoyados por la luz y el material diferenciador del que están constituidos."
+  ]
+ },
+ {
+  "slug": "unitec",
+  "nombre": "Unitec",
+  "titulo": "Centro de reparación de electrodomésticos Unitec",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "C. Juan Carlos I, 11 (Pontevedra-Galicia / España).",
+  "anio": 2016,
+  "superficie": "212 m2",
+  "m2": 212.0,
+  "texto": [
+   "No es convencional introducir diseño en un establecimiento de estas características. No obstante, nuestro promotor consideró un valor añadido importante el tener una buena imagen de cara al público.",
+   "En el programa aparecían tres espacios bien diferenciados; recepción, oficina y zona de reparaciones. Posteriormente y debido a la configuración del espacio existente, decidimos incorporar un cuarto, que es el pasillo o túnel de salida del material ya reparado. Un espacio de transición.",
+   "La filosofía fue sencilla, teníamos cuatro espacios y decidimos dar cuatro tratamientos con transiciones suaves, en algunos casos, y rompiendo de una manera más rotunda en otras.",
+   "En una primera parte se ubicó la entrada/recepción. La intención es que tuviese continuidad con la fachada, por este motivo se utilizó el mismo material, en este caso aluminio, para asociarlo a la tecnología y que el viandante tuviese una sensación de pureza, esa imagen de profesionalidad y desarrollo tecnológico que la propia marca pretende comunicar.",
+   "En un siguiente paso introducimos unos rastreles de aluminio lacados en blanco que también entran en la oficina, espacio dividido por una mampara de aluminio acristalada. Decidimos que estos rastreles en el techo ocupasen ambos espacios para tener una transición suave ya que considerábamos estaban muy conectados entre ellos y su separación iba a ser simplemente esta membrana traslúcida.",
+   "A continuación se busca romper completamente con un túnel que comunica el espacio de oficinas con la zona de reparaciones. Esta transición tenía función propia, la de albergar electrodomésticos de entrada o de salida en momentos puntuales, es por lo tanto un espacio de almacenamiento. Incorporamos el color corporativo a este espacio tanto en paredes, suelo y techo para ser rotundos con el cambio, ya que se diferencian situaciones muy diferentes."
+  ]
+ },
+ {
+  "slug": "restaurante-nantes-en-madrid",
+  "nombre": "Restaurante Nantes en Madrid",
+  "titulo": "Restaurante Nantes",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Calle Maestro Arbós, 15. Madrid.",
+  "anio": 2018,
+  "superficie": "120 m2",
+  "m2": 120.0,
+  "texto": [
+   "El chef Alejandro Atienza acude a nosotros con un modelo de restaurante muy claro. Quieren ofrecer una propuesta gastronómica sencilla, honesta y evocadora de grandes recuerdos, saludable y variada en la que resaltan los sabores naturales.  Trabajarán con productos de temporada, naturales y respetando la tradición de la gastronomía española.",
+   "El restaurante se ubica en el barrio de Legazpi en Madrid, frente al mercado de frutas y verduras. El nombre del restaurante hace referencia a la variedad de zanahoria «nantes» que cultivaba el abuelo de Alejandro en el sur de Madrid y transportaba para vender en este mercado.",
+   "Cuando un proyecto de negocio nace con tanta ilusión y coherencia, el diseño no puede hacer otra cosa que acompañar y resaltar los valores concebidos. Trabajamos con materiales honestos y sencillos que enraícen con la tradición, pero empleándolos de manera contemporánea.",
+   "La distribución se plantea con una cocina abierta y en posición central para que el cliente pueda ser testigo de la elaboración de los productos. La relación entre el chef y los comensales es constante, de modo que la cocina se muestre con sinceridad.",
+   "Se plantean dos zonas de uso público conectadas pero diferenciadas: una ligada al espacio de acceso y barra con mesas altas para reuniones informales, la segunda un comedor más formal con el pase de cocina como elemento focal. En la zona de comedor se plantea un banco corrido hacia fachada y mesas dobles que pueden ser agrupadas para albergar grupos. La zona de mesas altas también puede cambiar su configuración con barra y mesas sueltas, mesas en peine, o una gran mesa central.",
+   "El espacio se complementa con una zona reservada con una mesa redonda para celebrar catas o eventos especiales. Esta última zona está dividida mediante elementos textiles que permiten crear una independencia del resto del local o integrarlo."
+  ]
+ },
+ {
+  "slug": "restaurante-sal-de-allo",
+  "nombre": "Restaurante Sal de Allo",
+  "titulo": "Restaurante Sal de Allo",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Av. de Beiramar, 28, Bajo, 36980 O Grove (Pontevedra).",
+  "anio": 2016,
+  "superficie": "66 m2",
+  "m2": 66.0,
+  "texto": [
+   "Este pequeño restaurante se asienta en O Grove, en las proximidades del puerto.",
+   "Dos son los puntos de partida del proyecto: trasladar el ambiente marinero al interior y conseguir una arquitectura interesante que represente la fusión de lo tradicional con la cocina de diseño. Para ello se mezclan elementos relacionados con el trabajo en el mar con el diseño actual, materiales tradicionales como la madera, con una iluminación más contemporánea. Cajas de pescado haciendo de techo, sujeciones del aislamiento acústico vistas emulando a timones de barco…",
+   "Los materiales y soluciones aparecen, de nuevo, de forma sincera, utilizando elementos que habitualmente van ocultos como un ingrediente más que le da personalidad y singularidad al proyecto. Se busca la diferencia, el carácter y creemos que se consigue."
+  ]
+ },
+ {
+  "slug": "restaurante-padal-da-santina",
+  "nombre": "Restaurante Padal da Santiña",
+  "titulo": "Restaurante Padal da Santiña",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Pontevedra",
+  "anio": null,
+  "superficie": null,
+  "m2": null,
+  "texto": []
+ },
+ {
+  "slug": "oficina-nan-arquitectos",
+  "nombre": "Oficina NAN Arquitectos",
+  "titulo": "Oficina Nan Arquitectos",
+  "categoria": "Oficina",
+  "destacado": false,
+  "lugar": "Praza de España 1. Pontevedra (Galicia / España).",
+  "anio": 2015,
+  "superficie": "32 m2",
+  "m2": 32.0,
+  "texto": [
+   "Este proyecto para nuestra oficina intenta reflejar la imagen y valores de nuestra empresa. Somos diferentes y este espacio lo demuestra, nos refleja y determina como los visitantes perciben nuestra empresa.",
+   "Es un diseño con el que nosotros nos sentimos identificados y que intenta generar un espacio cómodo, agradable, acogedor… ya que el lugar donde uno trabaja es algo muy importante porque pasamos muchas horas al día en él e influye en nuestro bienestar.",
+   "Como se ha citado, este proyecto es 100% NAN, tanto por su cálida iluminación, su organización totalmente funcional o los materiales elegidos. Estamos de acuerdo con que un mejor diseño de los espacios de trabajo motiva al trabajador, y este lo hace.",
+   "Se ha buscado organización eficiente en torno a una gran mesa orientada a las vistas, que es el eje central y que separa la zona de almacenaje-biblioteca de la de exposición de productos. Los metros disponibles se aprovechan al máximo para satisfacer nuestras necesidades diarias de forma flexible, tanto para el trabajo individual, en equipo o reuniones.",
+   "Hemos elegido una variedad de materiales que nos muestran su sinceridad y donde contrastan la frialdad de la piedra y aluminio con la calidez de la madera y la luz, que intenta desmaterializar el conjunto creando una atmósfera acogedora."
+  ]
+ },
+ {
+  "slug": "cafeteria-mirabous",
+  "nombre": "Cafetería Mirabous",
+  "titulo": "cafetería Mirabous",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Av. Da Cruz,nº3 Combarro (Pontevedra-Galicia / España).",
+  "anio": 2015,
+  "superficie": null,
+  "m2": null,
+  "texto": [
+   "Cuando el visitante se aproxima al local, la visión de la ría, con su mar de tonalidades cambiantes, copa por completo su atención. Pese a la barrera que supone la carretera y la diferencia de cota entre la misma y el nivel del mar, la percepción sentida es la de encontrarse rodeado de mar.",
+   "La intervención en el local busca mantener e incluso reforzar esa percepción a través de dos acciones: enfocar con una perspectiva central dicha visión y rodear al visitante con una interpretación abstracta del paisaje marino.",
+   "De  esta forma se abre por completo la cafetería hacia las vistas y se crea un mirador sobre las mismas.",
+   "La distribución del espacio permite mantener esa visión desde todo el local, situándonos a través de la percepción sensitiva en el territorio.",
+   "Pero también, y a través de la percepción racional, nos volvemos a geolocalizar. Se ha creado un paisaje marino abstrayendo dos elementos característicos en dos planos perpendiculares. Por un lado, las olas y su perfil de crestas y valles, representadas en los paramentos verticales y en el mobiliario como si de una representación de un mar en un teatro de marionetas se tratase. Por otro lado, las nubes que surcan el cielo, con la luz de los rayos que delimitan su contorno, situadas en el paramento horizontal del techo.",
+   "El cambio de pavimento sintetiza el gris del mar gallego en los días lluviosos en su contacto con la orilla."
+  ]
+ },
+ {
+  "slug": "escuela-danceway-reforma-integral-de-loc",
+  "nombre": "Escuela Danceway, reforma integral de local",
+  "titulo": "Escuela Danceway, reforma de local.",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Fernán González, 17. Madrid.",
+  "anio": 2018,
+  "superficie": "347 m2",
+  "m2": 347.0,
+  "texto": [
+   "En Madrid, dentro del barrio de Salamanca, se ha realizado esta reforma integral de local. El promotor demandó la adecuación de un gimnasio para, mediante una reforma que evidenciase las virtudes del local, ofrecer un espacio en el que los alumnos de la escuela se sintiesen como profesionales. Aprovechando la configuración del local y teniendo en cuenta que gran parte del presupuesto se destinaría a la instalación de pavimentos específicos para las diversas actividades, de  la misma calidad que los empleados por la la compañía nacional de danza, se optó por un diseño donde primase el color y la iluminación.",
+   "Mediante la utilización del vidrio se consigue una transparencia entre aulas que permite conectarlas visualmente  aumentando las posibilidades docentes. Esta continuidad se refuerza gracias al uso de iluminación mediante perfiles led al tiempo que se consigue centrar el interés visual en los laterales y pavimentos de las salas. A pesar de contar con un presupuesto contenido el local impacta desde el primer momento, en gran parte por el acertado uso del color. Se han diferenciado salas de pasillos utilizando diferentes tonos destacando la entrada a las aulas mediante el mismo procedimiento.",
+   "La situación del aula principal permite también que los padres puedan esperar a sus hijos observándoles mientras aprenden. Éste ha sido un requisito demandado por el promotor que deseaba hacer partícipes de la escuela a toda la familia.",
+   "También se diseñaron  mobiliario y  elementos de señalización del local. Para el mobiliario se optó por diseños de líneas limpias empleando madera y sus derivados. Para la señalización se cuidaron tipografías y diseños geométricos.",
+   "La reforma integral de este local comprende los ámbitos de trabajo del estudio: diseño arquitectónico, legalización, construcción y diseño de iluminación, mobiliario y gráfico.",
+   "Si quieres ver otros ejemplos de reformas de locales puedes ver los siguientes:"
+  ]
+ },
+ {
+  "slug": "panaderia-maisquepan",
+  "nombre": "Panadería MAISQUEPAN",
+  "titulo": "Panadería MAISQUEPAN",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Avda. del Balneario, O Carballiño (Galicia / España).",
+  "anio": 2014,
+  "superficie": "94 m2",
+  "m2": 94.0,
+  "texto": [
+   "El proyecto nace de la idea de los propietarios de crear un establecimiento multifuncional, en el que buscan potenciar su negocio de panadería, incorporando gastronomía típica de sus orígenes portugués y brasileño, con zonas apropiadas para una breve estancia de degustación de sus productos y café. Además del típico despacho de pan donde la rotación de venta y clientes sería muy elevada.",
+   "Los propietarios tenían cierta preocupación acerca del diseño del establecimiento, ya que no querían una panadería convencional y buscaban que el propio establecimiento les diese una buena proyección como imagen de marca.",
+   "Nuestra idea fue la de crear una fachada que fuese muy llamativa, donde se viese el funcionamiento de todo el despacho desde la calle. Un lugar muy abierto donde la comunicación exterior e interior fuese muy fluida. Convertir la estancia en el local en una experiencia agradable y que la gente de la calle se sienta incentivada a entrar.",
+   "La opción de escoger materiales fue la de combinar el acero y la madera. Una fachada en acero muy marcada, donde las interrupciones enfatizan los aspectos que queremos destacar. En este caso una exposición de vinos, una barra donde la gente observa hacia la calle y el interior de los mostradores, donde se ve a la gente realizando los trabajos propios de este tipo de establecimiento. Así pues, la puerta aparece en la parte más cerrada buscando con esta contradicción destacar el resto de elementos.",
+   "Ya en el interior se busca convertir el espacio en un elemento cálido, donde la gente se sienta recogida y además buscar elementos que evoquen la tradición en la panadería. Es por eso que el interior está revestido de madera natural de pino abeto y algún detalle en pavimento cerámico decorativo.",
+   "El establecimiento tiene una parte de cocina y aseos que se ocultan en la parte trasera donde los acabados son más convencionales e industriales."
+  ]
+ },
+ {
+  "slug": "cafeteria-la-torta",
+  "nombre": "Cafetería La Torta",
+  "titulo": "Cafetería La Torta Pontevedra",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "C. Mariscal Pardo de Cela (Pontevedra-Galicia / España).",
+  "anio": 2015,
+  "superficie": "82 m2",
+  "m2": 82.0,
+  "texto": [
+   "El programa del proyecto se describe, como un espacio en el que comprar o recoger previo encargo “ La Torta” (Un producto de repostería popular en esta zona del sur de Galicia), así como un espacio para degustar este producto acompañado de un café, un refresco…",
+   "Nuestros promotores son los franquiciados. Cuando comenzamos a trabajar en este proyecto nos dirigimos a los franquiciadores para conocer si existían algunas pautas de diseño a respetar alrededor del producto que se comercializa, el único elemento a respetar era el logotipo, por lo tanto el resto del diseño tendría que ser definido por nosotros.",
+   "Las ideas a las que agarrarnos para elaborar el proyecto consideramos que eran las siguientes; un producto de éxito en el que prima la calidad, cercano a la escala local, con un aspecto y forma muy definido y característico.",
+   "Por consiguiente buscamos una arquitectura que nos recordase aspectos tradicionales y artesanales, al mismo tiempo buscamos elementos decorativos y constructivos de proximidad. El concepto o hilo conductor a través del que nos movemos es el de que estamos entrando en un horno tradicional.",
+   "El tratamiento de la luz es el elemento principal que nos va a ayudar a transmitir estas sensaciones, las luces indirectas son de color naranja, de manera a que el aspecto del local nos recuerde al fuego de los hornos tradicionales donde se elaboraban artesanalmente este tipo de productos.",
+   "El color de base predominante en el local es el blanco, también es el color predominante en la torta, ya que el producto estrella es la nata, enfatizando así el blanco como color de referencia, conseguimos una asociación inmediata con el producto que queremos identificar."
+  ]
+ },
+ {
+  "slug": "pub-la-rectoral",
+  "nombre": "Pub La Rectoral",
+  "titulo": "Pub La Rectoral",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Pontevedra",
+  "anio": 2017,
+  "superficie": null,
+  "m2": null,
+  "texto": [
+   "La reforma del Pub La Rectoral supuso trabajar en un nuevo concepto, la dualidad. Si bien se conoce, una rectoral es la casa donde vive el cura, uno de los lugares menos indicados que puedan evocar a un ambiente nocturno de ocio, así mismo, pretendimos llevar a cabo este proyecto. Un aire clásico bañado por toques contemporáneos que conviven en perfecta armonía.",
+   "Desde el inicio del proyecto esta obra fue diseñada partiendo del empleo de la luz como elemento expresivo del local. Nos inspiramos en nuestra imaginación, y en las características lumínicas de lo que una rectoral, la casa del cura, puede llegar a ser. Nos dejamos llevar y nos emprendemos en mostrar la dualidad entre el día y la noche, para ello, partimos de dos ambientes lumínicos diferentes. La luz de día, para el ambiente de tarde, se caracteriza por ser una luz cálida, en pared, una luz general que mediante apliques simula candelabros, y la barra se potencia como si de un altar se tratase. El juego de los tonos de luces utilizados por la noche evoca a un ambiente contradictorio, creando un espacio más provocativo y erótico, en contraposición con lo que la luz de día evoca.",
+   "La luz de noche cambia por completo, se caracteriza por una temperatura de color más vibrante. El rojo es el protagonista del ambiente nocturno, las luces de neón rojas utilizadas para el rótulo se encuentran colocadas en la pared, con las fosas de luz indirecta del falso techo se consigue bañar todo el espacio del color buscado, y bajando la intensidad de los apliques se consigue la atmósfera deseada. Además, se enciende la luz de balizamiento de las escaleras para completar el espacio."
+  ]
+ },
+ {
+  "slug": "reforma-cafeteria-la-piadina",
+  "nombre": "Reforma Cafetería La Piadina",
+  "titulo": "Reforma cafetería La Piadina",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Calle Isabel II. Cambados  (Pontevedra / España).",
+  "anio": 2014,
+  "superficie": "105 m2",
+  "m2": 105.0,
+  "texto": [
+   "Reforma total así como cambio de fachada para local destinado a restauración.",
+   "Nuestro cliente pretende abrir una serie de franquicias donde la cerveza, las piadinas (comida italiana) y los helados sean sus protagonistas. La opción más natural fue la de crear 2 ambientes, por un lado cervecería, y por otro heladería – restaurante. No obstante las 2 zonas no están fuertemente delimitadas por lo que se pueden mezclar los usos sin que esto parezca extraño. Especial énfasis en el aspecto gráfico."
+  ]
+ },
+ {
+  "slug": "showroom-interius",
+  "nombre": "Showroom Interius",
+  "titulo": "Interius",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Pontevedra",
+  "anio": 2017,
+  "superficie": null,
+  "m2": null,
+  "texto": []
+ },
+ {
+  "slug": "peluqueria-sonia-portela",
+  "nombre": "Peluquería Sonia Portela",
+  "titulo": "Peluquería Sonia Portela",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Avda. Augusto García Sánchez 17 (Pontevedra-Galicia / España).",
+  "anio": 2018,
+  "superficie": "85 m2",
+  "m2": 85.0,
+  "texto": [
+   "Una peluquería para todos los públicos, con cierta tendencia femenina, elegante y joven.",
+   "Con estas premisas nos llega Sonia Portela para el diseño de su primera peluquería como proyecto personal y con intenciones claras de marcar una tendencia estética que represente su ética profesional y a su target de clientes.",
+   "El local, anteriormente ya destinado al mismo uso, estaba anticuado, frío, con detalles que nos trasladaban a los años 80, el uso de carpinterías doradas, expositores de cristal y un sinfín de combinaciones que marcaban las intervenciones sin criterio con el paso de los años.",
+   "El punto de partida para nuestro proyecto era captar la atención del viandante. El potencial cliente en un bulevar de alto tránsito peatonal tenía que sentir la presencia del establecimiento. Para ello llevamos la fachada a la línea exterior del local, marcando la entrada para dirigir al cliente y a su vez generar una sala de espera abierta y llena de luz natural. Creamos un diseño reticular con carpintería de hierro lacado negro para potenciar la sensación de elegancia tradicional que representa a esta profesión.",
+   "El siguiente punto fue generar dos bloques de cristal traslúcido enfrentados, un cara a cara que alberga aquellas funciones más íntimas y a través de los cuales se organiza el resto de la peluquería. Sobre ellos se incorpora una chapa metálica microperforada que genera una parte diferencial del techo. Si bien este se trabaja de forma que marque las diferentes funciones del espacio, falso techo en sala de espera, entrada y mostrador de cobro y forjado visto en la zona de trabajo, la chapa potencia ese componente jerarquizador de los volúmenes de cristal.",
+   "El resto de las divisiones se han realizado a través del mobiliario. Se ha buscado la sutileza de la curva, la suavidad de las líneas que trasmite la naturalidad del cabello se ha representado en madera de castaño claro aportando el punto de calidez necesario para el confort combinado con detalles en hierro negro. La sinceridad de materiales como el techo en forjado visto, el pavimento de hormigón pulido y el hierro se ven contrarrestados por la elegancia y nobleza de la madera generando un resultante industrial refinado, un lugar en el que ir a tratarse el pelo es algo más que una necesidad."
+  ]
+ },
+ {
+  "slug": "cafe-retail-inshopnia",
+  "nombre": "Café Retail Inshopnia",
+  "titulo": "Café Retail Inshopnia",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Velazquez Moreno 34, Vigo (Galicia / España).",
+  "anio": 2014,
+  "superficie": "125 m2",
+  "m2": 125.0,
+  "texto": [
+   "El cliente nos propuso un concepto diferente: Un espacio donde pudiesen convivir una tienda de ropa y un pequeño espacio de café. Que ambos conviviesen con naturalidad y que al mismo tiempo se complementasen.",
+   "El elemento principal de este proyecto es una estructura central que evoca a una vivienda tradicional, buscábamos con este elemento un efecto de sorpresa, al tiempo que nos sirviese para diferenciar los usos de una manera sutil y fluida. Para ayudar a asimilar el cambio de escala se pinta el falso techo de negro para desmaterializarlo, buscando eliminar las referencias. El cliente que entra en Inshopnia olvida la bulliciosa calle de donde proviene y encuentra un espacio sosegado, de límites imprecisos, que pretende aportar una experiencia de compra y degustación pausada.",
+   "Los elementos de mobiliario que se introducen en este espacio vacío sirven a la vez de exposición y almacenaje. En el caso de la ropa, tanto la exposición como los espacios de probadores tienen una distribución periférica, forzando a un recorrido en torno al elemento protagonista, la estructura de madera, entre la que se desarrolla la actividad de degustación y reposo.",
+   "Los materiales empleados en la intervención son seleccionados para no restar protagonismo a la mercancía expuesta. Así, los paramentos se dejan en su estado original de obra y el suelo se unifica con un resina autonivelante.",
+   "La iluminación y el mobiliario reclaman su relevancia y mientras uno aporta color en consonancia con la variedad cromática que aportan los tejidos, la otra permite la percepción óptima de volumen y cromatismo, potenciando también los valores estéticos y sensaciones apropiadas para el modelo de negocio.",
+   "Aparece también una contradicción que enriquece la percepción del local. En un ambiente introspectivo se abre el local a la calle hasta el límite de lo posible, propiciando a participar del bullicio exterior a los que degustan el café e invitando a entrar a los ajetreados peatones, que se giran ante la sobria fachada, que a modo de escenario muestra su interior."
+  ]
+ },
+ {
+  "slug": "oficina-iconweb",
+  "nombre": "Oficina iconweb",
+  "titulo": "Oficina iconweb",
+  "categoria": "Oficina",
+  "destacado": false,
+  "lugar": "Av. De Vigo 2 semisótano (Pontevedra-Galicia / España).",
+  "anio": 2015,
+  "superficie": "85 m2",
+  "m2": 85.0,
+  "texto": [
+   "El espacio con el que nos encontramos era un antiguo local de copas y billares bastante conocido en la ciudad. Los propietarios decidieron destinarlo a otro uso ya que parte de su actividad actual está centrada en el marketing digital.",
+   "El espacio conserva mucho de su aspecto anterior ya que quisimos mantener el “espíritu” del local, decidimos darle una apariencia lúdica que favoreciese la fluidez en sus comunicaciones, así como el intercambio y las relaciones entre los trabajadores.",
+   "El programa que se nos propuso era relativamente convencional y sencillo; un espacio de “oficina abierta” donde se situaría el grueso del espacio, una sala de reuniones, un despacho, una pequeña biblioteca de consulta, cuartos de baño y una pequeña cocina/sala de estar donde se pudiesen comer y descansar en horas muertas de trabajo.",
+   "Nuestra labor consistió en encajar este programa “tocando lo menos posible”. Para ello hicimos una sencilla distribución aprovechando la forma que nuestra planta nos proporcionaba. Insertamos una pastilla de madera y vidrio para introducir dentro de ella los espacios de reuniones, despacho y cuartos de baño. En la parte meridional del local concentramos las mesas de trabajo con bancos que los unen entre ellos para así proporcionar espacios de apoyo y favorecer espacios de reunión entre trabajadores. En el otro extremo del local en una pequeña retícula, situado al lado de las escaleras, introducimos un pequeño espacio de ocio y cocina, un espacio que a pesar de estar abierto está filtrado por un pórtico que señala las escaleras de una de las entradas.",
+   "Los materiales que introducimos en este proyecto son únicamente madera y ladrillo, buscando así una estética que acompañase a la pre-existencia.",
+   "Nos llamó poderosamente la atención el aspecto orgánico que había dejado los restos de cola del aislamiento que tenía con anterioridad el establecimiento, por ello decidimos acentuar este aspecto colocando por diferentes recorridos una iluminación técnica con una rejilla en LED que iluminase hacia la parte superior. También reforzamos esta iluminación general de ambiente con LED oculto en los bancos corridos y entre la pastilla de madera y la estructura. Por otro lado y continuando con la iluminación situamos sobre las mesas una iluminación más focalizada de manera a que los usuarios disfrutasen de un confort lumínico para su trabajo."
+  ]
+ },
+ {
+  "slug": "estanco-calvario",
+  "nombre": "Estanco Calvario",
+  "titulo": "Estanco Calvario",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Calle Cataluña (Vigo / Galicia / España).",
+  "anio": 2014,
+  "superficie": "22 m2",
+  "m2": 22.0,
+  "texto": [
+   "Tras una primera reunión, nuestra impresión fue la de que el local tenía problemas graves de espacio. Éste era muy reducido en superficie y estaba muy sobrecargado por diferentes elementos.",
+   "En este espacio no solo se vende tabaco, se venden además productos con mayor o menor relación con lo que se entiende por un estanco tradicional. Es por este motivo que se había quedado obsoleto.",
+   "La imagen que tenía este establecimiento estaba completamente descaraterizada con intervenciones y ampliaciones de diferentes épocas que contribuían a presentar un espacio descuidado y desorganizado.",
+   "Nuestra primera preocupación fue la de solventar estos problemas de organización. Para ello, aumentamos la superficie de almacenamiento en la parte posterior del estanco. Buscamos ganar altura, eliminando el falso techo y haciendo muebles más altos con acceso mediante una escalera portátil. La zona de público buscamos hacerla lo más diáfana y limpia posible, para que el cliente tenga una claridad de visión acerca de los productos expuestos.",
+   "Para ser efectivos con nuestro trabajo buscamos referencias extremas en el sentido de orden y pulcritud. Optamos por buscar la arquitectura japonesa, por la escasa superficie con la que ellos trabajan y la habilidad con que insertan e integran sus volúmenes en la malla urbana. Buscamos estas referencias incluso cromáticamente y en los materiales empleados.",
+   "Para la fachada hemos escogido una piel en aluminio microperforado que regulariza los desfases que tiene la fachada, y al mismo tiempo deja entrever la pre existencia del alzado. Para este efecto, nos ayudamos de una iluminación insertada entre las 2 fachadas."
+  ]
+ },
+ {
+  "slug": "restaurante-eirado-da-lena",
+  "nombre": "Restaurante Eirado da Leña",
+  "titulo": "Restaurante Eirado da Leña",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Plaza de la leña,nº3 PontevedraCombarro (Pontevedra-Galicia / España).",
+  "anio": 2015,
+  "superficie": "55 m2",
+  "m2": 55.0,
+  "texto": [
+   "Se ha querido potenciar la personalidad del espacio existente empleando materiales como el aluminio, buscando crear contrastes y sorpresas similares a la experiencia gastronómica que el cocinero Iñaki Bretal ofrece en su restaurante. Así, se han revestido diversos paramentos de aluminio para contrastarlos con la textura de la pared perimetral de piedra y se ha trabajado con un ingrediente, la luz, que es capaz de modificar la percepción de la materia prima (piedra y aluminio) según actúe o no sobre las mismas."
+  ]
+ },
+ {
+  "slug": "cafeteria-dorsia",
+  "nombre": "Cafetería Dorsia",
+  "titulo": "Cafetería Dorsia Sanxenxo",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Praia de Silgar, 2 Sanxenxo. Pontevedra (Galicia / España).",
+  "anio": 2016,
+  "superficie": "310 m2",
+  "m2": 310.0,
+  "texto": [
+   "En este proyecto en un entorno clave del turístico Sanxenxo, se plantea un local con un programa y distribución complejos. Se plantea un modelo de negocio que funcione todo el día adaptándose a las necesidades del momento (cafetería para los desayunos, restaurante para las comidas y cenas y pub nocturno donde tomarse algo relajado). Situado en una parcela bastante irregular, con varios accesos y zonas bastante estrechas. Estos condicionantes determinarán los ambientes del local con una zona más de estar, con un pavimento más cálido y una barra acorde, y otro espacio más adecuado al ajetreo nocturno, con una iluminación, materiales y mobiliarios más sofisticados.",
+   "La ubicación del local es privilegiada, tanto por donde está, en el punto bisagra entre la zona de restaurantes y la de marcha nocturna, como, sobre todo, por sus vistas panorámicas hacia el mar. La posición elevada es un ‘plus’ y el local aprovechará esto para enfatizar esta visión, que ni siquiera cortará con las celosías que a modo  de sombrillas protegen del sol. Se intenta trasladar al interior este ambiente playero, eligiendo unos materiales y colores frescos como el blanco y azul del mar que baña paredes y azulejos, el dorado del sol y la arena que parece en la iluminación inferior y las sutiles sillas, la madera de los barcos y una vegetación también acorde con este paisaje marino.",
+   "El resultado es un gran espacio muy diáfano que evoca la playa, donde los materiales, mobiliario e iluminación muestran toda su expresividad."
+  ]
+ },
+ {
+  "slug": "restaurante-loaira",
+  "nombre": "Restaurante Loaira",
+  "titulo": "Casa Xantar “Loaira”",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Pza. da Leña 1, (Pontevedra-Galicia-España)",
+  "anio": 2015,
+  "superficie": "70 m2",
+  "m2": 70.0,
+  "texto": [
+   "Un local dedicado a la cocina de autor pero con una imagen muy desactualizada. Esta es la realidad con la que nos encontramos en nuestra primera reunión.",
+   "Un espacio que busca el diseño para encajar en la cocina que se practica. Estamos hablando de Iñaki Bretal, y estamos hablando de uno de los mayores exponentes de la gastronomía gallega de la cocina contemporánea.",
+   "Esta intervención se realiza dentro del casco histórico de Pontevedra por lo que nos encontramos ante una envolvente de arquitectura tradicional.",
+   "Nuestro reto aquí por lo tanto, se trata de introducir estos conceptos anteriormente mencionados dentro de un ámbito físico tan conservador y rígido.",
+   "El proyecto a pesar de tener una imagen homogénea tiene 2 partes muy diferenciadas, la planta baja donde se ubican la barra, mesas altas y taburetes, y la primera planta donde se ubican mesas bajas, sillas y bancos.",
+   "En la planta baja se busca un espacio altamente funcional y dinámico donde los usuarios ocupan el espacio en una breve estancia de tiempo donde degustan una “tapa” y una bebida pero de forma informal. También es donde se ubica la cocina y es la zona de paso de los trabajadores del local que tienen que servir a más de 30 mesas entre piso superior y terraza."
+  ]
+ },
+ {
+  "slug": "bocateria-a-seca",
+  "nombre": "Bocatería A Seca",
+  "titulo": "Bocatería A Seca",
+  "categoria": "Hostelería",
+  "destacado": false,
+  "lugar": "Camino de la fábrica s/n, Poio (Galicia / España).",
+  "anio": 2014,
+  "superficie": "79 m2",
+  "m2": 79.0,
+  "texto": [
+   "El proyecto nace de la necesidad de los propietarios de dar un cambio de imagen a un negocio consolidado que sufre un relevo generacional. Los nuevos encargados del local asumen los aciertos de los anteriores responsables, basados en una oferta de comidas económicas con raciones generosas y optan por una transformación del local para ofrecer un entorno más atractivo donde consumirlas, al tiempo que busca una imagen impactante para atraer nuevos clientes.",
+   "El entorno está dominado por una industria conservera, por lo que una medida a tomar pasa por aprovechar la terraza posterior de la parcela, de uso privado en la anterior etapa. Dotando a un entorno congestionado de un espacio natural abierto. También se busca diferenciar el local de la vivienda unifamiliar que lo contiene, por lo que se dejan los pilares vistos y se añade una segunda piel a la fachada, formada por tablones de madera, de forma que sea inmediata la distinción entre bocatería y vivienda.",
+   "Para potenciar que la bocatería sea reconocible ante los nuevos clientes se derriban los muros anteriores de la parcela y se crea una terraza elevada delimitada por gaviones, ganando una zona de consumición al aire libre donde antes había un abandonado espacio de paso. Esta primera terraza se ilumina artificialmente creando un foco de atención para cuando la luz baja de intensidad.",
+   "La entrada se marca como un hueco en la fachada y desde la carretera se ofrece una visión que atraviesa el local y llega hasta la terraza posterior, ofreciendo al visitante uno de los puntos fuertes de la intervención. Queda citar una rampa lateral que refuerza el desarrollo transversal de la propuesta,  permite el acceso directo a dicha terraza y dota de accesibilidad total al local.",
+   "En el interior del local se aprecia la dualidad  de la propuesta, donde un tratamiento austero de los acabados: rastreles de madera cepillada, suelo existente repasado y pintado, redondos de acero y tabiquería pintada, ofrece un ambiente acogedor, con una calidez enfatizada por una cuidada elección y distribución de la iluminación, que marca la disposición de los elementos de mobiliario, en polipropileno y acero como contrapunto a los elementos fijos donde prevalece la madera, y acentúa la zona de degustación frente a la de circulación.",
+   "Barra y contrabarra siguen el lenguaje general de la propuesta, y dos tabiques pintados en amarillo ral1023 marcan el espacio de aseos."
+  ]
+ },
+ {
+  "slug": "showroom-concept-habitat-studio",
+  "nombre": "Showroom Concept Habitat Studio",
+  "titulo": "Showroom Concept Hábitat",
+  "categoria": "Comercio",
+  "destacado": false,
+  "lugar": "Travesía de la Eiriña nº5, Pontevedra.",
+  "anio": 2015,
+  "superficie": "120 m2",
+  "m2": 120.0,
+  "texto": [
+   "Un espacio expositivo que se integre dentro del propio diseño.",
+   "La intención de esta tienda es generar proyectos de interiorismo, es decir, un lugar donde se trasmita la idea de que es igual de importante el hecho de comprar un mobiliario interesante así como de integrarlo en la propia arquitectura.",
+   "Por este motivo nuestros esfuerzos iban enfocados a que el espacio y los elementos expuestos formasen un único ente.",
+   "Los elementos de fachada los consideramos de gran importancia ya que intentamos por un lado recrear un elemento que entrase y saliese del local con la intención de “recoger” a los viandantes. Para ello se diseñó un gran mueble multifuncional que creaba la entrada y a la vez serviría como elemento expositivo de mobiliario. Por su morfología este elemento funciona como un apéndice por donde iniciar el recorrido hacia el interior de todo el espacio. Y por otro lado, en la fachada posterior, cerrada, la idea es la de crear una simulación a modo de vivienda donde se representasen aquellos elementos que caracterizan las tipologías de una casa, con su salón, cocina y habitaciones, el ideal de hábitat.",
+   "Se pueden observar los diferentes momentos de circulaciones. En un primer momento nos encontramos con diferentes tipos de mobiliario, tanto en el escaparate como en el mueble principal, espacio que actúa de recepción. En un segundo momento nos encontramos con el espacio de trabajo, trabado por un techo metálico y por una pantalla donde se recrean diferentes trabajos de diseño realizado por el propio estudio, es un espacio de discusión y reunión, digamos que es el núcleo central a través del que nos movemos y trabajamos para generar aquello que busca el usuario. Por último, en un tercer momento tenemos un espacio de apoyo que actúa de simulador de vivienda, que unido al espacio de fachada descrito nos traslada a aquello que debe ser el fin de la visita.",
+   "El grueso del diseño se centra en “desmaterializar” un espacio que pretendemos dejar completamente diáfano, para posteriormente introducir todo el diseño que deseamos. De esta manera lo introduciremos de una manera más nítida, para ello las dos actuaciones más importantes son las de  retranquear la fachadas y dejar el techo visto, mostrando la estructura y demás instalaciones."
+  ]
+ },
+ {
+  "slug": "clinica-oftalmologia-fernandez",
+  "nombre": "Clínica Oftalmología Fernández",
+  "titulo": "Clínica Oftalmología Fernández – Velázquez",
+  "categoria": "Clínica",
+  "destacado": false,
+  "lugar": "2017",
+  "anio": 2017,
+  "superficie": "120 m2",
+  "m2": 120.0,
+  "texto": [
+   "Una membrana de madera quemada que actúa de símil en la oscuridad de un párpado a la hora de recubrir este proyecto. Esta acción es una poderosa llamada de atención estética hacia el exterior. Con esta imagen sólida y homogénea buscamos ser un punto de referencia en el entorno y destacar sobre una envolvente homogénea. Para ello hemos buscado unos rastreles con un tratamiento de quemado y una pintura negra que actúa de lienzo tras estas piezas. El efecto es muy llamativo ya que apoyados en una línea de luz y sobre un lienzo muy neutro se marcan la apariencia de estas piezas de madera verticales.",
+   "Ya en el interior buscamos una estética completamente diferente al exterior, con una inspiración asiática por preferencias del promotor.",
+   "Hemos introducido numerosos elementos de madera para aportar confort a las estancias y un dintel de madera que recorre toda la clínica como seña de identidad, la utilizamos para introducir luz indirecta así marcar las paredes.",
+   "La madera de bambú se utiliza en el interior jugando con el blanco de los tabiques para que destaque su característica textura.",
+   "En lo que a organización funcional se refiere, hemos procurado diferenciar espacios públicos de privados. En un primer momento nos encontramos con una recepción unida a una sala de espera donde convergen todos los espacios, es por lo tanto el espacio más público. Posteriormente a través de este espacio nos desplazamos a consultas y espacios más privados donde tendrán lugar los tratamientos de una forma íntima.",
+   "Todos estos espacios los hemos tratado con la madera anteriormente citada y cristales traslúcidos para así tener amplitud y al mismo tiempo espacios reservados, a imagen y semejanza de una arquitectura oriental."
+  ]
+ },
+ {
+  "slug": "casa-villagarcia",
+  "nombre": "Casa Villagarcía",
+  "titulo": "Casa Villagarcía",
+  "categoria": "Vivienda",
+  "destacado": false,
+  "lugar": "Villagarcía de Arosa – Pontevedra (Galicia / Spain)",
+  "anio": 2013,
+  "superficie": null,
+  "m2": null,
+  "texto": [
+   "“Quiero una casa moderna para alquilar que sea barata”.",
+   "En la primera reunión con el promotor quedó clara la idea de vivienda requerida. No obstante, una casa moderna para alquilar no deja de ser una descripción vaga a la hora de elaborar un programa y mucho menos un proyecto.",
+   "Se buscó realizar una vivienda de bajo presupuesto que pudiese satisfacer las demandas de un usuario efímero. Para ello se optó por la sencillez: de formas, de circulaciones, de distribución, de uso, de construcción. Se desconectó el complicador y surgió el proyecto. En un área de construcciones anodinas apareció un paralelepípedo que surge de la cota más baja de la finca para intentar pasar desapercibido y poder establecer una relación interior exterior fluida. Se abre la vivienda al sur y a las vistas y se otorga un carácter discreto a la fachada de acceso a la vivienda.",
+   "La vivienda se resuelve con una losa de hormigón vista que vuela sobre la fachada sur para proteger el ventanal del soleamiento estival. La calificación energética del proyecto es una A.",
+   "El objeto surge de un programa específico de vivienda para un solo habitante. El promotor hace hincapié en que quiere un espacio abierto.",
+   "El concepto fundamental de este trabajo se basa en darle continuidad al espacio desde el interior hacia el exterior y viceversa. Intentar que tanto el interior de la vivienda, como el exterior formen parte del espacio íntimo del habitante. Se pretende conseguir a través de un gran ventanal que cubre completamente una de las fachadas, cerrando el resto de las fachadas mas expuestas al vecindario, dotar de un total recogimiento a su habitante."
+  ]
+ }
+]
