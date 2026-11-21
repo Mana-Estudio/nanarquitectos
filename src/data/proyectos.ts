@@ -36,6 +36,12 @@ interface Raw {
   galeria?: Galeria;
   /** Qué bloques se muestran en la página del proyecto */
   mostrar?: Partial<Visibilidad>;
+  /** Posición en el carrusel de la home (1–3) y foto elegida (índice en `fotos`) */
+  hero?: number;
+  heroFoto?: number;
+  /** Posición en «Obras seleccionadas» de la home (1–5) y foto elegida */
+  home?: number;
+  homeFoto?: number;
 }
 
 export type Galeria = 'mosaico' | 'galeria' | 'sueltas';
@@ -100,33 +106,44 @@ export const portada = (p: Proyecto) => p.portada;
 export const tipo = (p: Proyecto) => (p.categoria === 'Otros' ? 'Proyecto' : p.categoria);
 
 const bySlug = (slug: string) => proyectos.find((x) => x.slug === slug)!;
-const pick = (slug: string, n = 0) => {
-  const p = bySlug(slug);
-  const h = p.fotos.filter(isL);
-  return { proyecto: p, imagen: h[n] ?? h[0] ?? p.portada };
-};
 /** Foto n de un proyecto, opcionalmente filtrando por orientación (para páginas de Estudio y Servicios) */
 export const foto = (slug: string, n = 0, o?: 'L' | 'P') => {
   const p = bySlug(slug);
   const list = o ? p.fotos.filter((f) => (o === 'L') === isL(f)) : p.fotos;
   return list[n] ?? list[0] ?? p.portada;
 };
-const vertical = (slug: string) => {
-  const p = bySlug(slug);
-  return { proyecto: p, imagen: p.fotos.find((f) => !isL(f)) ?? p.portada };
-};
+/** Todos los proyectos tal como están cargados (incluye borradores): los usa el panel */
+export const cargados = raw as Raw[];
+export const fotosDe = (slug: string) => fotos(slug);
+export const planosDe = (slug: string) => fotos(slug, planosFiles);
 
-/** Hero de la home: 3 obras destacadas, todas en horizontal */
-export const heroSlides = [pick('marna-restaurante', 1), pick('pazo-da-buzaca', 1), pick('vivienda-parche', 1)];
+/** «Obras seleccionadas»: 5 posiciones fijas del diseño. El panel decide qué proyecto y qué foto va en cada una */
+export const homeSlots = [
+  { col: '1 / span 7', ar: '4 / 3', mt: '0', o: 'L', label: 'Horizontal grande' },
+  { col: '9 / span 4', ar: '3 / 4', mt: '220px', o: 'P', label: 'Vertical alta' },
+  { col: '2 / span 4', ar: '4 / 5', mt: '0', o: 'P', label: 'Vertical' },
+  { col: '7 / span 6', ar: '3 / 2', mt: '260px', o: 'L', label: 'Horizontal' },
+  { col: '1 / -1', ar: '21 / 9', mt: '0', o: 'L', label: 'Panorámica a todo el ancho' },
+] as const;
+
+// Sin foto elegida: la n-ésima de la orientación que pide el hueco
+const conFoto = (p: Proyecto, idx: number | undefined, o: 'L' | 'P', n = 0) => ({
+  proyecto: p,
+  imagen: (idx != null ? p.fotos[idx] : undefined) ?? foto(p.slug, n, o),
+});
+
+/** Carrusel de la home: hasta 3 obras, en horizontal */
+export const heroSlides = proyectos
+  .filter((p) => p.hero)
+  .sort((a, b) => a.hero! - b.hero!)
+  .slice(0, 3)
+  .map((p) => conFoto(p, p.heroFoto, 'L', 1));
 
 /** Obras seleccionadas: posición en la retícula según el diseño */
-export const obrasHome = [
-  { ...pick('marna-restaurante'), col: '1 / span 7', ar: '4 / 3', mt: '0' },
-  { ...vertical('clinica-mercedes-fayos-fons'), col: '9 / span 4', ar: '3 / 4', mt: '220px' },
-  { ...vertical('carlos-pons'), col: '2 / span 4', ar: '4 / 5', mt: '0' },
-  { ...pick('vivienda-parche'), col: '7 / span 6', ar: '3 / 2', mt: '260px' },
-  { ...pick('pazo-da-buzaca'), col: '1 / -1', ar: '21 / 9', mt: '0' },
-];
+export const obrasHome = homeSlots.flatMap((s, i) => {
+  const p = proyectos.find((x) => x.home === i + 1);
+  return p ? [{ ...conFoto(p, p.homeFoto, s.o), col: s.col, ar: s.ar, mt: s.mt }] : [];
+});
 
 /** Prensa (de nanarquitectos.com/publicaciones) */
 export const publicaciones = [

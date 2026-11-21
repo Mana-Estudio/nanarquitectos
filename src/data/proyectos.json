@@ -63,7 +63,9 @@
    "La barra, revestida en microcemento beige, se eleva como un altar contemporáneo, actuando como el centro simbólico y funcional del lugar. Celosías de madera, inspiradas en los confesionarios, dividen y conectan sutilmente los espacios, aportando intimidad y evocación espiritual.",
    "La iluminación cálida, el uso de materiales nobles y una atmósfera contenida hacen de Marna un espacio de contemplación y encuentro, donde la experiencia gastronómica se convierte en un ritual moderno."
   ],
-  "galeria": "sueltas"
+  "galeria": "sueltas",
+  "hero": 1,
+  "home": 1
  },
  {
   "slug": "clinica-mercedes-fayos-fons",
@@ -82,7 +84,8 @@
    "La elección de los materiales responde a un equilibrio entre la percepción de limpieza y tecnología, fundamental en un espacio sanitario, y la necesidad de crear un ambiente acogedor y cercano.",
    "El aluminio, utilizado en revestimientos y detalles constructivos, aporta una imagen de alta tecnología, precisión y asepsia. Su acabado metálico y frío refuerza la idea de limpieza rigurosa y profesionalidad.",
    "En contraposición, la madera natural de roble se introduce en mobiliario y revestimientos parciales para aportar calidez y confort sensorial, generando un ambiente que humaniza el tratamiento médico y disminuye la ansiedad del paciente."
-  ]
+  ],
+  "home": 2
  },
  {
   "slug": "carlos-pons",
@@ -101,7 +104,8 @@
    "Las cortinas: Inspiradas conceptualmente en el movimiento y la voluminosidad del cabello, estas cortinas fluyen suavemente, organizando los recorridos dentro del espacio. Además, ofrecen una flexibilidad notable, permitiendo configurar los ambientes según las necesidades de cada momento, creando espacios dinámicos y adaptables.",
    "Las paredes: Han sido construidas con mortero, un material que aporta textura y un acabado sobrio, complementando los otros elementos y materiales del espacio. La elección del mortero ayuda a crear un ambiente cálido y acogedor, además de facilitar la integración con los otros componentes de acero y madera. Este enfoque busca fusionar funcionalidad con una estética inspirada en la belleza y el movimiento, logrando un ambiente acogedor, versátil y lleno de carácter, donde los materiales refuerzan la identidad del espacio.",
    "La luz: Se integra en el perímetro del local una línea de luz empotrada en el pavimento, que aporta una luz ambiental cálida y envolvente. Esta iluminación baja contribuye a definir los recorridos y acentuar el carácter del espacio de forma sutil. El ambiente se refuerza mediante apliques verticales distribuidos en los paramentos, que aportan ritmo visual y acompañan el recorrido del usuario. Además, los puestos de trabajo de peluquería y maquillaje se iluminan de forma cenital y frontal, asegurando una luz funcional, nítida y precisa, indispensable para las tareas que se realizan. Esta combinación de capas lumínicas permite generar una atmósfera equilibrada, confortable y coherente con la identidad del proyecto."
-  ]
+  ],
+  "home": 3
  },
  {
   "slug": "reforma-vivienda-en-o-grove",
@@ -133,7 +137,9 @@
    "Entendimos que la pre existencia con la que nos encontramos era muy interesante a nivel arquitectónico, ya que era un edificio de los años 60, clásico y con una estructura metálica que raramente se encuentra. Por este motivo intentamos ser muy conservadores y respetuosos con el esquema y los materiales con los que nos encontramos y tratamos de introducir elementos que dialogasen de una manera fluida con lo existente.",
    "La distribución del apartamento se hizo completamente nueva, por eso nos encontramos con el problema de los “vacíos” en donde se ubicaban los tabiques de la distribución anterior y superficies que tuvimos que readaptar para esconder instalaciones, algo que tratamos de convertir en virtud dentro del conjunto. Para este fin se ideó la colocación de un material que sirviese de hilo conductor a toda la intervención. Nos pareció apropiado la colocación de un cerámico 10×10 negro que contrastase de manera contundente con respecto a la madera y al terrazo rojo que nos encontramos en los pavimentos tan típico de la construcción de estos años. Se utiliza este material 10×10 a modo de “parche” lo que le da una lectura clara y sincera al conjunto de la intervención que se ha realizado. En los paramentos verticales jugamos con un zócalo del cerámico 10×10, con el fin de darle continuidad al suelo combinado con madera de la misma tonalidad que los pavimentos, donde ocultamos iluminación indirecta, cálida, con la idea de poder generar atmósferas más relajadas cuando se pretenda. Por lo tanto la iluminación también es un aspecto a destacar dentro del proyecto, marcando aquellos elementos arquitectónicos que consideramos más interesantes (panelados, estanterías,…) y generando diferentes ambientes dependiendo de la cantidad y tipo de luminaria que accionamos, el momento del día en el que vivamos y la actividad que se vaya a realizar."
   ],
-  "galeria": "sueltas"
+  "galeria": "sueltas",
+  "hero": 3,
+  "home": 4
  },
  {
   "slug": "campana-bakery",
@@ -221,7 +227,9 @@
    "Dentro del pabellón dos volúmenes dorados configuran espacios de transición y al mismo tiempo ordenan el resto de la superficie, aportando una lectura sencilla del mismo. En el interior de la zona de eventos se opta por un pavimento continúo evitando juntas y trasmitiendo elegancia en contraste con las mesas de los comensales gracias al aspecto homogéneo y neutro que aporta.",
    "La iluminación es tratada con especial detalle. Un cielo de guirnaldas es el componente principal que aporta un aire festivo a este interior. Esta luz base que aportan las guirnaldas se refuerza con proyectores que destacan las mesas de los comensales. Una iluminación indirecta en el perímetro genera una luz ambiente que completa el espacio."
   ],
-  "galeria": "galeria"
+  "galeria": "galeria",
+  "hero": 2,
+  "home": 5
  },
  {
   "slug": "clinica-ame",

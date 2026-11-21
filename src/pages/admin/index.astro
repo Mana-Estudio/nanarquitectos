@@ -1,0 +1,79 @@
+---
+/** Panel de administrador (modo demo). Fuera del menú público y sin indexar. */
+import '../../styles/global.css';
+import '../../styles/admin.css';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import logo from '../../assets/logo.webp';
+import { cargados, fotosDe, planosDe, homeSlots } from '../../data/proyectos';
+
+const isL = (f: ImageMetadata) => f.width > f.height;
+const capital = (s: string) => (s === s.toLowerCase() ? s.replace(/(^|\s)\p{L}/gu, (c) => c.toUpperCase()) : s);
+const thumb = async (img: ImageMetadata, id: string) => {
+  const r = await getImage({ src: img, width: 640, format: 'webp', quality: 74 });
+  return { id, src: r.src, w: img.width, h: img.height };
+};
+// Índice de la n-ésima foto con esa orientación (mismo criterio que la web cuando no hay foto elegida)
+const nth = (f: ImageMetadata[], o: 'L' | 'P', n = 0) => {
+  const idx = f.map((x, i) => [x, i] as const).filter(([x]) => (o === 'L') === isL(x)).map(([, i]) => i);
+  return idx[n] ?? idx[0] ?? 0;
+};
+
+const proyectos = await Promise.all(cargados.map(async (p) => {
+  const f = fotosDe(p.slug);
+  return {
+    slug: p.slug,
+    nombre: capital(p.nombre.replace(/\s+/g, ' ').trim()),
+    titulo: p.titulo,
+    categoria: p.categoria,
+    lugar: p.lugar,
+    anio: p.anio,
+    m2: p.m2,
+    texto: p.texto,
+    publicado: p.publicado !== false,
+    fotos: await Promise.all(f.map((img, i) => thumb(img, `${p.slug}-${i}`))),
+    planos: await Promise.all(planosDe(p.slug).map((img, i) => thumb(img, `${p.slug}-plano-${i}`))),
+    portada: p.portadaFoto ?? Math.max(0, f.findIndex(isL)),
+    galeria: p.galeria ?? 'mosaico',
+    mostrar: { ficha: true, texto: true, galeria: true, planos: true, siguiente: true, ...p.mostrar },
+    _f: f,
+  };
+}));
+
+const slot = (pos: number | undefined, key: 'hero' | 'home') => {
+  const p = proyectos.find((x) => (cargados.find((c) => c.slug === x.slug) as any)?.[key] === pos);
+  if (!p) return null;
+  const c = cargados.find((x) => x.slug === p.slug)!;
+  const o = key === 'hero' ? 'L' : homeSlots[pos! - 1].o;
+  const i = (key === 'hero' ? c.heroFoto : c.homeFoto) ?? nth(p._f, o, key === 'hero' ? 1 : 0);
+  return { slug: p.slug, foto: p.fotos[i]?.id ?? p.fotos[0]?.id };
+};
+const portada = {
+  hero: [1, 2, 3].map((n) => slot(n, 'hero')),
+  home: [1, 2, 3, 4, 5].map((n) => slot(n, 'home')),
+};
+const seed = {
+  estado: { proyectos: proyectos.map(({ _f, ...p }) => p), portada },
+  slots: homeSlots.map((s) => ({ label: s.label, o: s.o })),
+  categorias: ['Vivienda', 'Clínica', 'Hostelería', 'Comercio', 'Oficina', 'Otros'],
+  logo: (await getImage({ src: logo, width: 190, format: 'webp' })).src,
+};
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Panel · NAN Arquitectos</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#f5f3ef" />
+  </head>
+  <body class="adm-body">
+    <div id="app" aria-live="polite"><p class="adm-loading">Cargando el panel…</p></div>
+    <script type="application/json" id="seed" set:html={JSON.stringify(seed)} />
+    <script>
+      import '../../scripts/admin/app.ts';
+    </script>
+  </body>
+</html>
