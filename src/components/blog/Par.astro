@@ -1,4 +1,5 @@
 ---
+import { r } from '../../lib/ruta';
 /**
  * Dos fotos verticales de un mismo proyecto, una junto a otra.
  * <Par proyecto="clinica-ame" fotos={[0, 1]} pie="…" />
@@ -23,7 +24,7 @@ const meta = [ciudad(p), p.anio].filter(Boolean).join(' · ');
   </div>
   <figcaption class="small">
     {pie && <span class="par-pie">{pie}</span>}
-    <a href={`/proyectos/${p.slug}/`} class="par-obra mut">{p.nombre}{meta && ` · ${meta}`} <span class="arr" aria-hidden="true">→</span></a>
+    <a href={r(`/proyectos/${p.slug}/`)} class="par-obra mut">{p.nombre}{meta && ` · ${meta}`} <span class="arr" aria-hidden="true">→</span></a>
   </figcaption>
 </figure>
 

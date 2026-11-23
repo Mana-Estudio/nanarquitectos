@@ -1,4 +1,5 @@
 ---
+import { r } from '../../lib/ruta';
 /**
  * Foto de un proyecto dentro de un artículo, con pie y enlace a la obra.
  * <Figura proyecto="marna-restaurante" foto={1} o="L" pie="…" ancho="ancho" />
@@ -32,7 +33,7 @@ const meta = [ciudad(p), p.anio].filter(Boolean).join(' · ');
   </div>
   <figcaption class="small">
     {pie && <span class="fig-pie">{pie}</span>}
-    <a href={`/proyectos/${p.slug}/`} class="fig-obra mut">{p.nombre}{meta && ` · ${meta}`} <span class="arr" aria-hidden="true">→</span></a>
+    <a href={r(`/proyectos/${p.slug}/`)} class="fig-obra mut">{p.nombre}{meta && ` · ${meta}`} <span class="arr" aria-hidden="true">→</span></a>
   </figcaption>
 </figure>
 

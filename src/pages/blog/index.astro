@@ -1,4 +1,5 @@
 ---
+import { r } from '../../lib/ruta';
 import Base from '../../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import { posts, fecha, iso, lectura } from '../../data/blog';
@@ -21,7 +22,7 @@ const jsonld = {
     headline: p.data.titulo,
     description: p.data.descripcion,
     datePublished: iso(p.data.fecha),
-    url: new URL(`/blog/${p.id}/`, url).href,
+    url: new URL(r(`/blog/${p.id}/`), url).href,
   })),
 };
 ---
@@ -38,7 +39,7 @@ const jsonld = {
 
   {primero && (
     <section class="feat pad" aria-label="Último artículo">
-      <a href={`/blog/${primero.id}/`} class="feat-a grid12">
+      <a href={r(`/blog/${primero.id}/`)} class="feat-a grid12">
         <div class="frame feat-img" data-reveal="clip" data-parallax="6">
           <Image {...im(img(primero))} alt={primero.data.portada.alt} widths={[828, 1280, 1920, 2400]} sizes="(max-width: 760px) 100vw, 60vw" format="webp" quality={72} loading="eager" fetchpriority="high" />
         </div>
@@ -58,7 +59,7 @@ const jsonld = {
       <ul class="cards grid12">
         {resto.map((p, i) => (
           <li style={`--mt:${i % 2 ? '120px' : '0'}`}>
-            <a href={`/blog/${p.id}/`} class="card">
+            <a href={r(`/blog/${p.id}/`)} class="card">
               <div class="frame" data-reveal="clip" data-parallax="5" style="aspect-ratio: 3 / 2">
                 <Image {...im(img(p))} alt={p.data.portada.alt} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 50vw" format="webp" quality={72} />
               </div>
@@ -78,7 +79,7 @@ const jsonld = {
       <p class="mut">Muchos de estos artículos nacen de preguntas de clientes. Si tiene una, escríbanos.</p>
       <div class="cta-actions">
         <button class="btn" data-quote>Pedir presupuesto <span class="arr">→</span></button>
-        <a href="/blog/rss.xml" class="btn-ghost">Suscribirse (RSS)</a>
+        <a href={r('/blog/rss.xml')} class="btn-ghost">Suscribirse (RSS)</a>
       </div>
     </div>
   </section>

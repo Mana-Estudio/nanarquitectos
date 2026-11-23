@@ -1,4 +1,5 @@
 ---
+import { r } from '../lib/ruta';
 /**
  * Hemeroteca agrupada por año: obra (enlaza a su ficha), titular, medio, fecha y enlace al artículo original.
  * Cada fila lleva data-formato para que /publicaciones pueda filtrar por revista impresa o prensa digital.
@@ -19,7 +20,7 @@ const anios = [...new Set(items.map(anio))].sort((a, b) => b - a);
         <li class="pub" data-formato={p.formato}>
           <span class="pub-o">
             {p.slug && existe.has(p.slug)
-              ? <a href={`/proyectos/${p.slug}/`} class="serif pub-name">{p.obra}</a>
+              ? <a href={r(`/proyectos/${p.slug}/`)} class="serif pub-name">{p.obra}</a>
               : <span class="serif pub-name">{p.obra}</span>}
             {p.titular && <span class="pub-tit small mut">«{p.titular}»</span>}
           </span>

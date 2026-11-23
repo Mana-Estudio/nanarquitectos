@@ -1,4 +1,5 @@
 ---
+import { r } from '../lib/ruta';
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import { proyectos, foto, im } from '../data/proyectos';
@@ -91,7 +92,7 @@ const avance = recientes.slice(0, 8);
     </div>
     <Hemeroteca items={avance} />
     <div class="hem-more grid12">
-      <a href="/publicaciones/" class="btn-ghost">Ver las {publicaciones.length} publicaciones <span class="arr">→</span></a>
+      <a href={r('/publicaciones/')} class="btn-ghost">Ver las {publicaciones.length} publicaciones <span class="arr">→</span></a>
     </div>
   </section>
 
@@ -99,7 +100,7 @@ const avance = recientes.slice(0, 8);
     <p class="cta-t">¿Tiene un proyecto en mente?</p>
     <div class="cta-actions">
       <button class="btn" data-quote>Pedir presupuesto <span class="arr">→</span></button>
-      <a href="/servicios/" class="btn-ghost">Ver servicios</a>
+      <a href={r('/servicios/')} class="btn-ghost">Ver servicios</a>
     </div>
   </section>
 </Base>

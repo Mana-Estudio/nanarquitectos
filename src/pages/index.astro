@@ -1,4 +1,5 @@
 ---
+import { r } from '../lib/ruta';
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import { heroSlides, obrasHome, ciudad, tipo, publicaciones, im } from '../data/proyectos';
@@ -19,14 +20,14 @@ const total = String(heroSlides.length).padStart(2, '0');
   <section class="hero" aria-label="Obras destacadas" aria-roledescription="carrusel">
     <div class="hero-media" data-hero>
       {heroSlides.map((s, i) => (
-        <figure class:list={['slide', { 'is-active': i === 0 }]} data-slide data-name={s.proyecto.nombre} data-meta={`${ciudad(s.proyecto)} · ${s.proyecto.anio}`} data-href={`/proyectos/${s.proyecto.slug}/`} aria-hidden={i === 0 ? undefined : 'true'}>
+        <figure class:list={['slide', { 'is-active': i === 0 }]} data-slide data-name={s.proyecto.nombre} data-meta={`${ciudad(s.proyecto)} · ${s.proyecto.anio}`} data-href={r(`/proyectos/${s.proyecto.slug}/`)} aria-hidden={i === 0 ? undefined : 'true'}>
           <Image {...im(s.imagen)} alt={s.proyecto.titulo} widths={[828, 1280, 1920, 2560]} sizes="100vw" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} format="webp" quality={70} />
         </figure>
       ))}
     </div>
     <div class="hero-bar pad">
       <p class="hero-cap" data-hero-cap>
-        <a href={`/proyectos/${heroSlides[0].proyecto.slug}/`} class="serif hero-name" data-hero-link>{heroSlides[0].proyecto.nombre}</a>
+        <a href={r(`/proyectos/${heroSlides[0].proyecto.slug}/`)} class="serif hero-name" data-hero-link>{heroSlides[0].proyecto.nombre}</a>
         <span class="small mut" data-hero-meta>{ciudad(heroSlides[0].proyecto)} · {heroSlides[0].proyecto.anio}</span>
       </p>
       <div class="hero-ctrl small num">
@@ -41,11 +42,11 @@ const total = String(heroSlides.length).padStart(2, '0');
   <section class="works pad" aria-labelledby="works-title">
     <div class="sec-head" data-reveal="text">
       <h2 id="works-title" class="h2">Obras seleccionadas</h2>
-      <a href="/proyectos/" class="small-link ulink">Todos los proyectos <span class="arr">→</span></a>
+      <a href={r('/proyectos/')} class="small-link ulink">Todos los proyectos <span class="arr">→</span></a>
     </div>
     <div class="grid12 works-grid">
       {obrasHome.map((o, i) => (
-        <a href={`/proyectos/${o.proyecto.slug}/`} class="work" style={`--col:${o.col};--mt:${o.mt}`} data-speed={i % 2 ? '0.22' : undefined}>
+        <a href={r(`/proyectos/${o.proyecto.slug}/`)} class="work" style={`--col:${o.col};--mt:${o.mt}`} data-speed={i % 2 ? '0.22' : undefined}>
           <div class="frame" data-reveal="img" style={`aspect-ratio:${o.ar};view-transition-name:p-${o.proyecto.slug}`}>
             <Image {...im(o.imagen)} alt={o.proyecto.titulo} widths={[640, 1024, 1600, 2400]} sizes={o.col === '1 / -1' ? '100vw' : `(max-width: 760px) 100vw, ${Math.round((Number(o.col.match(/span (\d+)/)?.[1] ?? 12) / 12) * 100)}vw`} format="webp" quality={72} />
           </div>
@@ -64,13 +65,13 @@ const total = String(heroSlides.length).padStart(2, '0');
       <p class="text h2 lead">Una arquitectura racional y sincera, que busca el equilibrio entre la funcionalidad, el diseño y la sostenibilidad para que sus espacios no resulten indiferentes.</p>
       <p class="col-a">NAN Arquitectos es un estudio de arquitectura y diseño nacido en 2013, con sede en Pontevedra. Sus propuestas se caracterizan por el diseño contemporáneo, el dominio de la iluminación, el juego de volúmenes, el contraste de materiales y la eficiencia energética.</p>
       <p class="col-b small mut">Alberto F. Reiriz Paz<br />Vicente Pillado Domato</p>
-      <a href="/estudio/" class="col-a more ulink">Conocer el estudio <span class="arr">→</span></a>
+      <a href={r('/estudio/')} class="col-a more ulink">Conocer el estudio <span class="arr">→</span></a>
     </div>
   </section>
 
   <section class="block pad" id="publicaciones" aria-labelledby="pub-label">
     <div class="grid12 rule">
-      <h2 id="pub-label" class="label small mut">Publicaciones<br /><a href="/publicaciones/" class="ulink">Ver todas</a></h2>
+      <h2 id="pub-label" class="label small mut">Publicaciones<br /><a href={r('/publicaciones/')} class="ulink">Ver todas</a></h2>
       <ul class="text pubs" data-reveal="text">
         {publicaciones.map(([obra, medio]) => (
           <li><span class="serif">{obra}</span><span class="small mut">{medio}</span></li>
@@ -82,13 +83,13 @@ const total = String(heroSlides.length).padStart(2, '0');
   <section class="block pad" id="servicios" aria-labelledby="servicios-label">
     <div class="grid12 rule svc-head">
       <h2 id="servicios-label" class="label small mut">Servicios</h2>
-      <a href="/servicios/" class="text more ulink">Cómo trabajamos en cada fase <span class="arr">→</span></a>
+      <a href={r('/servicios/')} class="text more ulink">Cómo trabajamos en cada fase <span class="arr">→</span></a>
     </div>
     <ol class="svc">
       {servicios.map((s, i) => (
         <li class="grid12" data-reveal="text">
           <span class="svc-num small mut num">{String(i + 1).padStart(2, '0')}</span>
-          <h3 class="svc-name h3"><a href={`/servicios/#${s.name.toLowerCase().replace('ó', 'o')}`} class="svc-a">{s.name}</a></h3>
+          <h3 class="svc-name h3"><a href={r(`/servicios/#${s.name.toLowerCase().replace('ó', 'o')}`)} class="svc-a">{s.name}</a></h3>
           <p class="svc-desc">{s.desc}</p>
         </li>
       ))}

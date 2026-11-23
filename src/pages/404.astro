@@ -1,11 +1,12 @@
 ---
+import { r } from '../lib/ruta';
 import Base from '../layouts/Base.astro';
 ---
 <Base title="Página no encontrada">
   <section class="pad nf">
     <h1>Esta página no existe.</h1>
     <p class="mut">Puede que el proyecto haya cambiado de dirección. Todo el trabajo del estudio está en el listado.</p>
-    <p class="links"><a href="/proyectos/" class="is-current">Ver proyectos</a><a href="/">Inicio</a></p>
+    <p class="links"><a href={r('/proyectos/')} class="is-current">Ver proyectos</a><a href={r('/')}>Inicio</a></p>
   </section>
 </Base>
 

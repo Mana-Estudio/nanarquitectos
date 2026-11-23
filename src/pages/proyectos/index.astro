@@ -1,4 +1,5 @@
 ---
+import { r } from '../../lib/ruta';
 import Base from '../../layouts/Base.astro';
 import { Image, getImage } from 'astro:assets';
 import { proyectos, filtros, portada, ciudad, tipo, im } from '../../data/proyectos';
@@ -37,7 +38,7 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ ...im(portada
     <ul class="grid grid12" data-grid data-per={PER}>
       {proyectos.map((p, i) => (
         <li class="card" data-cat={p.categoria} data-shape={SHAPES[i % 9]} data-m={i % 3 ? 's' : 'b'} hidden={i >= PER}>
-          <a href={`/proyectos/${p.slug}/`}>
+          <a href={r(`/proyectos/${p.slug}/`)}>
             <div class="frame" data-reveal="clip" data-parallax="5" style={`view-transition-name:p-${p.slug}`}>
               <Image {...im(portada(p))} alt={p.titulo} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, (max-width: 1100px) 60vw, 58vw" format="webp" quality={72} loading={i < 4 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
             </div>
@@ -71,7 +72,7 @@ const previews = await Promise.all(proyectos.map((p) => getImage({ ...im(portada
         <ol class="rows" data-rows>
           {proyectos.map((p, i) => (
             <li data-cat={p.categoria} data-nombre={p.nombre} data-anio={p.anio ?? 0} data-m2={p.m2 ?? 0} data-i={i}>
-              <a href={`/proyectos/${p.slug}/`} class="row" data-hover={i}>
+              <a href={r(`/proyectos/${p.slug}/`)} class="row" data-hover={i}>
                 <span class="nr mut num"><i class="mark"></i><span data-nr>{String(i + 1).padStart(2, '0')}</span></span>
                 <span class="serif rname">{p.nombre}</span>
                 <span class="d">{tipo(p)}</span>

@@ -1,3 +1,4 @@
+import { r } from '../../lib/ruta';
 import { localStore, supabaseStore, type Estado, type Foto, type Galeria, type Mostrar, type P, type Portada, type Slot, type TextoFormato } from './store';
 
 interface Seed { estado: Estado; slots: { label: string; o: 'L' | 'P'; col: string; ar: string; mt: string }[]; categorias: string[]; logo: string; supabase: { url: string; key: string } | null }
@@ -152,7 +153,7 @@ function render() {
       </nav>
       <div class="side-foot">
         ${store.publish ? `<button class="pub" data-publish><span class="pub-dot" aria-hidden="true"></span><span class="pub-t">La web está al día</span></button>` : ''}
-        <a href="/" target="_blank" rel="noopener" class="side-link">Ver la web <span class="arr">↗</span></a>
+        <a href="${r('/')}" target="_blank" rel="noopener" class="side-link">Ver la web <span class="arr">↗</span></a>
         ${store.demo ? `<p class="demo"><span class="dot"></span>Modo demo: los cambios se guardan solo en este navegador.</p><button class="side-link" data-reset>Restablecer datos de la demo</button>` : ''}
         <button class="side-link" data-logout>Cerrar sesión</button>
       </div>
@@ -451,7 +452,7 @@ function editor() {
       <span class="dev" role="radiogroup" aria-label="Tamaño de la vista previa">${devs.map(([k, t]) => `<button type="button" class="dev-b ${device === k ? 'is-on' : ''}" data-dev="${k}" role="radio" aria-checked="${device === k}">${t}</button>`).join('')}</span>
       <span class="state" data-state>${d.nuevo ? 'Sin guardar' : 'Todo guardado'}</span>
       <button type="button" class="b b-ghost" data-drawer>Ajustes</button>
-      ${d.nuevo ? '' : `<a class="b b-ghost b-web" href="/proyectos/${d.slug}/" target="_blank" rel="noopener">Ver en la web <span class="arr">↗</span></a>`}
+      ${d.nuevo ? '' : `<a class="b b-ghost b-web" href="${r(`/proyectos/${d.slug}/`)}" target="_blank" rel="noopener">Ver en la web <span class="arr">↗</span></a>`}
       <button type="button" class="b b-pri" data-save><span data-save-t>${d.nuevo ? 'Crear proyecto' : 'Guardar'}</span></button>
     </div>
   </header>
@@ -799,7 +800,7 @@ function portadaView() {
     <div class="top-act">
       ${devHTML()}
       <span class="state" data-state>Todo guardado</span>
-      <a class="b b-ghost b-web" href="/" target="_blank" rel="noopener">Ver la web <span class="arr">↗</span></a>
+      <a class="b b-ghost b-web" href="${r('/')}" target="_blank" rel="noopener">Ver la web <span class="arr">↗</span></a>
       <button type="button" class="b b-pri" data-psave><span data-save-t>Guardar portada</span></button>
     </div>
   </header>

@@ -1,4 +1,5 @@
 ---
+import { r } from '../../lib/ruta';
 /** Panel de administrador (modo demo). Fuera del menú público y sin indexar. */
 import '../../styles/global.css';
 import '../../styles/admin.css';
@@ -71,7 +72,7 @@ const seed = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Panel · NAN Arquitectos</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={r('/favicon.svg')} type="image/svg+xml" />
     <meta name="theme-color" content="#f5f3ef" />
   </head>
   <body class="adm-body">

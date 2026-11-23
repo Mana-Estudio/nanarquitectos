@@ -1,4 +1,5 @@
 ---
+import { r } from '../../lib/ruta';
 import Base from '../../layouts/Base.astro';
 import { Image, getImage } from 'astro:assets';
 import { render } from 'astro:content';
@@ -32,7 +33,7 @@ const min = lectura(post.body);
 const url = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 const og = await getImage({ ...im(hero, 1200), format: 'jpg', quality: 78 });
 const logoImg = await getImage({ src: logo, width: 300, format: 'png' });
-const abs = (p: string) => new URL(p, url).href;
+const abs = (p: string) => new URL(r(p), url).href;
 const persona = d.autor !== 'NAN Arquitectos';
 const jsonld = [
   {
@@ -78,7 +79,7 @@ const otrosImg = otros.map((o) => foto(o.data.portada.proyecto, o.data.portada.f
   <article class="post">
     <header class="post-head pad grid12">
       <nav class="crumbs small" aria-label="Ruta">
-        <a href="/blog/" class="mut ulink">Blog</a><span class="mut" aria-hidden="true">/</span><span>{d.categoria}</span>
+        <a href={r('/blog/')} class="mut ulink">Blog</a><span class="mut" aria-hidden="true">/</span><span>{d.categoria}</span>
       </nav>
       <h1 class="post-title" data-post-title>{d.titulo}</h1>
       <div class="post-side" data-reveal="text">
@@ -97,7 +98,7 @@ const otrosImg = otros.map((o) => foto(o.data.portada.proyecto, o.data.portada.f
         <Image {...im(hero)} alt={d.portada.alt} widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} loading="eager" fetchpriority="high" />
       </div>
       <figcaption class="pad small mut">
-        <a href={`/proyectos/${obraHero.slug}/`} class="ulink">{obraHero.nombre}</a> · {[tipo(obraHero), ciudad(obraHero), obraHero.anio].filter(Boolean).join(' · ')}
+        <a href={r(`/proyectos/${obraHero.slug}/`)} class="ulink">{obraHero.nombre}</a> · {[tipo(obraHero), ciudad(obraHero), obraHero.anio].filter(Boolean).join(' · ')}
       </figcaption>
     </figure>
 
@@ -117,7 +118,7 @@ const otrosImg = otros.map((o) => foto(o.data.portada.proyecto, o.data.portada.f
     </div>
 
     <footer class="post-foot pad grid12">
-      <p class="small mut foot-cat">Archivado en <a href="/blog/" class="ulink">{d.categoria}</a></p>
+      <p class="small mut foot-cat">Archivado en <a href={r('/blog/')} class="ulink">{d.categoria}</a></p>
       <div class="share small" data-share>
         <span class="mut">Compartir</span>
         <a href={`https://wa.me/?text=${encodeURIComponent(`${d.titulo} ${url.href}`)}`} target="_blank" rel="noopener" class="ulink">WhatsApp</a>
@@ -134,7 +135,7 @@ const otrosImg = otros.map((o) => foto(o.data.portada.proyecto, o.data.portada.f
       <ul class="citados-list grid12">
         {obras.map((p) => (
           <li>
-            <a href={`/proyectos/${p.slug}/`} class="cit">
+            <a href={r(`/proyectos/${p.slug}/`)} class="cit">
               <div class="frame" data-reveal="clip" style="aspect-ratio: 4 / 3">
                 <Image {...im(portada(p), 900)} alt={p.titulo} widths={[480, 900]} sizes="(max-width: 760px) 50vw, 24vw" format="webp" quality={70} />
               </div>
@@ -153,7 +154,7 @@ const otrosImg = otros.map((o) => foto(o.data.portada.proyecto, o.data.portada.f
       <p class="mut">Cuéntenos qué necesita y le respondemos con una primera orientación de plazos y alcance.</p>
       <div class="cta-actions">
         <button class="btn" data-quote data-quote-tipo={tipoCotizador[d.categoria]}>Pedir presupuesto <span class="arr">→</span></button>
-        <a href="/contacto/" class="btn-ghost">Contacto</a>
+        <a href={r('/contacto/')} class="btn-ghost">Contacto</a>
       </div>
     </div>
   </section>
@@ -162,12 +163,12 @@ const otrosImg = otros.map((o) => foto(o.data.portada.proyecto, o.data.portada.f
     <section class="more pad" aria-labelledby="more-t">
       <div class="more-head">
         <h2 id="more-t" class="h2">Seguir leyendo</h2>
-        <a href="/blog/" class="small ulink">Todo el blog <span class="arr">→</span></a>
+        <a href={r('/blog/')} class="small ulink">Todo el blog <span class="arr">→</span></a>
       </div>
       <ul class="more-list grid12">
         {otros.map((o, i) => (
           <li>
-            <a href={`/blog/${o.id}/`} class="card">
+            <a href={r(`/blog/${o.id}/`)} class="card">
               <div class="frame" data-reveal="clip" style="aspect-ratio: 3 / 2">
                 <Image {...im(otrosImg[i])} alt="" widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 50vw" format="webp" quality={70} />
               </div>

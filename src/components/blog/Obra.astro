@@ -1,4 +1,5 @@
 ---
+import { r } from '../../lib/ruta';
 /**
  * Tarjeta de un proyecto en mitad del texto: enlaza la explicación con la obra construida.
  * <Obra proyecto="clinica-dental-pablo-sieiro" />
@@ -12,7 +13,7 @@ if (!p) throw new Error(`<Obra>: no existe el proyecto «${Astro.props.proyecto}
 const meta = [tipo(p), ciudad(p), p.anio, p.superficie].filter(Boolean).join(' · ');
 ---
 <aside class="obra" aria-label={`Proyecto relacionado: ${p.nombre}`}>
-  <a href={`/proyectos/${p.slug}/`} class="obra-a">
+  <a href={r(`/proyectos/${p.slug}/`)} class="obra-a">
     <div class="frame obra-img">
       <Image {...im(portada(p), 480)} alt="" widths={[240, 480]} sizes="160px" format="webp" quality={70} />
     </div>
