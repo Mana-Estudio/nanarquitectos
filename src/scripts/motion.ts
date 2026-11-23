@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import { runLoader } from './loader';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -8,6 +9,9 @@ const reduced =
   window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
   !document.documentElement.classList.contains('force-motion');
 const ease = 'expo.out';
+/** Intro con fotos en curso: GSAP queda en pausa y las entradas de la página esperan a que se descubra */
+const intro = document.documentElement.classList.contains('is-loading');
+if (intro) gsap.globalTimeline.pause();
 
 /* Menú mobile: «Menú» / «Cerrar» */
 const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
@@ -110,4 +114,25 @@ if (!reduced) {
   });
 }
 
-export { gsap, ScrollTrigger, reduced, ease };
+if (intro) {
+  const lenis = (window as any).__lenis;
+  lenis?.stop();
+  let done = false;
+  const reveal = () => {
+    if (done) return;
+    done = true;
+    document.documentElement.classList.remove('is-loading');
+    gsap.globalTimeline.resume();
+    lenis?.start();
+    ScrollTrigger.refresh();
+    document.dispatchEvent(new Event('intro:done'));
+  };
+  // Si algo falla a mitad, la página nunca queda tapada
+  runLoader(reveal).catch((e) => {
+    console.warn('[intro]', e);
+    reveal();
+    document.querySelector('[data-loader]')?.remove();
+  });
+}
+
+export { gsap, ScrollTrigger, reduced, ease, intro };

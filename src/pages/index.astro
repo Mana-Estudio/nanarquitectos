@@ -114,7 +114,7 @@ const total = String(heroSlides.length).padStart(2, '0');
 </Base>
 
 <script>
-  import { gsap, reduced, ease } from '../scripts/motion.ts';
+  import { gsap, reduced, ease, intro } from '../scripts/motion.ts';
 
   const slides = Array.from(document.querySelectorAll<HTMLElement>('[data-slide]'));
   const link = document.querySelector<HTMLAnchorElement>('[data-hero-link]')!;
@@ -174,11 +174,14 @@ const total = String(heroSlides.length).padStart(2, '0');
   }
 
   if (!reduced) {
-    gsap.timeline({ defaults: { ease } })
-      .from('[data-hero]', { clipPath: 'inset(6% 4% 6% 4%)', duration: 1.8 })
-      .from('.hero-bar > *', { opacity: 0, y: 10, duration: 1.1, stagger: 0.08 }, 0.6);
+    const tl = gsap.timeline({ defaults: { ease } });
+    // Con la intro, la foto ya llega a su sitio desde el marco central: solo entra el pie
+    if (!intro) tl.from('[data-hero]', { clipPath: 'inset(6% 4% 6% 4%)', duration: 1.8 });
+    tl.from('.hero-bar > *', { opacity: 0, y: 10, duration: 1.1, stagger: 0.08 }, intro ? 0.1 : 0.6);
   }
-  restart();
+  // El carrusel empieza a contar cuando se ve la página
+  if (intro) document.addEventListener('intro:done', restart, { once: true });
+  else restart();
 </script>
 
 <style>

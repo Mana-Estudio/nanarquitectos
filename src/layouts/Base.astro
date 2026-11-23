@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.webp';
 import Cotizador from '../components/Cotizador.astro';
+import Loader from '../components/Loader.astro';
 import { contacto } from '../data/estudio';
 
 interface Props {
@@ -57,8 +58,18 @@ const nav = [
     <script is:inline>
       // ?motion=1 fuerza las animaciones aunque el sistema pida reducir movimiento (para demos)
       try {
-        if (new URLSearchParams(location.search).has('motion')) sessionStorage.setItem('force-motion', '1');
-        if (sessionStorage.getItem('force-motion')) document.documentElement.classList.add('force-motion');
+        var q = new URLSearchParams(location.search), html = document.documentElement;
+        if (q.has('motion')) sessionStorage.setItem('force-motion', '1');
+        var force = sessionStorage.getItem('force-motion');
+        if (force) html.classList.add('force-motion');
+        // Intro con fotos (components/Loader.astro): primera página de la visita, o ?intro para enseñarla
+        var quiet = matchMedia('(prefers-reduced-motion: reduce)').matches && !force;
+        if (!quiet && (q.has('intro') || !sessionStorage.getItem('intro-vista'))) {
+          html.classList.add('is-loading');
+          sessionStorage.setItem('intro-vista', '1');
+          // Si el JavaScript de la página no llega a arrancarla, se retira sola
+          setTimeout(function () { if (!document.querySelector('[data-loader][data-run]')) html.classList.remove('is-loading'); }, 4000);
+        }
       } catch (e) {}
     </script>
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -77,6 +88,7 @@ const nav = [
     })} />
   </head>
   <body>
+    <Loader />
     <a class="skip sr-only" href="#main">Saltar al contenido</a>
     <header class="site-header pad">
       <a href="/" class="brand" aria-label="NAN Arquitectos, inicio">

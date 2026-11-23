@@ -1,0 +1,75 @@
+---
+/**
+ * Intro con fotos de la obra. La primera página de cada visita abre con cinco proyectos que se
+ * suceden en un marco central, con su nombre, lugar y año, y un contador. En la home la última
+ * foto es la del carrusel, que crece hasta ocupar su sitio; en el resto, una cortina se levanta.
+ *
+ * - La activa el script de <head> en Base (clase html.is-loading) y la anima scripts/loader.ts.
+ * - Una vez por sesión. ?intro en la URL la vuelve a mostrar (para enseñarla).
+ * - No aparece sin JavaScript ni con «reducir movimiento». Un clic o una tecla la saltan.
+ * - Las fotos van en un <template>: solo se descargan cuando la intro se muestra.
+ */
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.webp';
+import { heroSlides, obrasHome, proyectos, foto, ciudad, im } from '../data/proyectos';
+
+// Obras de la portada (las que elige el estudio en el panel) sin repetir; la del carrusel va aparte
+const heroSlug = heroSlides[0]?.proyecto.slug;
+const vistos = new Set<string>(heroSlug ? [heroSlug] : []);
+const candidatas = [...obrasHome.map((o) => o.proyecto), ...heroSlides.map((s) => s.proyecto), ...proyectos.filter((p) => p.destacado), ...proyectos];
+const obras = candidatas.filter((p) => !vistos.has(p.slug) && Boolean(vistos.add(p.slug))).slice(0, 5);
+---
+<div class="loader" data-loader aria-hidden="true">
+  <div class="ld-head">
+    <Image src={logo} alt="" width={190} height={88} loading="eager" class="ld-logo" />
+    <p class="ld-tag">Arquitectura e interiorismo · Pontevedra</p>
+  </div>
+  <div class="ld-frame" data-ld-frame></div>
+  <div class="ld-foot">
+    <p class="ld-cap" data-ld-cap><span class="ld-name" data-ld-name></span><span class="ld-meta" data-ld-meta></span></p>
+    <p class="ld-count" data-ld-count>00</p>
+  </div>
+  <div class="ld-line"><i data-ld-line></i></div>
+  <template data-ld-tpl>
+    {obras.map((p) => (
+      <figure class="ld-plate" data-ld-plate data-name={p.nombre} data-meta={[ciudad(p), p.anio].filter(Boolean).join(' · ')}>
+        <Image {...im(foto(p.slug, 0, 'P'), 640)} alt="" widths={[320, 640]} sizes="(max-width: 760px) 46vw, 22vw" format="webp" quality={62} loading="eager" />
+      </figure>
+    ))}
+  </template>
+</div>
+
+<style is:global>
+  .loader { display: none; position: fixed; inset: 0; z-index: 200; background: var(--bg); color: var(--ink); cursor: progress; }
+  html.is-loading .loader { display: block; }
+  /* Sin barra de scroll mientras dura, pero con su hueco reservado: al terminar no salta el ancho */
+  html.is-loading { overflow: hidden; scrollbar-gutter: stable; }
+
+  /* Mismo sitio y tamaño que el logo de la cabecera: al irse la intro, el logo no se mueve */
+  .ld-head { height: var(--head-h); padding-inline: var(--pad); display: flex; align-items: center; justify-content: space-between; }
+  .ld-logo { width: 92px; height: auto; }
+  .ld-tag { font-size: 13px; color: var(--mut); }
+
+  .ld-frame { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: clamp(180px, 21vw, 320px); aspect-ratio: 4 / 5; overflow: hidden; background: var(--frame); }
+  .ld-plate { position: absolute; inset: 0; margin: 0; clip-path: inset(100% 0 0 0); }
+  .ld-plate img { width: 100%; height: 100%; max-width: none; object-fit: cover; }
+  /* Home: ventana a la foto del carrusel, colocada exactamente donde está en la página */
+  .ld-window { position: absolute; overflow: hidden; }
+  .ld-window img { width: 100%; height: 100%; max-width: none; object-fit: cover; }
+
+  .ld-foot { position: absolute; left: var(--pad); right: var(--pad); bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .ld-cap { display: flex; flex-direction: column; gap: 4px; min-height: 3.2em; justify-content: flex-end; }
+  .ld-name { font-family: var(--serif); font-weight: 300; font-size: clamp(19px, 1.6vw, 24px); line-height: 1.2; }
+  .ld-meta { font-size: 13px; color: var(--mut); }
+  .ld-count { font-family: var(--serif); font-weight: 300; font-size: clamp(56px, 7vw, 112px); line-height: 0.78; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .ld-line { position: absolute; left: var(--pad); right: var(--pad); bottom: 24px; height: 1px; background: var(--line); }
+  .ld-line i { display: block; height: 100%; background: var(--yellow); transform: scaleX(0); transform-origin: left; }
+
+  @media (max-width: 760px) {
+    .ld-logo { width: 76px; }
+    .ld-tag { display: none; }
+    .ld-frame { width: 46vw; }
+    .ld-foot { bottom: 32px; }
+    .ld-line { bottom: 18px; }
+  }
+</style>
