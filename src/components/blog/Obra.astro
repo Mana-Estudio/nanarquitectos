@@ -1,0 +1,43 @@
+---
+/**
+ * Tarjeta de un proyecto en mitad del texto: enlaza la explicación con la obra construida.
+ * <Obra proyecto="clinica-dental-pablo-sieiro" />
+ */
+import { Image } from 'astro:assets';
+import { proyectos, portada, im, ciudad, tipo } from '../../data/proyectos';
+
+interface Props { proyecto: string }
+const p = proyectos.find((x) => x.slug === Astro.props.proyecto);
+if (!p) throw new Error(`<Obra>: no existe el proyecto «${Astro.props.proyecto}»`);
+const meta = [tipo(p), ciudad(p), p.anio, p.superficie].filter(Boolean).join(' · ');
+---
+<aside class="obra" aria-label={`Proyecto relacionado: ${p.nombre}`}>
+  <a href={`/proyectos/${p.slug}/`} class="obra-a">
+    <div class="frame obra-img">
+      <Image {...im(portada(p), 480)} alt="" widths={[240, 480]} sizes="160px" format="webp" quality={70} />
+    </div>
+    <span class="obra-txt">
+      <span class="small mut">Proyecto del estudio</span>
+      <span class="serif obra-n">{p.nombre}</span>
+      <span class="small mut">{meta}</span>
+    </span>
+    <span class="obra-go small" aria-hidden="true">Ver obra <span class="arr">→</span></span>
+  </a>
+</aside>
+
+<style>
+  .obra { grid-column: 4 / span 6; margin-block: 40px 8px; }
+  .obra-a { display: grid; grid-template-columns: 132px minmax(0, 1fr) auto; gap: 20px; align-items: center; padding: 14px; box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow 0.4s, background-color 0.4s; }
+  .obra-a:hover { color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: rgba(255, 255, 255, 0.4); }
+  .obra-img { aspect-ratio: 4 / 3; }
+  .obra-txt { display: flex; flex-direction: column; gap: 4px; }
+  .obra-n { font-size: 22px; line-height: 1.2; }
+  .obra-go { white-space: nowrap; padding-right: 6px; }
+  @media (max-width: 1100px) { .obra { grid-column: 3 / span 8; } }
+  @media (max-width: 760px) {
+    .obra { grid-column: 1 / -1; }
+    .obra-a { grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 10px; }
+    .obra-n { font-size: 19px; }
+    .obra-go { display: none; }
+  }
+</style>

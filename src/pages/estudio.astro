@@ -2,7 +2,9 @@
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import { proyectos, foto, im } from '../data/proyectos';
-import { estudio, socios, revistas, prensa } from '../data/estudio';
+import Hemeroteca from '../components/Hemeroteca.astro';
+import { estudio, socios } from '../data/estudio';
+import { publicaciones, recientes } from '../data/publicaciones';
 
 const hero = foto('oficina-nan-arquitectos', 0, 'L');
 const retrato = foto('oficina-nan-arquitectos', 0, 'P');
@@ -13,10 +15,8 @@ const capFotos = [
   foto('restaurante-nantes-en-madrid', 0, 'P'),
   foto('hotel-rural-pazo-buzaca', 1, 'L'),
 ];
-// Hemeroteca agrupada por año, de la más reciente a la más antigua
-const pubs = [...revistas.map((p) => ({ p, tipo: 'Revista' })), ...prensa.map((p) => ({ p, tipo: 'Digital' }))];
-const anios = [...new Set(pubs.map((x) => x.p[2]))].sort((a, b) => b - a);
-const existe = new Set(proyectos.map((p) => p.slug));
+// Avance de la hemeroteca: las más recientes; el listado completo vive en /publicaciones
+const avance = recientes.slice(0, 8);
 ---
 <Base title="Estudio" current="estudio" ogImage={hero.src} description="NAN Arquitectos: estudio de arquitectura y diseño nacido en 2013 en Pontevedra, formado por Alberto F. Reiriz Paz y Vicente Pillado Domato.">
   <section class="st-hero pad grid12">
@@ -79,7 +79,7 @@ const existe = new Set(proyectos.map((p) => p.slug));
     <dl class="datos-dl">
       <div><dt class="small mut">Fundación</dt><dd class="num">2013</dd></div>
       <div><dt class="small mut">Proyectos publicados en la web</dt><dd class="num">{proyectos.length}</dd></div>
-      <div><dt class="small mut">Apariciones en prensa</dt><dd class="num">{pubs.length}</dd></div>
+      <div><dt class="small mut">Apariciones en prensa</dt><dd class="num">{publicaciones.length}</dd></div>
       <div><dt class="small mut">Sede</dt><dd>Pontevedra</dd></div>
     </dl>
   </section>
@@ -89,17 +89,10 @@ const existe = new Set(proyectos.map((p) => p.slug));
       <h2 id="pub-t" class="h2 hem-title">Publicaciones</h2>
       <p class="hem-intro mut">Revistas de arquitectura e interiorismo y medios digitales que han publicado obras del estudio, como ArchDaily, Arqa, Architizer o Proyecto Contract.</p>
     </div>
-    {anios.map((a) => (
-      <div class="year grid12">
-        <h3 class="year-n num">{a}</h3>
-        <ul class="year-list">
-          {pubs.filter((x) => x.p[2] === a).map(({ p: [obra, medio, , slug], tipo }) => {
-            const inner = <><span class="serif pub-o">{obra}</span><span class="pub-m">{medio}</span><span class="pub-t small mut">{tipo}</span></>;
-            return <li>{slug && existe.has(slug) ? <a href={`/proyectos/${slug}/`} class="pub-row is-link">{inner}<span class="arr pub-arr" aria-hidden="true">→</span></a> : <span class="pub-row">{inner}</span>}</li>;
-          })}
-        </ul>
-      </div>
-    ))}
+    <Hemeroteca items={avance} />
+    <div class="hem-more grid12">
+      <a href="/publicaciones/" class="btn-ghost">Ver las {publicaciones.length} publicaciones <span class="arr">→</span></a>
+    </div>
   </section>
 
   <section class="st-cta pad grid12">
@@ -179,16 +172,8 @@ const existe = new Set(proyectos.map((p) => p.slug));
   .hem-head { row-gap: 16px; padding-bottom: 56px; align-items: end; }
   .hem-title { grid-column: 1 / span 6; }
   .hem-intro { grid-column: 8 / span 5; }
-  .year { border-top: 1px solid var(--line); padding-top: 20px; padding-bottom: 32px; }
-  .year-n { grid-column: 1 / span 3; font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 4vw, 60px); line-height: 1; align-self: start; position: sticky; top: 24px; }
-  .year-list { grid-column: 4 / span 9; list-style: none; margin: 0; padding: 0; }
-  .pub-row { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 72px 24px; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); transition: padding 0.5s var(--ease-out), color 0.3s; }
-  .year-list li:last-child .pub-row { border-bottom: 0; }
-  .pub-o { font-size: 21px; line-height: 1.25; }
-  .pub-m { font-size: 14px; }
-  .pub-arr { justify-self: end; opacity: 0; transition: opacity 0.4s, transform 0.55s var(--ease-out); }
-  .is-link:hover { color: var(--ink); padding-left: 10px; }
-  .is-link:hover .pub-arr { opacity: 1; }
+  .hem-more { padding-top: 32px; border-top: 1px solid var(--line); }
+  .hem-more .btn-ghost { grid-column: 4 / span 9; justify-self: start; }
 
   .st-cta { padding-block: var(--sec); row-gap: 32px; align-items: end; }
   .cta-t { grid-column: 1 / span 7; font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 5.6vw, 84px); line-height: 1.02; letter-spacing: -0.02em; }
@@ -219,12 +204,6 @@ const existe = new Set(proyectos.map((p) => p.slug));
     .datos-dl div:nth-child(n + 3) { border-top: 1px solid var(--line); }
     .hem-title, .hem-intro { grid-column: 1 / -1; }
     .hem-head { padding-bottom: 32px; }
-    .year-n { grid-column: 1 / -1; position: static; font-size: 36px; padding-bottom: 8px; }
-    .year-list { grid-column: 1 / -1; }
-    .pub-row { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; }
-    .pub-o { font-size: 18px; }
-    .pub-m { grid-column: 1; grid-row: 2; color: var(--mut); font-size: 13px; }
-    .pub-t { grid-column: 2; grid-row: 1; }
-    .pub-arr { display: none; }
+    .hem-more .btn-ghost { grid-column: 1 / -1; }
   }
 </style>

@@ -1,4 +1,4 @@
-// Textos tomados de nanarquitectos.com (/estudio, /gestion-de-obra/*, /publicaciones, /contacto)
+// Textos tomados de nanarquitectos.com (/estudio, /gestion-de-obra/*, /contacto). Publicaciones: data/publicaciones.ts
 
 export const contacto = {
   email: 'info@nanarquitectos.com',
@@ -111,46 +111,4 @@ export const proceso = [
   { t: 'Proyectar', d: 'Líneas de diseño específicas e infografías que ya incorporan el interiorismo y el mobiliario.' },
   { t: 'Presupuestar', d: 'Cotejamos diferentes presupuestos para proporcionar la propuesta más adecuada para cada caso.' },
   { t: 'Construir', d: 'Seguimiento continuo en todas las fases de la obra, con entrega llave en mano.' },
-];
-
-type Pub = [obra: string, medio: string, anio: number, slug?: string];
-/** Revistas impresas y prensa digital (nanarquitectos.com/publicaciones) */
-export const revistas: Pub[] = [
-  ['Restaurante Nantes', 'Proyecto Contract', 2019, 'restaurante-nantes-en-madrid'],
-  ['Unitec', 'Revista suiza Idea', 2018, 'unitec'],
-  ['Unitec', 'Proyecto Contract', 2018, 'unitec'],
-  ['Sana Sana Pilates', 'ICANDELA Nº 26', 2018, 'sana-sana-pilates'],
-  ['Sal de Allo', 'Proyecto Contract', 2018, 'restaurante-sal-de-allo'],
-  ['Oficina Peregrina', 'On Diseño Nº 374', 2018, 'gabinete-juridico-peregrina'],
-  ['La Torta, Maisquepan, A Seca, Inshopnia', 'Small Cafe & Shop, Archiworld', 2018],
-  ['La Piadina', 'Proyecto Contract', 2018, 'reforma-cafeteria-la-piadina'],
-  ['Iconweb', 'MD Office', 2018, 'oficina-iconweb'],
-  ['Dorsia', 'Proyecto Contract', 2018, 'cafeteria-dorsia'],
-  ['NAN Arquitectos', 'DImagazine Nº 270', 2018],
-  ['Clínica Dental Pablo Sieiro', 'IW', 2018, 'clinica-dental-pablo-sieiro'],
-  ['Concept Habitat', 'Casa Viva', 2018, 'showroom-concept-habitat-studio'],
-  ['Concept Habitat', 'On Diseño Nº 368', 2018, 'showroom-concept-habitat-studio'],
-  ['NAN Arquitectos y NanContract', 'Prensa', 2016],
-  ['Estanco Calvario', 'Proyecto Contract', 2015, 'estanco-calvario'],
-  ['NAN Arquitectos', 'Interior Worlds Design & Detail', 2015],
-  ['Maisquepan', 'Casa Viva', 2014, 'panaderia-maisquepan'],
-];
-export const prensa: Pub[] = [
-  ['Restaurante Nantes', 'Arqa', 2019, 'restaurante-nantes-en-madrid'],
-  ['Peluquería Sonia Portela', 'Plataforma Arquitectura', 2018, 'peluqueria-sonia-portela'],
-  ['Peluquería Sonia Portela', 'Interiores Minimalistas', 2018, 'peluqueria-sonia-portela'],
-  ['Dental Clinic', 'ArchDaily', 2014, 'clinica-dental-pablo-sieiro'],
-  ['Vivienda Villagarcía', 'Arqa', 2014, 'casa-villagarcia'],
-  ['Clínica dental', 'Interiores Minimalistas', 2014, 'clinica-dental-pablo-sieiro'],
-  ['Café Retail Inshopnia', 'Architizer', 2014, 'cafe-retail-inshopnia'],
-  ['Inshopnia', 'ArchDaily', 2014, 'cafe-retail-inshopnia'],
-  ['La Piadina', 'Architizer', 2014, 'reforma-cafeteria-la-piadina'],
-  ['Inshopnia', 'Arqa', 2014, 'cafe-retail-inshopnia'],
-  ['Inshopnia', 'Diario Design', 2014, 'cafe-retail-inshopnia'],
-  ['Bakery Maisquepán', 'Architizer', 2014, 'panaderia-maisquepan'],
-  ['Reforma Apartamento Poio', 'Architizer', 2014],
-  ['La Seca', 'Architizer', 2014, 'bocateria-a-seca'],
-  ['Vivienda en Villagarcía', 'Architizer', 2014, 'casa-villagarcia'],
-  ['House in Rubianes Refurbishment', 'ArchDaily', 2014],
-  ['Panadería Maisquepan', 'Arqa', 2014, 'panaderia-maisquepan'],
 ];

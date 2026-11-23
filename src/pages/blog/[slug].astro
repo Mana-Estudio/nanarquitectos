@@ -1,0 +1,317 @@
+---
+import Base from '../../layouts/Base.astro';
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import logo from '../../assets/logo.webp';
+import Figura from '../../components/blog/Figura.astro';
+import Par from '../../components/blog/Par.astro';
+import Obra from '../../components/blog/Obra.astro';
+import Resumen from '../../components/blog/Resumen.astro';
+import { posts, fecha, iso, lectura, palabras, tipoCotizador, type Post } from '../../data/blog';
+import { proyectos, foto, portada, im, ciudad, tipo } from '../../data/proyectos';
+
+export async function getStaticPaths() {
+  const all = await posts();
+  return all.map((post, i) => ({
+    params: { slug: post.id },
+    // «Seguir leyendo»: las dos siguientes en el tiempo (vuelve al principio al llegar al final)
+    props: { post, otros: [1, 2].map((k) => all[(i + k) % all.length]).filter((p) => p.id !== post.id) },
+  }));
+}
+
+const { post, otros } = Astro.props as { post: Post; otros: Post[] };
+const d = post.data;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2);
+const hero = foto(d.portada.proyecto, d.portada.foto, 'L');
+const obraHero = proyectos.find((p) => p.slug === d.portada.proyecto)!;
+const obras = d.proyectos.map((s) => proyectos.find((p) => p.slug === s)).filter((p) => p !== undefined);
+const min = lectura(post.body);
+
+// SEO: imagen social en JPG 1200 px (WhatsApp y LinkedIn no siempre leen WebP) y datos estructurados
+const url = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const og = await getImage({ ...im(hero, 1200), format: 'jpg', quality: 78 });
+const logoImg = await getImage({ src: logo, width: 300, format: 'png' });
+const abs = (p: string) => new URL(p, url).href;
+const persona = d.autor !== 'NAN Arquitectos';
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: d.titulo,
+    description: d.descripcion,
+    image: [abs(og.src)],
+    datePublished: iso(d.fecha),
+    dateModified: iso(d.actualizado ?? d.fecha),
+    inLanguage: 'es-ES',
+    articleSection: d.categoria,
+    wordCount: palabras(post.body),
+    mainEntityOfPage: url.href,
+    author: persona ? { '@type': 'Person', name: d.autor, worksFor: { '@type': 'Organization', name: 'NAN Arquitectos' } } : { '@type': 'Organization', name: 'NAN Arquitectos', url: abs('/') },
+    publisher: { '@type': 'Organization', name: 'NAN Arquitectos', logo: { '@type': 'ImageObject', url: abs(logoImg.src) } },
+    about: obras.map((p) => ({ '@type': 'CreativeWork', name: p.titulo, url: abs(`/proyectos/${p.slug}/`) })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: abs('/') },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: abs('/blog/') },
+      { '@type': 'ListItem', position: 3, name: d.titulo, item: url.href },
+    ],
+  },
+];
+const otrosImg = otros.map((o) => foto(o.data.portada.proyecto, o.data.portada.foto, 'L'));
+---
+<Base title={d.seoTitulo ?? d.titulo} description={d.descripcion} ogImage={og.src} current="blog" type="article">
+  <Fragment slot="head">
+    <meta property="article:published_time" content={iso(d.fecha)} />
+    <meta property="article:modified_time" content={iso(d.actualizado ?? d.fecha)} />
+    <meta property="article:section" content={d.categoria} />
+    <meta property="og:image:width" content={String(og.attributes.width ?? 1200)} />
+    <meta property="og:image:alt" content={d.portada.alt} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
+  </Fragment>
+
+  <div class="progress" aria-hidden="true"><i data-progress></i></div>
+
+  <article class="post">
+    <header class="post-head pad grid12">
+      <nav class="crumbs small" aria-label="Ruta">
+        <a href="/blog/" class="mut ulink">Blog</a><span class="mut" aria-hidden="true">/</span><span>{d.categoria}</span>
+      </nav>
+      <h1 class="post-title" data-post-title>{d.titulo}</h1>
+      <div class="post-side" data-reveal="text">
+        <p class="post-lead serif">{d.entradilla ?? d.descripcion}</p>
+        <dl class="post-meta small">
+          <div><dt class="mut">Publicado</dt><dd><time datetime={iso(d.fecha)}>{fecha(d.fecha)}</time></dd></div>
+          {d.actualizado && <div><dt class="mut">Actualizado</dt><dd><time datetime={iso(d.actualizado)}>{fecha(d.actualizado)}</time></dd></div>}
+          <div><dt class="mut">Lectura</dt><dd>{min} min</dd></div>
+          <div><dt class="mut">Por</dt><dd>{d.autor}</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <figure class="post-hero">
+      <div class="frame" data-reveal="clip">
+        <Image {...im(hero)} alt={d.portada.alt} widths={[828, 1280, 1920, 2560]} sizes="100vw" format="webp" quality={72} loading="eager" fetchpriority="high" />
+      </div>
+      <figcaption class="pad small mut">
+        <a href={`/proyectos/${obraHero.slug}/`} class="ulink">{obraHero.nombre}</a> · {[tipo(obraHero), ciudad(obraHero), obraHero.anio].filter(Boolean).join(' · ')}
+      </figcaption>
+    </figure>
+
+    {toc.length > 2 && (
+      <nav class="toc pad grid12" aria-labelledby="toc-t">
+        <h2 id="toc-t" class="toc-t small mut">En este artículo</h2>
+        <ol class="toc-list">
+          {toc.map((h, i) => (
+            <li><a href={`#${h.slug}`} class="toc-a"><span class="num mut">{String(i + 1).padStart(2, '0')}</span><span>{h.text.replace(/^\d+\.\s*/, '')}</span></a></li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <div class="prose pad grid12" data-prose>
+      <Content components={{ Figura, Par, Obra, Resumen }} />
+    </div>
+
+    <footer class="post-foot pad grid12">
+      <p class="small mut foot-cat">Archivado en <a href="/blog/" class="ulink">{d.categoria}</a></p>
+      <div class="share small" data-share>
+        <span class="mut">Compartir</span>
+        <a href={`https://wa.me/?text=${encodeURIComponent(`${d.titulo} ${url.href}`)}`} target="_blank" rel="noopener" class="ulink">WhatsApp</a>
+        <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url.href)}`} target="_blank" rel="noopener" class="ulink">LinkedIn</a>
+        <a href={`https://www.pinterest.es/pin/create/button/?url=${encodeURIComponent(url.href)}&media=${encodeURIComponent(abs(og.src))}&description=${encodeURIComponent(d.titulo)}`} target="_blank" rel="noopener" class="ulink">Pinterest</a>
+        <button class="ulink" data-copy-link={url.href}>Copiar enlace</button>
+      </div>
+    </footer>
+  </article>
+
+  {obras.length > 0 && (
+    <section class="citados pad" aria-labelledby="citados-t">
+      <h2 id="citados-t" class="h2 sec-t">Obras citadas</h2>
+      <ul class="citados-list grid12">
+        {obras.map((p) => (
+          <li>
+            <a href={`/proyectos/${p.slug}/`} class="cit">
+              <div class="frame" data-reveal="clip" style="aspect-ratio: 4 / 3">
+                <Image {...im(portada(p), 900)} alt={p.titulo} widths={[480, 900]} sizes="(max-width: 760px) 50vw, 24vw" format="webp" quality={70} />
+              </div>
+              <span class="serif cit-n">{p.nombre}</span>
+              <span class="small mut">{[tipo(p), ciudad(p), p.anio].filter(Boolean).join(' · ')}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section class="post-cta pad grid12">
+    <p class="cta-t">¿Tiene un proyecto en mente?</p>
+    <div class="cta-side">
+      <p class="mut">Cuéntenos qué necesita y le respondemos con una primera orientación de plazos y alcance.</p>
+      <div class="cta-actions">
+        <button class="btn" data-quote data-quote-tipo={tipoCotizador[d.categoria]}>Pedir presupuesto <span class="arr">→</span></button>
+        <a href="/contacto/" class="btn-ghost">Contacto</a>
+      </div>
+    </div>
+  </section>
+
+  {otros.length > 0 && (
+    <section class="more pad" aria-labelledby="more-t">
+      <div class="more-head">
+        <h2 id="more-t" class="h2">Seguir leyendo</h2>
+        <a href="/blog/" class="small ulink">Todo el blog <span class="arr">→</span></a>
+      </div>
+      <ul class="more-list grid12">
+        {otros.map((o, i) => (
+          <li>
+            <a href={`/blog/${o.id}/`} class="card">
+              <div class="frame" data-reveal="clip" style="aspect-ratio: 3 / 2">
+                <Image {...im(otrosImg[i])} alt="" widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 50vw" format="webp" quality={70} />
+              </div>
+              <span class="small mut">{o.data.categoria} · <time datetime={iso(o.data.fecha)}>{fecha(o.data.fecha)}</time></span>
+              <span class="serif card-t">{o.data.titulo}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Base>
+
+<script>
+  import { gsap, reduced, ease } from '../../scripts/motion.ts';
+
+  if (!reduced) gsap.from('[data-post-title]', { y: 36, opacity: 0, duration: 1.4, ease, delay: 0.15 });
+
+  // Barra de lectura: avanza con el cuerpo del artículo
+  const bar = document.querySelector<HTMLElement>('[data-progress]')!;
+  const prose = document.querySelector<HTMLElement>('[data-prose]')!;
+  const update = () => {
+    const r = prose.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - innerHeight * 0.6)));
+    bar.style.transform = `scaleX(${p})`;
+  };
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+
+  // Índice: con Lenis, el salto a un ancla también se desliza
+  document.querySelectorAll<HTMLAnchorElement>('.toc-a').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      const lenis = (window as any).__lenis;
+      const target = document.querySelector(a.hash);
+      if (!lenis || !target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { offset: -24 });
+      history.replaceState(null, '', a.hash);
+    }),
+  );
+
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-link]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(b.dataset.copyLink!); } catch { return; }
+      b.textContent = 'Enlace copiado';
+      setTimeout(() => (b.textContent = 'Copiar enlace'), 2000);
+    }),
+  );
+</script>
+
+<style>
+  .progress { position: fixed; inset: 0 0 auto; height: 2px; z-index: 60; pointer-events: none; }
+  .progress i { display: block; height: 100%; background: var(--yellow); transform: scaleX(0); transform-origin: left; }
+
+  .post-head { padding-top: 96px; padding-bottom: 72px; row-gap: 28px; align-items: end; }
+  .crumbs { grid-column: 1 / -1; display: flex; gap: 10px; }
+  .post-title { grid-column: 1 / span 8; font-size: clamp(42px, 5.6vw, 84px); line-height: 1.04; letter-spacing: -0.02em; }
+  .post-side { grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 28px; }
+  .post-lead { font-weight: 300; font-size: clamp(19px, 1.5vw, 22px); line-height: 1.4; }
+  .post-meta { margin: 0; display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 8px 32px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .post-meta div { display: flex; flex-direction: column; gap: 2px; }
+  .post-meta dd { margin: 0; }
+
+  .post-hero { display: flex; flex-direction: column; gap: 14px; }
+  .post-hero .frame { height: min(78vh, 820px); }
+
+  .toc { padding-top: 96px; row-gap: 16px; }
+  .toc-t { grid-column: 1 / span 3; font-family: var(--sans); font-weight: 400; font-size: 13px; padding-top: 14px; }
+  .toc-list { grid-column: 4 / span 6; list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .toc-a { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; transition: padding 0.5s var(--ease-out), color 0.3s; }
+  .toc-a:hover { padding-left: 8px; color: var(--ink); }
+
+  /* Cuerpo: una retícula de 12 columnas; el texto ocupa la central y las fotos se salen de ella.
+     Solo se colocan los elementos de Markdown: <Figura>, <Obra>… se colocan solos */
+  .prose { padding-top: 72px; align-items: start; font-size: 18px; line-height: 1.7; }
+  .prose > :global(:is(p, h2, h3, ul, ol, hr, table)) { grid-column: 4 / span 6; }
+  .prose > :global(p) { margin-top: 22px; }
+  .prose > :global(p:first-child) { margin-top: 0; font-family: var(--serif); font-weight: 300; font-size: clamp(22px, 1.9vw, 27px); line-height: 1.45; }
+  .prose > :global(h2) { margin-top: 88px; font-size: clamp(30px, 3vw, 42px); line-height: 1.12; letter-spacing: -0.01em; scroll-margin-top: 32px; }
+  .prose > :global(h3) { margin-top: 48px; font-size: clamp(22px, 2vw, 28px); line-height: 1.2; }
+  .prose > :global(h2 + p), .prose > :global(h3 + p) { margin-top: 20px; }
+  .prose > :global(ul), .prose > :global(ol) { margin: 20px 0 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .prose > :global(ul > li) { position: relative; padding-left: 26px; }
+  .prose > :global(ul > li)::before { content: ''; position: absolute; left: 2px; top: 0.72em; width: 10px; height: 1px; background: var(--ink); }
+  .prose > :global(ol) { counter-reset: n; }
+  .prose > :global(ol > li) { counter-increment: n; position: relative; padding-left: 36px; }
+  .prose > :global(ol > li)::before { content: counter(n, decimal-leading-zero); position: absolute; left: 0; font-size: 13px; color: var(--mut); top: 0.3em; font-variant-numeric: tabular-nums; }
+  .prose :global(strong) { font-weight: 500; }
+  .prose :global(p a), .prose :global(li a) { text-decoration: underline; text-decoration-color: var(--yellow); text-decoration-thickness: 2px; text-underline-offset: 4px; transition: text-decoration-color 0.3s; }
+  .prose :global(p a:hover), .prose :global(li a:hover) { color: var(--ink); text-decoration-color: var(--ink); }
+  .prose > :global(blockquote) { grid-column: 3 / span 8; margin: 64px 0 24px; font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 3vw, 44px); line-height: 1.2; letter-spacing: -0.01em; }
+  .prose > :global(blockquote p) { margin: 0; }
+
+  .post-foot { margin-top: 88px; }
+  .foot-cat, .share { grid-column: 4 / span 6; }
+  .foot-cat { padding-top: 20px; border-top: 1px solid var(--line); }
+  .share { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 10px; }
+
+  .citados { padding-top: var(--sec); }
+  .sec-t { padding-bottom: 40px; }
+  .citados-list { list-style: none; margin: 0; padding: 0; row-gap: 40px; }
+  .citados-list li { grid-column: span 3; }
+  .cit { display: flex; flex-direction: column; gap: 6px; }
+  .cit .frame { margin-bottom: 8px; }
+  .cit-n { font-size: 20px; line-height: 1.25; }
+  .cit:hover { color: var(--ink); }
+
+  .post-cta { padding-block: var(--sec); row-gap: 32px; align-items: end; }
+  .cta-t { grid-column: 1 / span 7; font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 5.6vw, 84px); line-height: 1.02; letter-spacing: -0.02em; }
+  .cta-side { grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 20px; }
+  .cta-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .more { padding-bottom: var(--sec); }
+  .more-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 28px 0 40px; border-top: 1px solid var(--line); }
+  .more-list { list-style: none; margin: 0; padding: 0; row-gap: 48px; }
+  .more-list li { grid-column: span 6; }
+  .card { display: flex; flex-direction: column; gap: 10px; }
+  .card .frame { margin-bottom: 8px; }
+  .card-t { font-size: clamp(24px, 2.2vw, 32px); line-height: 1.15; text-wrap: balance; }
+  .card:hover { color: var(--ink); }
+
+  @media (max-width: 1100px) {
+    .post-title { grid-column: 1 / -1; }
+    .post-side { grid-column: 1 / span 9; }
+    .toc-t { grid-column: 1 / -1; padding-top: 0; }
+    .toc-list, .prose > :global(:is(p, h2, h3, ul, ol, hr, table)), .foot-cat, .share { grid-column: 3 / span 8; }
+    .prose > :global(blockquote) { grid-column: 2 / span 10; }
+    .citados-list li { grid-column: span 6; }
+    .cta-t, .cta-side { grid-column: 1 / -1; }
+  }
+  @media (max-width: 760px) {
+    .post-head { padding-top: 40px; padding-bottom: 40px; row-gap: 20px; }
+    .post-side { grid-column: 1 / -1; gap: 20px; }
+    .post-meta { grid-template-columns: repeat(2, auto); gap: 10px 28px; }
+    .post-hero .frame { height: auto; aspect-ratio: 4 / 3; }
+    .toc { padding-top: 56px; }
+    .toc-list, .prose > :global(:is(p, h2, h3, ul, ol, hr, table)), .prose > :global(blockquote), .foot-cat, .share { grid-column: 1 / -1; }
+    .prose { padding-top: 48px; font-size: 16px; line-height: 1.65; }
+    .prose > :global(h2) { margin-top: 64px; }
+    .post-foot { margin-top: 64px; }
+    .citados-list { row-gap: 28px; }
+    .citados-list li { grid-column: span 2; }
+    .cit-n { font-size: 17px; }
+    .more-list li { grid-column: 1 / -1; }
+  }
+</style>

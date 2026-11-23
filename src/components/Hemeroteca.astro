@@ -1,0 +1,69 @@
+---
+/**
+ * Hemeroteca agrupada por año: obra (enlaza a su ficha), titular, medio, fecha y enlace al artículo original.
+ * Cada fila lleva data-formato para que /publicaciones pueda filtrar por revista impresa o prensa digital.
+ */
+import { recientes, anio, fechaCorta, type Publicacion } from '../data/publicaciones';
+import { proyectos } from '../data/proyectos';
+
+interface Props { items?: Publicacion[] }
+const { items = recientes } = Astro.props;
+const existe = new Set(proyectos.map((p) => p.slug));
+const anios = [...new Set(items.map(anio))].sort((a, b) => b - a);
+---
+{anios.map((a) => (
+  <div class="year grid12" data-year>
+    <h3 class="year-n num">{a}</h3>
+    <ul class="year-list">
+      {items.filter((p) => anio(p) === a).map((p) => (
+        <li class="pub" data-formato={p.formato}>
+          <span class="pub-o">
+            {p.slug && existe.has(p.slug)
+              ? <a href={`/proyectos/${p.slug}/`} class="serif pub-name">{p.obra}</a>
+              : <span class="serif pub-name">{p.obra}</span>}
+            {p.titular && <span class="pub-tit small mut">«{p.titular}»</span>}
+          </span>
+          <span class="pub-m">{p.medio}</span>
+          <span class="pub-f small mut num">{fechaCorta(p)}</span>
+          {p.url
+            ? <a href={p.url} target="_blank" rel="noopener" class="pub-go small" aria-label={`Leer en ${p.medio}: ${p.obra} (se abre en otra pestaña)`}>Leer <span class="arr-ne" aria-hidden="true">↗</span></a>
+            : <span class="pub-go" aria-hidden="true"></span>}
+        </li>
+      ))}
+    </ul>
+  </div>
+))}
+
+<style>
+  .year { border-top: 1px solid var(--line); padding-top: 20px; padding-bottom: 32px; }
+  .year-n { grid-column: 1 / span 3; font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 4vw, 60px); line-height: 1; align-self: start; position: sticky; top: 24px; }
+  .year-list { grid-column: 4 / span 9; list-style: none; margin: 0; padding: 0; }
+  .pub {
+    display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) 64px 56px; gap: 16px; align-items: baseline;
+    padding: 14px 0; border-bottom: 1px solid var(--line);
+  }
+  .year-list li:last-child { border-bottom: 0; }
+  .pub-o { display: flex; flex-direction: column; gap: 2px; }
+  .pub-name { font-size: 21px; line-height: 1.25; justify-self: start; }
+  a.pub-name { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size 0.6s var(--ease-out), color 0.3s; }
+  a.pub-name:hover { background-size: 100% 1px; color: var(--ink); }
+  .pub-m { font-size: 14px; }
+  .pub-go { justify-self: end; display: inline-flex; gap: 4px; padding: 4px 0; color: var(--mut); transition: color 0.3s; }
+  .pub-go:hover { color: var(--ink); }
+  .arr-ne { display: inline-block; transition: transform 0.55s var(--ease-out); }
+  .pub-go:hover .arr-ne { transform: translate(3px, -3px); }
+
+  @media (max-width: 760px) {
+    .year-n { grid-column: 1 / -1; position: static; font-size: 36px; padding-bottom: 8px; }
+    .year-list { grid-column: 1 / -1; }
+    .pub { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; }
+    .pub-name { font-size: 18px; }
+    .pub-o { grid-column: 1 / -1; }
+    .pub-m { grid-column: 1; color: var(--mut); font-size: 13px; }
+    .pub-f { display: none; }
+    .pub-go { grid-column: 2; grid-row: 2; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html:not(.force-motion)) .arr-ne { transition: none; }
+  }
+</style>

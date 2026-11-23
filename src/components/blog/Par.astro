@@ -1,0 +1,42 @@
+---
+/**
+ * Dos fotos verticales de un mismo proyecto, una junto a otra.
+ * <Par proyecto="clinica-ame" fotos={[0, 1]} pie="…" />
+ */
+import { Image } from 'astro:assets';
+import { proyectos, foto, im, ciudad } from '../../data/proyectos';
+
+interface Props { proyecto: string; fotos?: [number, number]; pie?: string }
+const { proyecto, fotos = [0, 1], pie } = Astro.props;
+const p = proyectos.find((x) => x.slug === proyecto);
+if (!p) throw new Error(`<Par>: no existe el proyecto «${proyecto}»`);
+const imgs = fotos.map((n) => foto(proyecto, n, 'P'));
+const meta = [ciudad(p), p.anio].filter(Boolean).join(' · ');
+---
+<figure class="par">
+  <div class="par-grid">
+    {imgs.map((img, i) => (
+      <div class="frame" data-reveal="clip" style={`aspect-ratio: 4 / 5; ${i ? 'margin-top: 72px' : ''}`}>
+        <Image {...im(img)} alt={`${p.titulo}, ${ciudad(p)}: vista ${i + 1}`} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 50vw, 40vw" format="webp" quality={72} />
+      </div>
+    ))}
+  </div>
+  <figcaption class="small">
+    {pie && <span class="par-pie">{pie}</span>}
+    <a href={`/proyectos/${p.slug}/`} class="par-obra mut">{p.nombre}{meta && ` · ${meta}`} <span class="arr" aria-hidden="true">→</span></a>
+  </figcaption>
+</figure>
+
+<style>
+  .par { grid-column: 2 / span 10; margin-block: 56px 16px; display: flex; flex-direction: column; gap: 14px; }
+  .par-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); align-items: start; }
+  figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 24px; line-height: 1.45; }
+  .par-pie { max-width: 60ch; }
+  .par-obra:hover { color: var(--ink); }
+  @media (max-width: 1100px) { .par { grid-column: 1 / -1; } }
+  @media (max-width: 760px) {
+    .par { margin-block: 36px 8px; }
+    .par-grid > :global(.frame) { margin-top: 0 !important; }
+    .par-grid > :global(.frame:nth-child(2)) { margin-top: 40px !important; }
+  }
+</style>

@@ -1,0 +1,134 @@
+---
+import Base from '../../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { posts, fecha, iso, lectura } from '../../data/blog';
+import { foto, im } from '../../data/proyectos';
+
+const all = await posts();
+const [primero, ...resto] = all;
+const img = (p: (typeof all)[number]) => foto(p.data.portada.proyecto, p.data.portada.foto, 'L');
+const categorias = [...new Set(all.map((p) => p.data.categoria))];
+const url = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Blog de NAN Arquitectos',
+  url: url.href,
+  inLanguage: 'es-ES',
+  publisher: { '@type': 'Organization', name: 'NAN Arquitectos' },
+  blogPost: all.map((p) => ({
+    '@type': 'BlogPosting',
+    headline: p.data.titulo,
+    description: p.data.descripcion,
+    datePublished: iso(p.data.fecha),
+    url: new URL(`/blog/${p.id}/`, url).href,
+  })),
+};
+---
+<Base title="Blog de arquitectura e interiorismo" current="blog" ogImage={primero ? img(primero).src : undefined} description="Artículos de NAN Arquitectos sobre arquitectura, interiorismo, iluminación y obra: cómo proyectamos clínicas, locales comerciales, restaurantes y viviendas en Galicia.">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonld)} />
+
+  <section class="intro pad grid12">
+    <h1 class="title" data-bl-title>Blog</h1>
+    <div class="intro-text">
+      <p>Notas del estudio sobre arquitectura, interiorismo y obra: cómo proyectamos y qué conviene saber antes de empezar un proyecto.</p>
+      <p class="small mut cats">{categorias.join(' · ')}</p>
+    </div>
+  </section>
+
+  {primero && (
+    <section class="feat pad" aria-label="Último artículo">
+      <a href={`/blog/${primero.id}/`} class="feat-a grid12">
+        <div class="frame feat-img" data-reveal="clip" data-parallax="6">
+          <Image {...im(img(primero))} alt={primero.data.portada.alt} widths={[828, 1280, 1920, 2400]} sizes="(max-width: 760px) 100vw, 60vw" format="webp" quality={72} loading="eager" fetchpriority="high" />
+        </div>
+        <div class="feat-txt" data-reveal="text">
+          <span class="small mut">{primero.data.categoria} · <time datetime={iso(primero.data.fecha)}>{fecha(primero.data.fecha)}</time></span>
+          <h2 class="feat-t">{primero.data.titulo}</h2>
+          <p class="mut">{primero.data.descripcion}</p>
+          <span class="feat-go small">Leer artículo · {lectura(primero.body)} min <span class="arr">→</span></span>
+        </div>
+      </a>
+    </section>
+  )}
+
+  {resto.length > 0 && (
+    <section class="list pad" aria-labelledby="list-t">
+      <h2 id="list-t" class="sr-only">Más artículos</h2>
+      <ul class="cards grid12">
+        {resto.map((p, i) => (
+          <li style={`--mt:${i % 2 ? '120px' : '0'}`}>
+            <a href={`/blog/${p.id}/`} class="card">
+              <div class="frame" data-reveal="clip" data-parallax="5" style="aspect-ratio: 3 / 2">
+                <Image {...im(img(p))} alt={p.data.portada.alt} widths={[640, 1024, 1600]} sizes="(max-width: 760px) 100vw, 50vw" format="webp" quality={72} />
+              </div>
+              <span class="small mut">{p.data.categoria} · <time datetime={iso(p.data.fecha)}>{fecha(p.data.fecha)}</time> · {lectura(p.body)} min</span>
+              <h3 class="card-t">{p.data.titulo}</h3>
+              <p class="small mut card-d">{p.data.descripcion}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section class="bl-cta pad grid12">
+    <p class="cta-t">¿Tiene una duda sobre su proyecto?</p>
+    <div class="cta-side">
+      <p class="mut">Muchos de estos artículos nacen de preguntas de clientes. Si tiene una, escríbanos.</p>
+      <div class="cta-actions">
+        <button class="btn" data-quote>Pedir presupuesto <span class="arr">→</span></button>
+        <a href="/blog/rss.xml" class="btn-ghost">Suscribirse (RSS)</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { gsap, reduced, ease } from '../../scripts/motion.ts';
+  if (!reduced) gsap.from('[data-bl-title]', { y: 40, opacity: 0, duration: 1.5, ease, delay: 0.15 });
+</script>
+
+<style>
+  .intro { padding-top: 120px; row-gap: 16px; align-items: end; }
+  .title { grid-column: 1 / span 7; font-size: clamp(56px, 8.4vw, 120px); line-height: 1; letter-spacing: -0.02em; }
+  .intro-text { grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 14px; }
+
+  .feat { padding-top: 88px; }
+  .feat-a { align-items: end; row-gap: 24px; }
+  .feat-a:hover { color: var(--ink); }
+  .feat-img { grid-column: 1 / span 8; aspect-ratio: 3 / 2; }
+  .feat-txt { grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 16px; }
+  .feat-t { font-size: clamp(30px, 3vw, 44px); line-height: 1.1; letter-spacing: -0.01em; }
+  .feat-go { margin-top: 8px; align-self: flex-start; padding-bottom: 2px; border-bottom: 1px solid var(--ink); }
+
+  .list { padding-top: 160px; }
+  .cards { list-style: none; margin: 0; padding: 0; row-gap: 96px; align-items: start; }
+  .cards li { grid-column: span 6; margin-top: var(--mt); }
+  .card { display: flex; flex-direction: column; gap: 10px; }
+  .card .frame { margin-bottom: 10px; }
+  .card:hover { color: var(--ink); }
+  .card-t { font-size: clamp(26px, 2.4vw, 34px); line-height: 1.12; letter-spacing: -0.01em; }
+  .card-d { max-width: 52ch; }
+
+  .bl-cta { padding-block: var(--sec); row-gap: 32px; align-items: end; }
+  .cta-t { grid-column: 1 / span 7; font-family: var(--serif); font-weight: 300; font-size: clamp(36px, 4.6vw, 68px); line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; }
+  .cta-side { grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 20px; }
+  .cta-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  @media (max-width: 1100px) {
+    .title { grid-column: 1 / -1; }
+    .intro-text { grid-column: 1 / span 8; }
+    .feat-img { grid-column: 1 / -1; }
+    .feat-txt { grid-column: 1 / span 8; }
+    .cta-t, .cta-side { grid-column: 1 / -1; }
+  }
+  @media (max-width: 760px) {
+    .intro { padding-top: 48px; }
+    .intro-text, .feat-txt { grid-column: 1 / -1; }
+    .feat { padding-top: 48px; }
+    .list { padding-top: 88px; }
+    .cards { row-gap: 56px; }
+    .cards li { grid-column: 1 / -1; margin-top: 0; }
+  }
+</style>

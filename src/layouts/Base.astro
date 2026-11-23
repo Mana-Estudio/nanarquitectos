@@ -9,19 +9,27 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
-  current?: 'proyectos' | 'estudio' | 'servicios' | 'contacto';
+  current?: 'proyectos' | 'estudio' | 'servicios' | 'blog' | 'contacto';
+  /** 'article' en las entradas del blog (Open Graph) */
+  type?: 'website' | 'article';
 }
 const {
   title,
   description = 'NAN Arquitectos: estudio de arquitectura e interiorismo en Pontevedra. Clínicas, restaurantes, comercios, oficinas y viviendas en Galicia.',
   ogImage,
   current,
+  type = 'website',
 } = Astro.props;
+// Con `site` en astro.config apunta al dominio definitivo; sin él, al host desde el que se sirve
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+// El prototipo (vercel.app) copia los textos de la web actual: fuera de Google hasta publicarlo en su dominio
+const indexable = Astro.site?.hostname.endsWith('nanarquitectos.com') ?? false;
 const fullTitle = title === 'NAN Arquitectos' ? 'NAN Arquitectos · Arquitectura e interiorismo en Pontevedra' : `${title} · NAN Arquitectos`;
 const nav = [
   { id: 'proyectos', href: '/proyectos/', label: 'Proyectos' },
   { id: 'estudio', href: '/estudio/', label: 'Estudio' },
   { id: 'servicios', href: '/servicios/', label: 'Servicios' },
+  { id: 'blog', href: '/blog/', label: 'Blog' },
   { id: 'contacto', href: '/contacto/', label: 'Contacto' },
 ];
 ---
@@ -32,9 +40,18 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {!indexable && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="NAN Arquitectos" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.url)} />}
+    {ogImage && <meta property="og:image" content={new URL(ogImage, canonical)} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <link rel="alternate" type="application/rss+xml" title="Blog de NAN Arquitectos" href="/blog/rss.xml" />
+    <slot name="head" />
     <meta name="theme-color" content="#f5f3ef" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script is:inline>
@@ -82,6 +99,8 @@ const nav = [
     <footer class="site-footer pad small mut">
       <span>© {new Date().getFullYear()} NAN Arquitectos · Pontevedra, Galicia</span>
       <div class="foot-links">
+        <a href="/publicaciones/" class="ulink">Publicaciones</a>
+        <a href="/blog/" class="ulink">Blog</a>
         <a href={`mailto:${contacto.email}`} class="ulink">{contacto.email}</a>
         <a href={contacto.nuevos.href} class="ulink">{contacto.nuevos.tel}</a>
         {contacto.redes.slice(0, 2).map((r) => <a href={r.href} target="_blank" rel="noopener" class="ulink">{r.label}</a>)}

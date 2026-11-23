@@ -1,0 +1,59 @@
+---
+/**
+ * Foto de un proyecto dentro de un artículo, con pie y enlace a la obra.
+ * <Figura proyecto="marna-restaurante" foto={1} o="L" pie="…" ancho="ancho" />
+ * ancho: texto (columna de lectura) · ancho (casi toda la retícula) · sangre (a todo el ancho de pantalla)
+ */
+import { Image } from 'astro:assets';
+import { proyectos, foto, im, ciudad } from '../../data/proyectos';
+
+interface Props {
+  proyecto: string;
+  /** Índice de la foto (entre las de la orientación pedida, si se indica `o`) */
+  foto?: number;
+  o?: 'L' | 'P';
+  pie?: string;
+  /** Texto alternativo; por defecto, el título del proyecto */
+  alt?: string;
+  ancho?: 'texto' | 'ancho' | 'sangre';
+}
+const { proyecto, foto: n = 0, o, pie, alt } = Astro.props;
+const p = proyectos.find((x) => x.slug === proyecto);
+if (!p) throw new Error(`<Figura>: no existe el proyecto «${proyecto}»`);
+const img = foto(proyecto, n, o);
+const vertical = img.height > img.width;
+const ancho = Astro.props.ancho ?? (vertical ? 'texto' : 'ancho');
+const sizes = { texto: '(max-width: 760px) 100vw, 50vw', ancho: '(max-width: 760px) 100vw, 84vw', sangre: '100vw' }[ancho];
+const meta = [ciudad(p), p.anio].filter(Boolean).join(' · ');
+---
+<figure class:list={['fig', `fig-${ancho}`]}>
+  <div class="frame" data-reveal="clip" style={`aspect-ratio:${img.width} / ${img.height}`}>
+    <Image {...im(img)} alt={alt ?? `${p.titulo}, ${ciudad(p)}`} widths={[640, 1024, 1600, 2400]} sizes={sizes} format="webp" quality={72} />
+  </div>
+  <figcaption class="small">
+    {pie && <span class="fig-pie">{pie}</span>}
+    <a href={`/proyectos/${p.slug}/`} class="fig-obra mut">{p.nombre}{meta && ` · ${meta}`} <span class="arr" aria-hidden="true">→</span></a>
+  </figcaption>
+</figure>
+
+<style>
+  .fig { margin-block: 56px 16px; display: flex; flex-direction: column; gap: 14px; }
+  .fig-texto { grid-column: 4 / span 6; }
+  .fig-ancho { grid-column: 2 / span 10; }
+  .fig-sangre { grid-column: 1 / -1; margin-inline: calc(var(--pad) * -1); }
+  .fig-sangre figcaption { padding-inline: var(--pad); }
+  .fig-texto .frame { max-height: 86vh; }
+  figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 24px; line-height: 1.45; }
+  .fig-pie { max-width: 60ch; }
+  .fig-obra { white-space: nowrap; }
+  .fig-obra:hover { color: var(--ink); }
+  @media (max-width: 1100px) {
+    .fig-texto { grid-column: 3 / span 8; }
+    .fig-ancho { grid-column: 1 / -1; }
+  }
+  @media (max-width: 760px) {
+    .fig { margin-block: 36px 8px; }
+    .fig-texto, .fig-ancho { grid-column: 1 / -1; }
+    .fig-obra { white-space: normal; }
+  }
+</style>

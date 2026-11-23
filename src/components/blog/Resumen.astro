@@ -1,0 +1,27 @@
+---
+/**
+ * «En resumen»: las ideas del artículo en una lista corta, al principio.
+ * Ayuda a quien lee en diagonal y a que Google muestre el artículo como respuesta destacada.
+ */
+interface Props { titulo?: string }
+const { titulo = 'En resumen' } = Astro.props;
+---
+<aside class="resumen" aria-label={titulo}>
+  <p class="r-t small"><span class="sq" aria-hidden="true"></span>{titulo}</p>
+  <div class="r-body"><slot /></div>
+</aside>
+
+<style>
+  .resumen { grid-column: 4 / span 6; margin-block: 40px 16px; padding: 28px 32px 30px; background: var(--frame); }
+  .r-t { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; color: var(--mut); }
+  .sq { width: 8px; height: 8px; background: var(--yellow); }
+  .r-body :global(ul) { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .r-body :global(li) { position: relative; padding-left: 22px; font-size: 16px; line-height: 1.5; }
+  .r-body :global(li)::before { content: '—'; position: absolute; left: 0; color: var(--mut); }
+  .r-body :global(p) { margin: 0; }
+  @media (max-width: 1100px) { .resumen { grid-column: 3 / span 8; } }
+  @media (max-width: 760px) {
+    .resumen { grid-column: 1 / -1; padding: 22px 20px 24px; }
+    .r-body :global(li) { font-size: 15px; }
+  }
+</style>
