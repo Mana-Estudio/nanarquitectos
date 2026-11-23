@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/nanarquitectura", "destination": "/" },
+    { "source": "/nanarquitectura/:path*/", "destination": "/:path*/index.html" },
     { "source": "/nanarquitectura/:path*", "destination": "/:path*" }
   ]
 }
