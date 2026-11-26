@@ -5,6 +5,7 @@ import { Image } from 'astro:assets';
 import logo from '../assets/logo.webp';
 import Cotizador from '../components/Cotizador.astro';
 import Loader from '../components/Loader.astro';
+import FirmaMana from '../components/FirmaMana.astro';
 import { contacto } from '../data/estudio';
 
 interface Props {
@@ -119,6 +120,7 @@ const nav = [
         {contacto.redes.slice(0, 2).map((r) => <a href={r.href} target="_blank" rel="noopener" class="ulink">{r.label}</a>)}
         <a href="https://www.nanarquitectos.com/aviso-legal/" target="_blank" rel="noopener">Aviso legal</a>
         <a href="https://www.nanarquitectos.com/politica-de-privacidad/" target="_blank" rel="noopener">Privacidad</a>
+        <FirmaMana cliente="nanarquitectos" />
       </div>
     </footer>
 
